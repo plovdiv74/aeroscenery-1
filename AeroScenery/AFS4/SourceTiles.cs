@@ -74,12 +74,25 @@ namespace AeroScenery.AFS4
             return window;
         }
 
-        // A 256x256 tile as RGB bytes, rows from the north; null if it isn't a 256x256 image.
+        // A 256x256 tile as RGB bytes, rows from the north; null if it isn't a 256x256 image. Earlier versions of the
+        // downloader saved some tiles still gzip-compressed (as the server sent them); those are unpacked here.
         private static byte[] Decode(string path)
         {
             try
             {
-                using (var bitmap = new Bitmap(path))
+                var bytes = File.ReadAllBytes(path);
+                if (bytes.Length > 2 && bytes[0] == 0x1f && bytes[1] == 0x8b)
+                {
+                    using (var gzip = new System.IO.Compression.GZipStream(new MemoryStream(bytes), System.IO.Compression.CompressionMode.Decompress))
+                    using (var unpacked = new MemoryStream())
+                    {
+                        gzip.CopyTo(unpacked);
+                        bytes = unpacked.ToArray();
+                    }
+                }
+
+                using (var stream = new MemoryStream(bytes))
+                using (var bitmap = new Bitmap(stream))
                 {
                     if (bitmap.Width != WebMercator.TileSize || bitmap.Height != WebMercator.TileSize)
                     {
@@ -120,6 +133,11 @@ namespace AeroScenery.AFS4
             catch (OutOfMemoryException)
             {
                 // ... or, for some formats, as an OutOfMemoryException.
+                return null;
+            }
+            catch (InvalidDataException)
+            {
+                // A damaged gzip-wrapped tile.
                 return null;
             }
         }
