@@ -35,9 +35,7 @@
             this.statusStripLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.settingsButton = new System.Windows.Forms.ToolStripButton();
-            this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.showAirportsToolstripButton = new System.Windows.Forms.ToolStripButton();
             this.mapTypeToolStripDropDown = new System.Windows.Forms.ToolStripDropDownButton();
             this.hybridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.satelliteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -142,7 +140,6 @@
             this.mainMap.Size = new System.Drawing.Size(1034, 715);
             this.mainMap.TabIndex = 0;
             this.mainMap.Zoom = 0D;
-            this.mainMap.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.MainMap_OnMarkerClick);
             this.mainMap.OnMapDrag += new GMap.NET.MapDrag(this.MainMap_OnMapDrag);
             this.mainMap.OnMapZoomChanged += new GMap.NET.MapZoomChanged(this.MainMap_OnMapZoomChanged);
             this.mainMap.DoubleClick += new System.EventHandler(this.mainMap_DoubleClick);
@@ -170,9 +167,7 @@
             this.toolStrip1.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsButton,
-            this.helpToolStripButton,
             this.toolStripSeparator4,
-            this.showAirportsToolstripButton,
             this.mapTypeToolStripDropDown,
             this.toolStripSeparator7,
             this.toolStripLabel2,
@@ -196,29 +191,10 @@
             this.settingsButton.Text = "Settings";
             this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
             // 
-            // helpToolStripButton
-            // 
-            this.helpToolStripButton.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.helpToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripButton.Image")));
-            this.helpToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.helpToolStripButton.Name = "helpToolStripButton";
-            this.helpToolStripButton.Size = new System.Drawing.Size(55, 29);
-            this.helpToolStripButton.Text = "Help";
-            this.helpToolStripButton.Click += new System.EventHandler(this.helpToolStripButton_Click);
-            // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 32);
-            // 
-            // showAirportsToolstripButton
-            // 
-            this.showAirportsToolstripButton.Image = ((System.Drawing.Image)(resources.GetObject("showAirportsToolstripButton.Image")));
-            this.showAirportsToolstripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.showAirportsToolstripButton.Name = "showAirportsToolstripButton";
-            this.showAirportsToolstripButton.Size = new System.Drawing.Size(101, 29);
-            this.showAirportsToolstripButton.Text = "Show Airports";
-            this.showAirportsToolstripButton.Click += new System.EventHandler(this.showAirportsToolstripButton_Click);
             // 
             // mapTypeToolStripDropDown
             // 
@@ -933,7 +909,6 @@
         private System.Windows.Forms.TabPage imagesTabPage;
         private System.Windows.Forms.Button startStopButton;
         private System.Windows.Forms.CheckBox downloadImageTileCheckBox;
-        private System.Windows.Forms.ToolStripButton helpToolStripButton;
         private System.Windows.Forms.ProgressBar currentActionProgressBar;
         private System.Windows.Forms.Label parentTaskLabel;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -981,7 +956,6 @@
         private System.Windows.Forms.ToolStripLabel versionToolStripLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.Button autoSelectAFSLevelsButton;
-        private System.Windows.Forms.ToolStripButton showAirportsToolstripButton;
         private System.Windows.Forms.ToolStripDropDownButton mapTypeToolStripDropDown;
         private System.Windows.Forms.ToolStripMenuItem hybridToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem satelliteToolStripMenuItem;

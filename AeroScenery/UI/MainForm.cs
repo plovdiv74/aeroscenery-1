@@ -5,7 +5,6 @@ using AeroScenery.Data;
 using AeroScenery.Data.Mappers;
 using AeroScenery.Data.Models;
 using AeroScenery.FileManagement;
-using AeroScenery.FSCloudPort;
 using AeroScenery.OrthophotoSources;
 using AeroScenery.UI;
 using GMap.NET;
@@ -50,8 +49,6 @@ namespace AeroScenery
         private GMapControlManager gMapControlManager;
 
         // Airport related
-        private FSCloudPortService fsCloudPortService;
-        private FSCloudPortMarkerManager fsCloudPortMarkerManager;
 
         private VersionService versionService;
         private SceneryInstaller sceneryInstaller;
@@ -78,8 +75,6 @@ namespace AeroScenery
             this.afs2Grid = new AFS2Grid();
             this.gridSquareMapper = new GridSquareMapper();
             this.gMapControlManager = new GMapControlManager();
-            this.fsCloudPortMarkerManager = new FSCloudPortMarkerManager();
-            this.fsCloudPortService = new FSCloudPortService();
             this.versionService = new VersionService();
             this.sceneryInstaller = new SceneryInstaller();
             this.fileManager = new FileManager();
@@ -114,7 +109,6 @@ namespace AeroScenery
             this.gridSquareLabel.Text = "";
 
             this.gMapControlManager.GMapControl = this.mainMap;
-            this.fsCloudPortMarkerManager.GMapControl = this.mainMap;
 
             this.shownSelectionSizeChangeInfo = true;
         }
@@ -163,16 +157,6 @@ namespace AeroScenery
             log.Info(String.Format("AeroScenery v{0} Started", AeroSceneryManager.Instance.Version));
 
             this.versionService.CheckForNewerVersions();
-
-            await this.fsCloudPortService.UpdateAirportsIfRequiredAsync();
-            var airports = await this.fsCloudPortService.GetAirportsAsync();
-            this.fsCloudPortMarkerManager.Airports = airports;
-
-            if (AeroSceneryManager.Instance.Settings.ShowAirports.Value)
-            {
-                this.fsCloudPortMarkerManager.UpdateFSCloudPortMarkers();
-            }
-
         }
 
 
@@ -240,17 +224,6 @@ namespace AeroScenery
             if (settings.MapControlLastX.HasValue && settings.MapControlLastY.HasValue)
             {
                 mainMap.Position = new PointLatLng(settings.MapControlLastX.Value, settings.MapControlLastY.Value);
-            }
-
-
-            if (AeroSceneryManager.Instance.Settings.ShowAirports.Value)
-            {
-                this.fsCloudPortMarkerManager.UpdateFSCloudPortMarkers();
-                this.showAirportsToolstripButton.Text = "Hide Airports";
-            }
-            else
-            {
-                this.showAirportsToolstripButton.Text = "Show Airports";
             }
 
             this.uiSetFromSettings = true;
@@ -599,49 +572,19 @@ namespace AeroScenery
 
         private void MainMap_MouseUp(object sender, MouseEventArgs e)
         {
-            if (this.mapMouseDownLocation != null)
+            if (this.mapMouseDownLocation != null && e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                // Are we showing an airport popup
-                if (this.fsCloudPortMarkerManager.PopupShown)
+                var mouseUpLocation = new System.Drawing.Point(e.X, e.Y);
+
+                var dx = Math.Abs(mouseUpLocation.X - this.mapMouseDownLocation.X);
+                var dy = Math.Abs(mouseUpLocation.Y - this.mapMouseDownLocation.Y);
+
+                // If there was little movement it was probably meant as a click
+                // rather than a drag
+                if (dx < 10 && dy < 10)
                 {
-                    // The first click is a click to open it.
-                    // We therefore need to count clicks and close after the second click
-                    if (this.fsCloudPortMarkerManager.ClickCount > 0)
-                    {
-                        this.fsCloudPortMarkerManager.CloseAirportPopup();                    
-                    }
-
-                    this.fsCloudPortMarkerManager.ClickCount++;
-
+                    this.SelectAFSGridSquare(e.X, e.Y);
                 }
-                else
-                {
-                    if (e.Button == System.Windows.Forms.MouseButtons.Left)
-                    {
-                        var mouseUpLocation = new System.Drawing.Point(e.X, e.Y);
-
-                        var dx = Math.Abs(mouseUpLocation.X - this.mapMouseDownLocation.X);
-                        var dy = Math.Abs(mouseUpLocation.Y - this.mapMouseDownLocation.Y);
-
-                        // If there was little movement it was probably meant as a click
-                        // rather than a drag
-                        if (dx < 10 && dy < 10)
-                        {
-                            if (!this.mainMap.IsMouseOverMarker)
-                            {
-                                this.SelectAFSGridSquare(e.X, e.Y);
-                            }
-                        }
-                        else
-                        {
-                            if (AeroSceneryManager.Instance.Settings.ShowAirports.Value)
-                            {
-                                this.fsCloudPortMarkerManager.UpdateFSCloudPortMarkers();
-                            }
-                        }
-                    }
-                }
-
             }
 
         }
@@ -925,12 +868,6 @@ namespace AeroScenery
         {
             AeroSceneryManager.Instance.Settings.InstallScenery = installSceneryIntoAFSCheckBox.Checked;
             AeroSceneryManager.Instance.SaveSettings();
-        }
-
-        private void helpToolStripButton_Click(object sender, EventArgs e)
-        {
-            var url = "https://github.com/nickhod/aeroscenery";
-            System.Diagnostics.Process.Start(url);
         }
 
         public void UpdateParentTaskLabel(string parentTask)
@@ -1276,11 +1213,6 @@ namespace AeroScenery
         private void MainMap_OnMapZoomChanged()
         {
             AeroSceneryManager.Instance.Settings.MapControlLastZoomLevel = Convert.ToInt32(this.mainMap.Zoom);
-
-            if (AeroSceneryManager.Instance.Settings.ShowAirports.Value)
-            {
-                this.fsCloudPortMarkerManager.UpdateFSCloudPortMarkers();
-            }
         }
 
         private void MainMap_OnMapDrag()
@@ -1294,37 +1226,9 @@ namespace AeroScenery
 
         }
 
-        private void MainMap_OnMarkerClick(GMapMarker item, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                var icao = item.Tag.ToString();
-                this.fsCloudPortMarkerManager.ShowAirportPopup(icao, this, e.Location);
-            }
-        }
-
         private void toolTip1_Popup(object sender, PopupEventArgs e)
         {
 
-        }
-
-        private void showAirportsToolstripButton_Click(object sender, EventArgs e)
-        {
-            // We need to hide airports
-            if (AeroSceneryManager.Instance.Settings.ShowAirports.Value)
-            {
-                AeroSceneryManager.Instance.Settings.ShowAirports = false;
-                this.showAirportsToolstripButton.Text = "Show Airports";
-                this.fsCloudPortMarkerManager.RemoveAllFSCloudPortMarkers();
-
-            }
-            // We need to show airports
-            else
-            {
-                AeroSceneryManager.Instance.Settings.ShowAirports = true;
-                this.showAirportsToolstripButton.Text = "Hide Airports";
-                this.fsCloudPortMarkerManager.UpdateFSCloudPortMarkers();
-            }
         }
 
         private void mapTypeToolStripDropDown_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)

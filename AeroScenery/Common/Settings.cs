@@ -54,7 +54,6 @@ namespace AeroScenery.Common
         public double? MapControlLastX { get; set; }
         public double? MapControlLastY { get; set; }
         public string MapControlLastMapType { get; set; }
-        public bool? ShowAirports { get; set; }
         public string AFS2UserDirectory { get; set; }
 
         // Write TTC Files: apply GeoConvert's brightening (AFS4\ToneCurves.cs)

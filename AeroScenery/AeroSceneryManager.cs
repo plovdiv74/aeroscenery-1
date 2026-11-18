@@ -7,7 +7,6 @@ using AeroScenery.Data.Mappers;
 using AeroScenery.Data.Models;
 using AeroScenery.Download;
 using AeroScenery.FileManagement;
-using AeroScenery.FSCloudPort;
 using AeroScenery.OrthophotoSources;
 using AeroScenery.OrthoPhotoSources;
 using AeroScenery.UI;

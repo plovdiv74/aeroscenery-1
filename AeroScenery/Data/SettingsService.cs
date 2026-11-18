@@ -151,7 +151,6 @@ namespace AeroScenery.Data
             log.Info(String.Format("DownloadWaitRandomMs: {0}", settings.DownloadWaitRandomMs));
             log.Info(String.Format("SimultaneousDownloads: {0}", settings.SimultaneousDownloads));
             log.Info(String.Format("MapControlLastMapType: {0}", settings.MapControlLastMapType));
-            log.Info(String.Format("ShowAirports: {0}", settings.ShowAirports));
 
             log.Info(String.Format("MapControlLastZoomLevel: {0}", settings.MapControlLastZoomLevel));
             log.Info(String.Format("MapControlLastX: {0}", settings.MapControlLastX));
@@ -254,9 +253,6 @@ namespace AeroScenery.Data
             if (settings.MapControlLastMapType == null)
                 settings.MapControlLastMapType = "GoogleHybridMap";
 
-
-            if (settings.ShowAirports == null)
-                settings.ShowAirports = false;
 
             if (settings.AFS2UserDirectory == null)
                 settings.AFS2UserDirectory = "";
