@@ -68,14 +68,16 @@ GeoConvert's look, tick "Write TTC Files: Brighten Images Like GeoConvert" in Se
 ### Building
 
 Open `AeroScenery\AeroScenery.sln` in Visual Studio 2026 (version 18) with the .NET Framework 4.8 targeting pack.
-The solution has two configurations, **Debug** and **Release**, both for the **Any CPU** platform; the output goes to
-`AeroScenery\bin\Debug\` or `bin\Release\`. "Prefer 32-bit" is off, so AeroScenery runs as a 64-bit process on 64-bit
-Windows (a USGS 1/3" elevation cell alone takes about 470 MB of memory). The NuGet packages (`packages.config`)
-are restored on build.
+The solution has two configurations, **Debug** and **Release**, both for the **x64** platform; the output goes to
+`AeroScenery\bin\Debug\` or `bin\Release\`. AeroScenery is 64-bit only: the native SQLite package doesn't support
+Any CPU builds, and a USGS 1/3" elevation cell alone takes about 470 MB of memory.
 
-The SQLite package (System.Data.SQLite 1.0.109) copies its native `SQLite.Interop.dll` for both architectures into
-`bin\...\x86\` and `bin\...\x64\` and picks the right one at run time, which is what lets the project stay Any CPU.
-Updating the packages, the low-level SQLite support in particular, will need an x64 platform target.
+The NuGet packages are `PackageReference` items in `AeroScenery.csproj` and are restored on build (from the command
+line: `msbuild AeroScenery.sln -restore -p:Configuration=Release -p:Platform=x64`); binding redirects are generated.
+The packages: BitMiracle.LibTiff.NET (GeoTIFF elevation); Dapper, System.Data.SQLite 2.0.4 and SQLite 3.54.1 (the
+grid-square database: the managed provider, and the native `e_sqlite3.dll` it loads); GMap.NET.WinForms 2.1.7 (the
+map, whose tile cache also uses SQLite); log4net; Newtonsoft.Json. System.Data.SqlClient is referenced only to lift
+GMap.NET's own dependency on it (4.8.3) to a version without security advisories.
 
 ### Removed from earlier versions
 

@@ -121,7 +121,7 @@
             this.mainMap.EmptyTileColor = System.Drawing.Color.Navy;
             this.mainMap.GrayScaleMode = false;
             this.mainMap.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
-            this.mainMap.LevelsKeepInMemmory = 5;
+            this.mainMap.LevelsKeepInMemory = 5;
             this.mainMap.Location = new System.Drawing.Point(3, 3);
             this.mainMap.MarkersEnabled = true;
             this.mainMap.MaxZoom = 2;

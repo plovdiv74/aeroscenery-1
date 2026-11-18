@@ -111,8 +111,6 @@ namespace AeroScenery.Common
                     return GMapProviders.OpenSeaMapHybrid;
                 case "OpenStreetMapQuestHybrid":
                     return GMapProviders.OpenStreetMapQuestHybrid;
-                case "OpenStreetMapQuestSattelite":
-                    return GMapProviders.OpenStreetMapQuestSattelite;
                 case "OpenStreetMapQuest":
                     return GMapProviders.OpenStreetMapQuest;
                 case "OpenCycleTransportMap":
