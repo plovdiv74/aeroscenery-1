@@ -279,13 +279,15 @@ namespace AeroScenery
 
         private void SetDefaultActions()
         {
+            // Download, write the AFS4 tiles directly and install them; the GeoConvert route (stitch, AID/TMC,
+            // GeoConvert) is under "Choose Actions To Run".
             this.downloadImageTileCheckBox.Checked = true;
-            this.stitchImageTilesCheckBox.Checked = true;
-            this.generateAFSFilesCheckBox.Checked = true;
-            this.runGeoConvertCheckBox.Checked = true;
-            this.writeTtcFilesCheckBox.Checked = false;
-            this.writeTthFilesCheckBox.Checked = false;
-            this.installSceneryIntoAFSCheckBox.Checked = false;
+            this.stitchImageTilesCheckBox.Checked = false;
+            this.generateAFSFilesCheckBox.Checked = false;
+            this.runGeoConvertCheckBox.Checked = false;
+            this.writeTtcFilesCheckBox.Checked = true;
+            this.writeTthFilesCheckBox.Checked = true;
+            this.installSceneryIntoAFSCheckBox.Checked = true;
 
             this.downloadImageTileCheckBox.Enabled = false;
             this.stitchImageTilesCheckBox.Enabled = false;
