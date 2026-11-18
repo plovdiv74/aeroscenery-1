@@ -1,4 +1,5 @@
 ﻿using AeroScenery.AFS2;
+using AeroScenery.AFS4;
 using AeroScenery.Common;
 using AeroScenery.Controls;
 using AeroScenery.Data;
@@ -17,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -51,6 +53,8 @@ namespace AeroScenery
         private GridSquareMapper gridSquareMapper;
 
         private AFSFileGenerator afsFileGenerator;
+
+        private CancellationTokenSource ttcCancellation;
 
         private List<ImageTile> imageTiles;
         private readonly ILog log = LogManager.GetLogger("AeroScenery");
@@ -189,6 +193,7 @@ namespace AeroScenery
         public void StopSceneryGenerationProcess(object sender, EventArgs e)
         {
             downloadManager.StopDownloads();
+            this.ttcCancellation?.Cancel();
 
             if (this.imageTiles != null)
             {
@@ -324,6 +329,17 @@ namespace AeroScenery
                         // Generate AID files for the image tiles
                         await afsFileGenerator.GenerateAFSFilesAsync(afs2GridSquare, stitchedTilesDirectory, GetTileDownloadDirectory(afsGridSquareDirectory), afsFileGeneratorProgress);
                     }
+
+                    // Write TTC files straight from the downloaded image tiles (no stitching, no GeoConvert)
+                    if (this.Settings.WriteTtcFiles.Value && this.mainForm.ActionsRunning)
+                    {
+                        this.mainForm.UpdateChildTaskLabel("Writing TTC Files");
+                        log.Info("Writing TTC Files");
+
+                        var ttcDirectory = GetTileDownloadDirectory(afsGridSquareDirectory) + this.settings.ZoomLevel + @"-ttc\";
+                        await WriteTtcFilesAsync(afs2GridSquare, tileDownloadDirectory, ttcDirectory);
+                    }
+
                     i++;
 
                 }
@@ -482,6 +498,84 @@ namespace AeroScenery
                     i++;
                 }
 
+            }
+        }
+
+        /// <summary>
+        /// Renders the selected AFS levels of a grid square from its downloaded image tiles into AFS4 ttc files
+        /// (AFS4\TtcRenderer.cs), in place of stitching and GeoConvert.
+        /// </summary>
+        private async Task WriteTtcFilesAsync(AFS2GridSquare afs2GridSquare, string tileDownloadDirectory, string ttcDirectory)
+        {
+            var prefix = GetOrthophotoSourcePrefix();
+            string problem = null;
+            if (String.IsNullOrEmpty(prefix))
+            {
+                problem = "Writing TTC files works with Bing and Google imagery only";
+            }
+            else if (this.settings.AFSLevelsToGenerate.Count == 0)
+            {
+                problem = "Please choose one or more AFS levels to generate before writing TTC files";
+            }
+
+            if (problem != null)
+            {
+                var messageBox = new CustomMessageBox(problem, "AeroScenery", MessageBoxIcon.Warning);
+                messageBox.ShowDialog();
+                return;
+            }
+
+            var source = new SourceTiles(tileDownloadDirectory, prefix, this.settings.ZoomLevel.Value);
+            var renderer = new TtcRenderer(source, ttcDirectory);
+            var square = AfsTile.Parse(afs2GridSquare.Name);
+            var levels = this.settings.AFSLevelsToGenerate.ToList();
+            var progress = new Progress<TtcRendererProgress>(p =>
+            {
+                if (this.mainForm.ActionsRunning)
+                {
+                    this.mainForm.CurrentActionProgressPercentage = (int)(100L * p.BaseTilesDone / p.BaseTilesTotal);
+                }
+            });
+
+            var cancellation = new CancellationTokenSource();
+            this.ttcCancellation = cancellation;
+            try
+            {
+                var stopwatch = Stopwatch.StartNew();
+                var result = await Task.Run(() => renderer.Render(square, levels, progress, cancellation.Token));
+                log.Info(String.Format("Wrote {0} TTC files for {1} to {2} in {3:F1} s (base level {4})",
+                    result.Written.Count, square, ttcDirectory, stopwatch.Elapsed.TotalSeconds, result.BaseLevel));
+
+                if (result.SkippedLevels.Count > 0)
+                {
+                    log.Info(String.Format("Levels {0} are coarser than the grid square {1}: not written",
+                        String.Join(", ", result.SkippedLevels), square));
+                }
+
+                if (result.Incomplete.Count > 0)
+                {
+                    log.Warn(String.Format("TTC files not written for lack of image tiles: {0}; missing image tiles: {1}",
+                        String.Join(" ", result.Incomplete), String.Join(" ", result.MissingSourceTiles)));
+
+                    var messageBox = new CustomMessageBox(
+                        String.Format("{0} TTC files of grid square {1} were not written because {2} image tiles are missing " +
+                            "(the log lists them). Downloading the image tiles again fills the gaps.",
+                            result.Incomplete.Count, square, result.MissingSourceTiles.Count),
+                        "AeroScenery",
+                        MessageBoxIcon.Warning);
+                    messageBox.ShowDialog();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                log.Info("Writing TTC files cancelled");
+            }
+            finally
+            {
+                if (this.ttcCancellation == cancellation)
+                {
+                    this.ttcCancellation = null;
+                }
             }
         }
 

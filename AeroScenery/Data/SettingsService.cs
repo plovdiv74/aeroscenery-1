@@ -146,6 +146,7 @@ namespace AeroScenery.Data
             log.Info(String.Format("StitchImageTiles: {0}", settings.StitchImageTiles));
             log.Info(String.Format("GenerateAIDAndTMCFiles: {0}", settings.GenerateAIDAndTMCFiles));
             log.Info(String.Format("RunGeoConvert: {0}", settings.RunGeoConvert));
+            log.Info(String.Format("WriteTtcFiles: {0}", settings.WriteTtcFiles));
             log.Info(String.Format("DeleteStitchedImageTiles: {0}", settings.DeleteStitchedImageTiles));
             log.Info(String.Format("InstallScenery: {0}", settings.InstallScenery));
             log.Info(String.Format("ActionSet: {0}", settings.ActionSet));
@@ -199,6 +200,9 @@ namespace AeroScenery.Data
 
             if (settings.RunGeoConvert == null)
                 settings.RunGeoConvert = false;
+
+            if (settings.WriteTtcFiles == null)
+                settings.WriteTtcFiles = false;
 
             if (settings.DeleteStitchedImageTiles == null)
                 settings.DeleteStitchedImageTiles = false;

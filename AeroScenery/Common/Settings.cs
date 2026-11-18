@@ -41,6 +41,8 @@ namespace AeroScenery.Common
 
         public bool? RunGeoConvert { get; set; }
 
+        public bool? WriteTtcFiles { get; set; }
+
         public bool? DeleteStitchedImageTiles { get; set; }
 
         public bool? InstallScenery { get; set; }

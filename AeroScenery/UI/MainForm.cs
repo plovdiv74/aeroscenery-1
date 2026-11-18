@@ -282,12 +282,14 @@ namespace AeroScenery
             this.stitchImageTilesCheckBox.Checked = true;
             this.generateAFSFilesCheckBox.Checked = true;
             this.runGeoConvertCheckBox.Checked = true;
+            this.writeTtcFilesCheckBox.Checked = false;
             //this.installSceneryIntoAFSCheckBox.Checked = true;
 
             this.downloadImageTileCheckBox.Enabled = false;
             this.stitchImageTilesCheckBox.Enabled = false;
             this.generateAFSFilesCheckBox.Enabled = false;
             this.runGeoConvertCheckBox.Enabled = false;
+            this.writeTtcFilesCheckBox.Enabled = false;
             //this.installSceneryIntoAFSCheckBox.Enabled = false;
         }
 
@@ -299,6 +301,7 @@ namespace AeroScenery
             this.stitchImageTilesCheckBox.Checked = settings.StitchImageTiles.Value;
             this.generateAFSFilesCheckBox.Checked = settings.GenerateAIDAndTMCFiles.Value;
             this.runGeoConvertCheckBox.Checked = settings.RunGeoConvert.Value;
+            this.writeTtcFilesCheckBox.Checked = settings.WriteTtcFiles.Value;
             this.deleteStitchedImagesCheckBox.Checked = settings.DeleteStitchedImageTiles.Value;
             //this.installSceneryIntoAFSCheckBox.Checked = settings.InstallScenery;
 
@@ -306,6 +309,7 @@ namespace AeroScenery
             this.stitchImageTilesCheckBox.Enabled = true;
             this.generateAFSFilesCheckBox.Enabled = true;
             this.runGeoConvertCheckBox.Enabled = true;
+            this.writeTtcFilesCheckBox.Enabled = true;
             //this.installSceneryIntoAFSCheckBox.Enabled = true;
         }
 
@@ -353,6 +357,7 @@ namespace AeroScenery
             this.stitchImageTilesCheckBox.Enabled = false;
             this.generateAFSFilesCheckBox.Enabled = false;
             this.runGeoConvertCheckBox.Enabled = false;
+            this.writeTtcFilesCheckBox.Enabled = false;
             this.deleteStitchedImagesCheckBox.Enabled = false;
             this.installSceneryIntoAFSCheckBox.Enabled = false;
         }
@@ -373,6 +378,7 @@ namespace AeroScenery
                 this.stitchImageTilesCheckBox.Enabled = true;
                 this.generateAFSFilesCheckBox.Enabled = true;
                 this.runGeoConvertCheckBox.Enabled = true;
+                this.writeTtcFilesCheckBox.Enabled = true;
                 this.deleteStitchedImagesCheckBox.Enabled = true;
                 this.installSceneryIntoAFSCheckBox.Enabled = true;
             }
@@ -1003,6 +1009,12 @@ namespace AeroScenery
                 AeroSceneryManager.Instance.Settings.RunGeoConvert = false;
             }
 
+            AeroSceneryManager.Instance.SaveSettings();
+        }
+
+        private void writeTtcFilesCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            AeroSceneryManager.Instance.Settings.WriteTtcFiles = writeTtcFilesCheckBox.Checked;
             AeroSceneryManager.Instance.SaveSettings();
         }
 

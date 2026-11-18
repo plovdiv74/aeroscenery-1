@@ -33,7 +33,7 @@ New folder `AeroScenery/AFS4/`:
     memory at a time. Levels finer than F (if selected): rendered directly (upsampled).
   - Only selected levels are written; tiles whose sources are incomplete are skipped and listed.
   - Optional: AeroScenery's existing image-processing filters (brightness, contrast, ...) applied per tile.
-- `TtcWriter` - mip chain (box), BC1 (BCnEncoder.NET 2.3.0, MIT, netstandard2.0), zlib, header; writes
+- `TtcWriter` - mip chain (box), BC1 (own encoder, `Bc1Encoder`; see the review), zlib, header; writes
   `<square>\<source>\<zoom>-ttc\map_LL_XXXX_YYYY.ttc`, where the existing installer picks them up.
 - UI/settings: a new action "Write TTC files" next to the GeoConvert ones (which stay for comparison); the run uses
   the levels from "Generate AFS levels".
@@ -43,23 +43,41 @@ Not in this step: elevation (tth), AFS4 install paths in DirectoryHelper, GeoCon
 GeoConvert's brightening (open question below).
 
 ## Steps
-- [ ] Branch `ttc-writer` (after Karl's WIP is committed or set aside)
-- [ ] AfsGrid + WebMercator; check: map_12_44b0_a1d0 bounds = lat 42.61928..42.68298, lon -83.40820..-83.32031 (afsd)
-- [ ] TtcWriter (header, BC1, zlib); check: afsd decodes a test pattern tile to the same image (BC1 error only)
-- [ ] SourceTiles + TtcRenderer
-- [ ] Action and setting in the UI; progress reporting like the other actions
-- [ ] Build: Debug and Release, no new warnings
+- [x] Branch `ttc-writer` (after Karl's WIP is committed or set aside)
+- [x] AfsGrid + WebMercator; check: map_12_44b0_a1d0 bounds = lat 42.61928..42.68298, lon -83.40820..-83.32031 (afsd)
+- [x] TtcWriter (header, BC1, zlib); check: afsd decodes a test pattern tile to the same image (BC1 error only)
+- [x] SourceTiles + TtcRenderer
+- [x] Action and setting in the UI; progress reporting like the other actions
+- [x] Build: Debug and Release, no new warnings
 
 ## Verify
-- [ ] Pontiac square map_12_44b0_a1d0 (Bing z17, already downloaded in D:\temp\aeroscenery\working), levels 12-14:
+- [x] Pontiac square map_12_44b0_a1d0 (Bing z17, already downloaded in D:\temp\aeroscenery\working), levels 12-14:
   all 21 tiles decode with afsd
-- [ ] Against an independent reference (Python, straight from the JPEGs): shift 0.000 px, PSNR >= 35 dB
-- [ ] Against GeoConvert's tiles: x shift 0, y within ~1 px (GeoConvert's linear-latitude error), brightness differs
+- [x] Against an independent reference (Python, straight from the JPEGs): shift 0.000 px, PSNR >= 35 dB
+- [x] Against GeoConvert's tiles: x shift 0, y within ~1 px (GeoConvert's linear-latitude error), brightness differs
   by GeoConvert's curve
-- [ ] Time per square against GeoConvert
+- [x] Time per square against GeoConvert
 - [ ] Sim: install into D:\afs4_extra_user_folder\scenery\images, look at Pontiac (KPTK) at every level
 
 ## Open questions
 - GeoConvert brightens (source mean 64 -> 89; 42 -> 71, 81 -> 123, 148 -> 189): libpng applying the PNG's gAMA chunk,
   or IPACS's own curve? A grey ramp through GeoConvert with and without the chunk tells. Decides whether the writer
   should match it by default.
+
+## Review (2026-11-18)
+Built on branch `ttc-writer`: `AeroScenery/AFS4/` (AfsGrid, WebMercator, Bc1Encoder, TtcWriter, SourceTiles, TtcRenderer),
+a "Write TTC Files (AFS4, no GeoConvert)" action (setting `WriteTtcFiles`, off in the default action set), output in
+`<square>\<source>\<zoom>-ttc\`. Checked with a scratch net48 harness that compiles the AFS4 files, plus afsd and Python.
+- Grid: map_12_44b0_a1d0 = lat 42.61928..42.68298, lon -83.40820..-83.32031, as afsd.
+- Writer: a test pattern decodes in afsd (zlib) to the source at 46.8 dB, the right way up; every mip level matches
+  the box-filtered source (BC1 error only); header as the stock us tiles.
+- BC1: own encoder (principal axis + 2 least-squares refinements, 4-colour mode, rounded palette) instead of
+  BCnEncoder.NET, whose net48 dependency chain (CommunityToolkit.HighPerformance, System.Memory, Bcl.Numerics, ...)
+  would have needed hand-maintained packages.config entries and binding redirects. On a Pontiac tile: 34.98 dB
+  against DirectXTex's 34.60 dB (afsd -t), mean bias -0.05 (truncating the palette gave -0.11 and +0.2 after decoding).
+- Pontiac levels 12-14: 21 tiles in 2.7 s (GeoConvert: about 4.5 min after stitching); all decode with afsd.
+  - The raw render equals an independent PIL bilinear reference rounded (GDI+ and PIL decode these JPEGs identically).
+  - Level 14 after BC1 vs the reference: 34.98..36.65 dB, shift 0.000 px; levels 12-13 match the box of their children.
+  - GeoConvert's tiles: x shift 0.00; GeoConvert sits 0.24..1.02 px further south, most in the middle of its stitched
+    image (its linear-latitude error); it also brightens (40 -> 67, 100 -> 143, 200 -> 226), ours keeps Bing's colours.
+- Not yet: the sim, and a run through the UI (Karl).

@@ -147,6 +147,12 @@
     <Compile Include="AFS2\TMCFile.cs" />
     <Compile Include="AFS2\TOCFile.cs" />
     <Compile Include="AFS2\TSCFile.cs" />
+    <Compile Include="AFS4\AfsGrid.cs" />
+    <Compile Include="AFS4\Bc1Encoder.cs" />
+    <Compile Include="AFS4\SourceTiles.cs" />
+    <Compile Include="AFS4\TtcRenderer.cs" />
+    <Compile Include="AFS4\TtcWriter.cs" />
+    <Compile Include="AFS4\WebMercator.cs" />
     <Compile Include="Common\BetterWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
