@@ -151,14 +151,15 @@ namespace AeroScenery
             elevationAfsLevels.Add(new AFSLevel("Level 14", 14));
             elevationAfsLevels.Add(new AFSLevel("Level 15", 15));
 
-            this.afsLevelsCheckBoxList.DataSource = afsLevels;
+            // Items, not DataSource: CheckedListBox doesn't support data binding, and setting DataSource throws a
+            // NullReferenceException inside CheckedListBox.RefreshItems (it restores check states of items that
+            // didn't exist yet). WinForms catches it, but the debugger breaks on it at every start.
             this.afsLevelsCheckBoxList.DisplayMember = "Name";
-            this.afsLevelsCheckBoxList.ValueMember = "Level";
+            this.afsLevelsCheckBoxList.Items.AddRange(afsLevels.ToArray());
             this.afsLevelsCheckBoxList.ClearSelected();
 
-            this.elevationAfsLevelCheckBoxList.DataSource = elevationAfsLevels;
             this.elevationAfsLevelCheckBoxList.DisplayMember = "Name";
-            this.elevationAfsLevelCheckBoxList.ValueMember = "Level";
+            this.elevationAfsLevelCheckBoxList.Items.AddRange(elevationAfsLevels.ToArray());
             this.elevationAfsLevelCheckBoxList.ClearSelected();
 
             this.UpdateUIFromSettings();
