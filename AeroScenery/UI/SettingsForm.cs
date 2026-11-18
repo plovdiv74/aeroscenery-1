@@ -49,8 +49,9 @@ namespace AeroScenery.UI
                 new TthLevelItem { Level = 7, Text = "Level 7" },
                 new TthLevelItem { Level = 9, Text = "Level 9" },
                 new TthLevelItem { Level = 10, Text = "Level 10 (finest stock level)" },
-                new TthLevelItem { Level = 11, Text = "Level 11 (experimental)" },
-                new TthLevelItem { Level = 12, Text = "Level 12 (experimental)" },
+                // Not in the stock scenery, but the sim uses them (Mount Monadnock at KEEN, 2026-11-18).
+                new TthLevelItem { Level = 11, Text = "Level 11 (best with 1/3\" data)" },
+                new TthLevelItem { Level = 12, Text = "Level 12 (best with 1/3\" data)" },
             })
             {
                 this.tthLevelsCheckedListBox.Items.Add(item, settings.TthLevelsToGenerate.Contains(item.Level));

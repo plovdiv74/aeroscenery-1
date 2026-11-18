@@ -165,7 +165,11 @@ a "Write TTC Files (AFS4, no GeoConvert)" action (setting `WriteTtcFiles`, off i
 - [x] Sim, level 10 at KEEN from USGS 1" (Karl, 2026-11-18): looks good, KEEN field elevation right; Mount Monadnock
       in the sim's debug output 962.73 m at 42.861520, -72.108413; the tile's highest sample 962.4 m at 42.86154,
       -72.10826 (published 965 m: 1" samples round the peak off).
-- [ ] Sim: level 11/12 from USGS 1/3" to see whether the sim uses finer tth at all.
+- [x] Sim: levels 11/12 from USGS 1/3" (4 + 16 tiles over maph_10_4c80_a200; Karl, 2026-11-18): the sim uses them.
+      Mount Monadnock 962.73 m (level 10 only) -> 964.78 m at 42.861398, -72.108238 (level 12's highest sample 964.7 m
+      at 42.86140, -72.10816; published 965 m). KEEN east parking 147.01 m in the sim vs 145.4 m in the tiles (field
+      elevation 148.7 m: the sim seems to blend airports toward their own elevation). Levels 11-12 relabelled in
+      Settings ("best with 1/3" data"); the default stays 10.
 - [x] Progress label: cell messages reached the UI through two Progress<T> hops and could arrive after the last
       one, leaving "Loading elevation cell ..." after the run; now forwarded directly, and "Finished" at the end.
 - [x] Built: Debug, Release, no new warnings; the app starts without exceptions; ElevationSources.json written with the

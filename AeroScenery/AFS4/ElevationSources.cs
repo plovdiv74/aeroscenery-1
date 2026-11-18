@@ -102,7 +102,7 @@ namespace AeroScenery.AFS4
                     MissingIsSea = false,
                     Fallback = "Copernicus GLO-30",
                     Attribution = "U.S. Geological Survey, 3D Elevation Program",
-                    Notes = "USA; bare earth, about 10 m, about 420 MB per cell (finer than a level-10 tile can show). Copernicus where it has no data.",
+                    Notes = "USA; bare earth, about 10 m, about 420 MB per cell. Worth it for TTH levels 11-12 (level 10 shows about 30 m). Copernicus where it has no data.",
                 },
                 new ElevationSource
                 {
