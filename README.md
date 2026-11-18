@@ -65,6 +65,18 @@ summit rose from 962.7 m with level 10 to 964.8 m with level 12 (published: 965 
 GeoConvert brightens images with a fixed curve; AeroScenery's TTC files keep the source's colours. To match
 GeoConvert's look, tick "Write TTC Files: Brighten Images Like GeoConvert" in Settings > Image Processing.
 
+### Tested in Aerofly FS 4
+
+**Provincetown (KPVC), Massachusetts.** Three level-12 squares (`map_12_4e00_a140`, `map_12_4e10_a140`,
+`map_12_4e10_a130`) with the default actions: Bing imagery at zoom 17 (image levels 12-14) and elevation level 10 from
+USGS 3DEP 1/3" with the Copernicus fallback. In the sim the imagery looks right, and the elevation is detailed enough to
+show the beach at sea level against the higher ground inland. Offshore, where USGS has no data and Copernicus has no
+cells, the elevation is sea level.
+
+Over open water Bing has no imagery for part of each square: it answers "no-tile" (132 of the 1,089 image tiles of
+`map_12_4e10_a130`). A TTC tile that contains such a gap isn't written (7 of the 21 in each of these squares, the
+level-12 tile among them), so Aerofly shows its own imagery there.
+
 ### Building
 
 Open `AeroScenery\AeroScenery.sln` in Visual Studio 2026 (version 18) with the .NET Framework 4.8 targeting pack.
