@@ -2,8 +2,8 @@
 
 AeroScenery downloads aerial imagery (Bing or Google) and elevation data for the grid squares you pick on a map, and
 writes them as Aerofly FS 4 terrain tiles: `map_LL_XXXX_YYYY.ttc` (images) and `maph_LL_XXXX_YYYY.tth` (elevation).
-It writes the tiles itself, so the Aerofly SDK and GeoConvert aren't needed. (Earlier versions stitched the image
-tiles and ran GeoConvert from the Aerofly FS 2 SDK; that route has been removed.)
+It writes the tiles itself, so the Aerofly SDK and GeoConvert aren't needed. Coming from an earlier AeroScenery?
+See "Removed from earlier versions" below.
 
 ### Quick start
 
@@ -64,6 +64,25 @@ summit rose from 962.7 m with level 10 to 964.8 m with level 12 (published: 965 
 
 GeoConvert brightens images with a fixed curve; AeroScenery's TTC files keep the source's colours. To match
 GeoConvert's look, tick "Write TTC Files: Brighten Images Like GeoConvert" in Settings > Image Processing.
+
+### Removed from earlier versions
+
+AeroScenery used to build Aerofly FS 2 scenery through the SDK's GeoConvert. With the tiles now written directly,
+these are gone:
+
+- **The GeoConvert route:** the actions "Stitch Image Tiles", "Generate AID / TMC Files" and "Run GeoConvert", the
+  stitched images, the AFS2 SDK folder, and the GeoConvert and tile-stitching settings. GeoConvert can still be run by
+  hand on your own AID/TMC files.
+- **Image adjustment sliders** (brightness, contrast, saturation, sharpness, red/green/blue) and their preview window:
+  they only applied to stitched images. "Brighten Images Like GeoConvert" remains.
+- **The Elevation tab of the main window** (USGS EarthExplorer squares, ASTER downloads, the USGS login): never
+  finished, and replaced by Write TTH Files with the sources above.
+- **Show Airports:** the airport markers came from fscloudport.com, which no longer exists.
+- **The Help and "Get AeroFly FS2 SDK" buttons:** they opened the original project's page and an SDK download page
+  that no longer exists.
+- **The cultivation editor** remnants.
+
+Settings from earlier versions are kept where they still apply; the others are ignored.
 
 ### Data credits
 
