@@ -49,7 +49,6 @@ namespace AeroScenery
 
         // Airport related
 
-        private VersionService versionService;
         private SceneryInstaller sceneryInstaller;
         private FileManager fileManager;
 
@@ -74,7 +73,6 @@ namespace AeroScenery
             this.afs2Grid = new AFS2Grid();
             this.gridSquareMapper = new GridSquareMapper();
             this.gMapControlManager = new GMapControlManager();
-            this.versionService = new VersionService();
             this.sceneryInstaller = new SceneryInstaller();
             this.fileManager = new FileManager();
 
@@ -144,13 +142,11 @@ namespace AeroScenery
 
         }
 
-        private async void MainForm_Shown(object sender, EventArgs e)
+        private void MainForm_Shown(object sender, EventArgs e)
         {
             TextBoxAppender.ConfigureTextBoxAppender(this.logTextBox);
 
             log.Info(String.Format("AeroScenery v{0} Started", AeroSceneryManager.Instance.Version));
-
-            this.versionService.CheckForNewerVersions();
         }
 
 

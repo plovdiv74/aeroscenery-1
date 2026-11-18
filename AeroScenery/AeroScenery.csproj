@@ -134,7 +134,6 @@
     <Compile Include="Data\SchemaUpgrader.cs" />
     <Compile Include="Data\SettingsService.cs" />
     <Compile Include="Data\SqlLiteDataRepository.cs" />
-    <Compile Include="Data\VersionService.cs" />
     <Compile Include="Download\DownloadManager.cs" />
     <Compile Include="Download\DownloadThreadProgress.cs" />
     <Compile Include="ElevationData\ElevationDataManager.cs" />

@@ -50,7 +50,6 @@ namespace AeroScenery
         private List<ImageTile> imageTiles;
         private readonly ILog log = LogManager.GetLogger("AeroScenery");
         private string version;
-        private int incrementalVersion;
 
         public AeroSceneryManager()
         {
@@ -62,7 +61,6 @@ namespace AeroScenery
 
             imageTiles = null;
             version = "2.0.0.1";
-            incrementalVersion = 9;
         }
 
         public Settings Settings
@@ -78,14 +76,6 @@ namespace AeroScenery
             get
             {
                 return this.version;
-            }
-        }
-
-        public int IncrementalVersion
-        {
-            get
-            {
-                return this.incrementalVersion;
             }
         }
 
