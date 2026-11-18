@@ -77,7 +77,6 @@
             this.sideTabControl = new System.Windows.Forms.TabControl();
             this.imagesTabPage = new System.Windows.Forms.TabPage();
             this.autoSelectAFSLevelsButton = new System.Windows.Forms.Button();
-            this.generateAFS2LevelsHelpImage = new System.Windows.Forms.Label();
             this.zoomLevelLabel = new System.Windows.Forms.Label();
             this.zoomLevelTrackBar = new System.Windows.Forms.TrackBar();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -583,7 +582,6 @@
             // imagesTabPage
             // 
             this.imagesTabPage.Controls.Add(this.autoSelectAFSLevelsButton);
-            this.imagesTabPage.Controls.Add(this.generateAFS2LevelsHelpImage);
             this.imagesTabPage.Controls.Add(this.zoomLevelLabel);
             this.imagesTabPage.Controls.Add(this.zoomLevelTrackBar);
             this.imagesTabPage.Controls.Add(this.groupBox2);
@@ -609,16 +607,6 @@
             this.autoSelectAFSLevelsButton.Text = "Choose For Me";
             this.autoSelectAFSLevelsButton.UseVisualStyleBackColor = true;
             this.autoSelectAFSLevelsButton.Click += new System.EventHandler(this.AutoSelectAFSLevelsButton_Click);
-            // 
-            // generateAFS2LevelsHelpImage
-            // 
-            this.generateAFS2LevelsHelpImage.AutoSize = true;
-            this.generateAFS2LevelsHelpImage.Image = ((System.Drawing.Image)(resources.GetObject("generateAFS2LevelsHelpImage.Image")));
-            this.generateAFS2LevelsHelpImage.Location = new System.Drawing.Point(151, 139);
-            this.generateAFS2LevelsHelpImage.Name = "generateAFS2LevelsHelpImage";
-            this.generateAFS2LevelsHelpImage.Size = new System.Drawing.Size(16, 17);
-            this.generateAFS2LevelsHelpImage.TabIndex = 10;
-            this.generateAFS2LevelsHelpImage.Text = "  ";
             // 
             // zoomLevelLabel
             // 
@@ -946,7 +934,6 @@
         private System.Windows.Forms.ComboBox actionSetComboBox;
         private System.Windows.Forms.TrackBar zoomLevelTrackBar;
         private System.Windows.Forms.Label zoomLevelLabel;
-        private System.Windows.Forms.Label generateAFS2LevelsHelpImage;
         private System.Windows.Forms.CheckBox shutdownCheckbox;
         private System.Windows.Forms.ToolStripStatusLabel statusStripLabel1;
         private System.Windows.Forms.ImageList imageList1;

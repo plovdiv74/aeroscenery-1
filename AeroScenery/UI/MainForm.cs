@@ -115,11 +115,6 @@ namespace AeroScenery
 
         public void Initialize()
         {
-            ToolTip toolTip1 = new ToolTip();
-            toolTip1.IsBalloon = true;
-            toolTip1.InitialDelay = 500;
-            toolTip1.SetToolTip(this.generateAFS2LevelsHelpImage, "Aerofly FS2 has image sets at different levels of detail.\nHere you can control which levels the images downloaded should be displayed on.");
-
             // Initialize the AFS Levels CheckBoxLists
             afsLevels = new List<AFSLevel>();
             afsLevels.Add(new AFSLevel("Level 9", 9));
@@ -1222,11 +1217,6 @@ namespace AeroScenery
         }
 
         private void hybridToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolTip1_Popup(object sender, PopupEventArgs e)
         {
 
         }
