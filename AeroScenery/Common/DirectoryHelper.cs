@@ -10,6 +10,19 @@ namespace AeroScenery.Common
     public static class DirectoryHelper
     {
         /// <summary>
+        /// Documents\AeroScenery, where settings.xml and ElevationSources.json live.
+        /// </summary>
+        public static string AeroSceneryDocumentsDirectory
+        {
+            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "AeroScenery"); }
+        }
+
+        public static string ElevationSourcesPath
+        {
+            get { return AFS4.ElevationSources.PathIn(AeroSceneryDocumentsDirectory); }
+        }
+
+        /// <summary>
         /// Gets and checks the existence of the configured directory to install scenery into
         /// </summary>
         /// <param name="settings"></param>

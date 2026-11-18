@@ -90,7 +90,7 @@ namespace AeroScenery.FileManagement
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(String.Format("{0} of the installed tiles also exist in other folders under scenery\\images, " +
+            sb.AppendLine(String.Format("{0} of the installed tiles also exist in other folders under scenery\\images or scenery\\elevation, " +
                 "and Aerofly will load those copies too. AeroScenery hasn't removed them:", otherCopies.Count));
             sb.AppendLine("");
             foreach (var folder in otherCopies.Select(Path.GetDirectoryName).Distinct().Take(10))
@@ -171,28 +171,41 @@ namespace AeroScenery.FileManagement
         }
 
         /// <summary>
-        /// Copies ttc files into imagesDirectory\&lt;level-9 folder&gt;\, overwriting tiles of the same name there,
-        /// and lists other copies of the same tiles elsewhere under imagesDirectory (they are not touched).
+        /// scenery\elevation next to scenery\images.
         /// </summary>
-        public static InstallResult Install(string imagesDirectory, IEnumerable<string> ttcFiles)
+        public static string ElevationDirectoryFor(string imagesDirectory)
+        {
+            return Path.Combine(Path.GetDirectoryName(imagesDirectory.TrimEnd('\\', '/')), "elevation");
+        }
+
+        /// <summary>
+        /// Copies tiles into the user's scenery folder, overwriting tiles of the same name there: ttc files into
+        /// imagesDirectory\&lt;level-9 folder&gt;\, tth files flat into scenery\elevation\ (as Aerofly's own). Lists
+        /// other copies of the same tiles elsewhere under scenery\images or scenery\elevation (they are not touched).
+        /// </summary>
+        public static InstallResult Install(string imagesDirectory, IEnumerable<string> tileFiles)
         {
             var result = new InstallResult { ImagesDirectory = imagesDirectory };
+            var elevationDirectory = ElevationDirectoryFor(imagesDirectory);
             var targets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase); // file name -> destination
 
-            foreach (var ttcFile in ttcFiles)
+            foreach (var tileFile in tileFiles)
             {
-                var folder = Path.Combine(imagesDirectory, InstallFolderName(ttcFile));
+                bool elevation = String.Equals(Path.GetExtension(tileFile), ".tth", StringComparison.OrdinalIgnoreCase);
+                var folder = elevation ? elevationDirectory : Path.Combine(imagesDirectory, InstallFolderName(tileFile));
                 Directory.CreateDirectory(folder);
 
-                var destination = Path.Combine(folder, Path.GetFileName(ttcFile));
+                var destination = Path.Combine(folder, Path.GetFileName(tileFile));
 
                 // Overwrite, so that users can install updated files again
-                File.Copy(ttcFile, destination, true);
+                File.Copy(tileFile, destination, true);
                 result.Installed.Add(destination);
-                targets[Path.GetFileName(ttcFile)] = destination;
+                targets[Path.GetFileName(tileFile)] = destination;
             }
 
-            foreach (var existing in EnumerateFilesRecursive(imagesDirectory, "*.ttc"))
+            var existingTiles = EnumerateFilesRecursive(imagesDirectory, "*.ttc")
+                .Concat(Directory.Exists(elevationDirectory) ? EnumerateFilesRecursive(elevationDirectory, "*.tth") : Enumerable.Empty<string>());
+            foreach (var existing in existingTiles)
             {
                 string destination;
                 if (targets.TryGetValue(Path.GetFileName(existing), out destination) &&

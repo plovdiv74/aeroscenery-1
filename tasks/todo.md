@@ -119,3 +119,56 @@ a "Write TTC Files (AFS4, no GeoConvert)" action (setting `WriteTtcFiles`, off i
       in a hand-made map_12_44b0_a1d0 folder reported and left alone. Decided with Karl: warn, don't delete; default
       actions unchanged.
 - [ ] The UI (Karl).
+
+# Elevation: write tth files straight from AeroScenery (planned 2026-11-18)
+
+## Facts (afsd: terrain_tile.h, terrain_import.cpp, tasks/todo.md "Terrain tiles")
+- tth: 0x100-byte header (magic 0x9fbf1, 0x100, level, payload size, 2113568, -500, 9000, 1028, 2), then the payload,
+  LZHAM or zlib (stock has both; zlib is enough). 1028 x 1028 uint16, rows south to north; sample (u, r) at the tile's
+  corner + (u - 2, r - 2) * span / 1024 (GeoConvert's resampler); height = -500 + v * 9500 / 65535 m, rounded.
+- Stock tth levels: 7, 9, 10. Level 10 samples ~1.2" apart (~28 m at 42 N), i.e. a 1" DEM. Whether the sim uses
+  levels 11+ is unknown (sim test below).
+- afsd -th already does this from .hgt (bilinear, voids -> tile skipped); in the sim at Zurich, level 10 (2026-11-17).
+- DEM sources checked 2026-11-18 (public, no login):
+  - Copernicus GLO-30 (AWS open data, COG GeoTIFF float32, 1 deg cells, ~43 MB; a cell with no land is a 404 = sea):
+    copernicus-dem-30m.s3.amazonaws.com/Copernicus_DSM_COG_10_N42_00_W084_00_DEM/<same>.tif
+  - USGS 3DEP 1" (~51 MB/cell) and 1/3" (~421 MB/cell), US only, GeoTIFF float32, named by the NORTH-west corner:
+    prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/{1,13}/TIFF/current/n43w084/USGS_{1,13}_n43w084.tif
+  - Viewfinder Panoramas (zips of .hgt grouped irregularly), SRTM, ALOS: manual downloads -> a local-folder source.
+- GeoTIFF reading: BitMiracle.LibTiff.NET 2.4.660 (BSD, netstandard2.0, no dependencies; one packages.config
+  entry). Georeferencing from the GeoTIFF tags (tie point, pixel scale, PixelIsArea/PixelIsPoint), not from names.
+
+## Design (AeroScenery/AFS4/)
+- `ElevationSources.json` (shipped defaults, copied to Documents\AeroScenery\ on first run, user-editable): per source
+  a name, a URL template or a local folder, format (geotiff | hgt), cell size (1 deg), "missing cell = sea" flag,
+  attribution. Template fields: {NS}{ns}{lat:00} south edge, {latN:00} north edge, {EW}{ew}{lon:000}. Defaults:
+  Copernicus GLO-30 (default), USGS 3DEP 1", USGS 3DEP 1/3", Local folder. Settings: the selected source.
+- `DemCells` - download cache (<working>\dem\<source>\), loads a 1-deg cell (GeoTIFF via LibTiff.Net, .hgt), bilinear
+  height at lon/lat, voids/no-data handled (nearest valid within the cell; else the tile is incomplete).
+- `TthWriter` - header + zlib, as TtcWriter.
+- `TthRenderer` - the tiles of the selected elevation levels for a square: for a level coarser than the square, the one
+  tile containing it; finer, all tiles in it. Samples at GeoConvert's positions; incomplete tiles skipped and listed.
+- UI: action "Write TTH Files" (custom actions), elevation levels (default 10) on the Images tab next to the image
+  levels; "Install" also copies tth into scenery\elevation\<level-9 folder>\. The half-built Elevation tab (USGS
+  EarthExplorer) is left as it is.
+
+## Verify
+- [x] Against afsd -th on the same SRTM .hgt (local source): identical samples (all 1,056,784 of maph_10_4480_a1c0).
+- [x] KPTK (published field elevation 298.7 m, the runways' highest point): 295.8 m SRTM, 295.1 m Copernicus at the ARP.
+- [x] Stock tiles there are level 7 only: SRTM vs stock maph_07_4400_a000 (resampled) +0.06 m, RMS 2.2 m (stock is SRTM-
+      based); Copernicus +4.4 m. Georeferencing, Monadnock (hilly) tile, phase correlation: the three sources agree
+      within 0.1..0.7 samples (3..20 m), no half-pixel error in either GeoTIFF convention (Copernicus PixelIsPoint,
+      USGS PixelIsArea with a 6-sample overlap). Copernicus (a DSM) is +11 m in NH forest, +4 m at Pontiac; USGS is
+      bare earth, SRTM within 0.7 m of it. In the US, USGS 1" is the better source; Copernicus worldwide.
+- [x] Missing Copernicus cells (404: N40W071, N40W072) -> .missing markers, sea level; Nantucket tile 95% sea, land
+      to 25.6 m. A local .hgt source with a cell missing -> the tile is reported incomplete, not written.
+- [x] Sim, level 10 at KEEN from USGS 1" (Karl, 2026-11-18): looks good, KEEN field elevation right; Mount Monadnock
+      in the sim's debug output 962.73 m at 42.861520, -72.108413; the tile's highest sample 962.4 m at 42.86154,
+      -72.10826 (published 965 m: 1" samples round the peak off).
+- [ ] Sim: level 11/12 from USGS 1/3" to see whether the sim uses finer tth at all.
+- [x] Progress label: cell messages reached the UI through two Progress<T> hops and could arrive after the last
+      one, leaving "Loading elevation cell ..." after the run; now forwarded directly, and "Finished" at the end.
+- [x] Built: Debug, Release, no new warnings; the app starts without exceptions; ElevationSources.json written with the
+      defaults and read back (URLs as above); Install puts ttc in images\<level-9>\ and tth flat in scenery\elevation\.
+- Deviation from the plan: source and TTH levels are on a new Elevation tab in Settings (no room on the Images tab);
+  the action checkbox is on the Images tab.

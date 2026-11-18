@@ -80,6 +80,15 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.resetButton = new System.Windows.Forms.Button();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.elevationSourceLabel = new System.Windows.Forms.Label();
+            this.elevationSourceComboBox = new System.Windows.Forms.ComboBox();
+            this.elevationSourceNotesLabel = new System.Windows.Forms.Label();
+            this.tthLevelsLabel = new System.Windows.Forms.Label();
+            this.tthLevelsCheckedListBox = new System.Windows.Forms.CheckedListBox();
+            this.openElevationSourcesButton = new System.Windows.Forms.Button();
+            this.reloadElevationSourcesButton = new System.Windows.Forms.Button();
+            this.elevationSourcesPathLabel = new System.Windows.Forms.Label();
             this.imgProcBlueTextBox = new System.Windows.Forms.TextBox();
             this.imgProcGreenTextBox = new System.Windows.Forms.TextBox();
             this.imgProcRedTextBox = new System.Windows.Forms.TextBox();
@@ -116,6 +125,7 @@
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
+            this.tabPage5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgProcBlueSlider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgProcGreenSlider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgProcRedSlider)).BeginInit();
@@ -603,6 +613,7 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
@@ -679,6 +690,96 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Image Processing";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.elevationSourcesPathLabel);
+            this.tabPage5.Controls.Add(this.reloadElevationSourcesButton);
+            this.tabPage5.Controls.Add(this.openElevationSourcesButton);
+            this.tabPage5.Controls.Add(this.tthLevelsCheckedListBox);
+            this.tabPage5.Controls.Add(this.tthLevelsLabel);
+            this.tabPage5.Controls.Add(this.elevationSourceNotesLabel);
+            this.tabPage5.Controls.Add(this.elevationSourceComboBox);
+            this.tabPage5.Controls.Add(this.elevationSourceLabel);
+            this.tabPage5.Location = new System.Drawing.Point(4, 26);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(682, 434);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Elevation";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // elevationSourceLabel
+            // 
+            this.elevationSourceLabel.AutoSize = true;
+            this.elevationSourceLabel.Location = new System.Drawing.Point(13, 20);
+            this.elevationSourceLabel.Name = "elevationSourceLabel";
+            this.elevationSourceLabel.Size = new System.Drawing.Size(105, 17);
+            this.elevationSourceLabel.TabIndex = 0;
+            this.elevationSourceLabel.Text = "Elevation Source";
+            // 
+            // elevationSourceComboBox
+            // 
+            this.elevationSourceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.elevationSourceComboBox.FormattingEnabled = true;
+            this.elevationSourceComboBox.Location = new System.Drawing.Point(150, 17);
+            this.elevationSourceComboBox.Name = "elevationSourceComboBox";
+            this.elevationSourceComboBox.Size = new System.Drawing.Size(400, 25);
+            this.elevationSourceComboBox.TabIndex = 1;
+            this.elevationSourceComboBox.SelectedIndexChanged += new System.EventHandler(this.elevationSourceComboBox_SelectedIndexChanged);
+            // 
+            // elevationSourceNotesLabel
+            // 
+            this.elevationSourceNotesLabel.Location = new System.Drawing.Point(147, 50);
+            this.elevationSourceNotesLabel.Name = "elevationSourceNotesLabel";
+            this.elevationSourceNotesLabel.Size = new System.Drawing.Size(520, 90);
+            this.elevationSourceNotesLabel.TabIndex = 2;
+            // 
+            // tthLevelsLabel
+            // 
+            this.tthLevelsLabel.AutoSize = true;
+            this.tthLevelsLabel.Location = new System.Drawing.Point(13, 150);
+            this.tthLevelsLabel.Name = "tthLevelsLabel";
+            this.tthLevelsLabel.Size = new System.Drawing.Size(67, 17);
+            this.tthLevelsLabel.TabIndex = 3;
+            this.tthLevelsLabel.Text = "TTH Levels";
+            // 
+            // tthLevelsCheckedListBox
+            // 
+            this.tthLevelsCheckedListBox.CheckOnClick = true;
+            this.tthLevelsCheckedListBox.FormattingEnabled = true;
+            this.tthLevelsCheckedListBox.Location = new System.Drawing.Point(150, 150);
+            this.tthLevelsCheckedListBox.Name = "tthLevelsCheckedListBox";
+            this.tthLevelsCheckedListBox.Size = new System.Drawing.Size(260, 124);
+            this.tthLevelsCheckedListBox.TabIndex = 4;
+            // 
+            // openElevationSourcesButton
+            // 
+            this.openElevationSourcesButton.Location = new System.Drawing.Point(150, 295);
+            this.openElevationSourcesButton.Name = "openElevationSourcesButton";
+            this.openElevationSourcesButton.Size = new System.Drawing.Size(160, 29);
+            this.openElevationSourcesButton.TabIndex = 5;
+            this.openElevationSourcesButton.Text = "Edit Sources File";
+            this.openElevationSourcesButton.UseVisualStyleBackColor = true;
+            this.openElevationSourcesButton.Click += new System.EventHandler(this.openElevationSourcesButton_Click);
+            // 
+            // reloadElevationSourcesButton
+            // 
+            this.reloadElevationSourcesButton.Location = new System.Drawing.Point(320, 295);
+            this.reloadElevationSourcesButton.Name = "reloadElevationSourcesButton";
+            this.reloadElevationSourcesButton.Size = new System.Drawing.Size(90, 29);
+            this.reloadElevationSourcesButton.TabIndex = 6;
+            this.reloadElevationSourcesButton.Text = "Reload";
+            this.reloadElevationSourcesButton.UseVisualStyleBackColor = true;
+            this.reloadElevationSourcesButton.Click += new System.EventHandler(this.reloadElevationSourcesButton_Click);
+            // 
+            // elevationSourcesPathLabel
+            // 
+            this.elevationSourcesPathLabel.AutoSize = true;
+            this.elevationSourcesPathLabel.Location = new System.Drawing.Point(147, 330);
+            this.elevationSourcesPathLabel.Name = "elevationSourcesPathLabel";
+            this.elevationSourcesPathLabel.Size = new System.Drawing.Size(0, 17);
+            this.elevationSourcesPathLabel.TabIndex = 7;
             // 
             // resetButton
             // 
@@ -1006,6 +1107,8 @@
             this.tabPage3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgProcBlueSlider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgProcGreenSlider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgProcRedSlider)).EndInit();
@@ -1069,6 +1172,15 @@
         private System.Windows.Forms.TextBox shrinkTMCGridSquaresTextBox;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.Label elevationSourceLabel;
+        private System.Windows.Forms.ComboBox elevationSourceComboBox;
+        private System.Windows.Forms.Label elevationSourceNotesLabel;
+        private System.Windows.Forms.Label tthLevelsLabel;
+        private System.Windows.Forms.CheckedListBox tthLevelsCheckedListBox;
+        private System.Windows.Forms.Button openElevationSourcesButton;
+        private System.Windows.Forms.Button reloadElevationSourcesButton;
+        private System.Windows.Forms.Label elevationSourcesPathLabel;
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.TrackBar imgProcBlueSlider;
         private System.Windows.Forms.Label label23;

@@ -172,6 +172,9 @@ namespace AeroScenery.Data
 
             log.Info(String.Format("EnableImageProcessing: {0}", settings.EnableImageProcessing));
             log.Info(String.Format("TtcGeoConvertBrightness: {0}", settings.TtcGeoConvertBrightness));
+            log.Info(String.Format("WriteTthFiles: {0}", settings.WriteTthFiles));
+            log.Info(String.Format("ElevationSource: {0}", settings.ElevationSource));
+            log.Info(String.Format("TthLevelsToGenerate: {0}", settings.TthLevelsToGenerate == null ? "" : String.Join(",", settings.TthLevelsToGenerate)));
             log.Info(String.Format("BrightnessAdjustment: {0}", settings.BrightnessAdjustment));
             log.Info(String.Format("ContrastAdjustment: {0}", settings.ContrastAdjustment));
             log.Info(String.Format("SaturationAdjustment: {0}", settings.SaturationAdjustment));
@@ -347,6 +350,15 @@ namespace AeroScenery.Data
 
             if (settings.TtcGeoConvertBrightness == null)
                 settings.TtcGeoConvertBrightness = false;
+
+            if (settings.WriteTthFiles == null)
+                settings.WriteTthFiles = false;
+
+            if (settings.ElevationSource == null)
+                settings.ElevationSource = "";
+
+            if (settings.TthLevelsToGenerate == null || settings.TthLevelsToGenerate.Count == 0)
+                settings.TthLevelsToGenerate = new List<int> { 10 };
 
             if (settings.BrightnessAdjustment == null)
                 settings.BrightnessAdjustment = 0;

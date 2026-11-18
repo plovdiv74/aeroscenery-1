@@ -89,6 +89,7 @@
             this.deleteStitchedImagesCheckBox = new System.Windows.Forms.CheckBox();
             this.runGeoConvertCheckBox = new System.Windows.Forms.CheckBox();
             this.writeTtcFilesCheckBox = new System.Windows.Forms.CheckBox();
+            this.writeTthFilesCheckBox = new System.Windows.Forms.CheckBox();
             this.generateAFSFilesCheckBox = new System.Windows.Forms.CheckBox();
             this.stitchImageTilesCheckBox = new System.Windows.Forms.CheckBox();
             this.downloadImageTileCheckBox = new System.Windows.Forms.CheckBox();
@@ -706,14 +707,15 @@
             this.groupBox2.Controls.Add(this.actionSetComboBox);
             this.groupBox2.Controls.Add(this.installSceneryIntoAFSCheckBox);
             this.groupBox2.Controls.Add(this.deleteStitchedImagesCheckBox);
+            this.groupBox2.Controls.Add(this.writeTthFilesCheckBox);
             this.groupBox2.Controls.Add(this.writeTtcFilesCheckBox);
             this.groupBox2.Controls.Add(this.runGeoConvertCheckBox);
             this.groupBox2.Controls.Add(this.generateAFSFilesCheckBox);
             this.groupBox2.Controls.Add(this.stitchImageTilesCheckBox);
             this.groupBox2.Controls.Add(this.downloadImageTileCheckBox);
-            this.groupBox2.Location = new System.Drawing.Point(16, 356);
+            this.groupBox2.Location = new System.Drawing.Point(16, 350);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(339, 241);
+            this.groupBox2.Size = new System.Drawing.Size(339, 262);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Actions";
@@ -735,11 +737,11 @@
             // 
             this.installSceneryIntoAFSCheckBox.AutoSize = true;
             this.installSceneryIntoAFSCheckBox.Enabled = false;
-            this.installSceneryIntoAFSCheckBox.Location = new System.Drawing.Point(19, 203);
+            this.installSceneryIntoAFSCheckBox.Location = new System.Drawing.Point(19, 230);
             this.installSceneryIntoAFSCheckBox.Name = "installSceneryIntoAFSCheckBox";
-            this.installSceneryIntoAFSCheckBox.Size = new System.Drawing.Size(269, 21);
+            this.installSceneryIntoAFSCheckBox.Size = new System.Drawing.Size(290, 21);
             this.installSceneryIntoAFSCheckBox.TabIndex = 5;
-            this.installSceneryIntoAFSCheckBox.Text = "Install TTC Files In Aerofly User Folder";
+            this.installSceneryIntoAFSCheckBox.Text = "Install TTC/TTH Files In Aerofly User Folder";
             this.installSceneryIntoAFSCheckBox.UseVisualStyleBackColor = true;
             this.installSceneryIntoAFSCheckBox.CheckedChanged += new System.EventHandler(this.installSceneryIntoAFSCheckBox_CheckedChanged);
             // 
@@ -747,7 +749,7 @@
             // 
             this.deleteStitchedImagesCheckBox.AutoSize = true;
             this.deleteStitchedImagesCheckBox.Enabled = false;
-            this.deleteStitchedImagesCheckBox.Location = new System.Drawing.Point(19, 230);
+            this.deleteStitchedImagesCheckBox.Location = new System.Drawing.Point(19, 257);
             this.deleteStitchedImagesCheckBox.Name = "deleteStitchedImagesCheckBox";
             this.deleteStitchedImagesCheckBox.Size = new System.Drawing.Size(160, 21);
             this.deleteStitchedImagesCheckBox.TabIndex = 4;
@@ -767,6 +769,18 @@
             this.writeTtcFilesCheckBox.Text = "Write TTC Files (AFS4, no GeoConvert)";
             this.writeTtcFilesCheckBox.UseVisualStyleBackColor = true;
             this.writeTtcFilesCheckBox.CheckedChanged += new System.EventHandler(this.writeTtcFilesCheckBox_CheckedChanged);
+            // 
+            // writeTthFilesCheckBox
+            // 
+            this.writeTthFilesCheckBox.AutoSize = true;
+            this.writeTthFilesCheckBox.Enabled = false;
+            this.writeTthFilesCheckBox.Location = new System.Drawing.Point(19, 203);
+            this.writeTthFilesCheckBox.Name = "writeTthFilesCheckBox";
+            this.writeTthFilesCheckBox.Size = new System.Drawing.Size(220, 21);
+            this.writeTthFilesCheckBox.TabIndex = 8;
+            this.writeTthFilesCheckBox.Text = "Write TTH Files (AFS4 Elevation)";
+            this.writeTthFilesCheckBox.UseVisualStyleBackColor = true;
+            this.writeTthFilesCheckBox.CheckedChanged += new System.EventHandler(this.writeTthFilesCheckBox_CheckedChanged);
             // 
             // runGeoConvertCheckBox
             // 
@@ -1183,6 +1197,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox runGeoConvertCheckBox;
         private System.Windows.Forms.CheckBox writeTtcFilesCheckBox;
+        private System.Windows.Forms.CheckBox writeTthFilesCheckBox;
         private System.Windows.Forms.CheckBox generateAFSFilesCheckBox;
         private System.Windows.Forms.CheckBox stitchImageTilesCheckBox;
         private System.Windows.Forms.Label label4;

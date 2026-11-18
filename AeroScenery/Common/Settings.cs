@@ -85,6 +85,12 @@ namespace AeroScenery.Common
         public bool? EnableImageProcessing { get; set; }
         // Write TTC Files: apply GeoConvert's brightening (AFS4\ToneCurves.cs)
         public bool? TtcGeoConvertBrightness { get; set; }
+
+        // Write TTH Files: elevation tiles from a source in ElevationSources.json (AFS4\ElevationSources.cs)
+        public bool? WriteTthFiles { get; set; }
+        public string ElevationSource { get; set; }
+        public List<int> TthLevelsToGenerate { get; set; }
+
         public int? BrightnessAdjustment { get; set; }
         public int? ContrastAdjustment { get; set; }
         public int? SaturationAdjustment { get; set; }

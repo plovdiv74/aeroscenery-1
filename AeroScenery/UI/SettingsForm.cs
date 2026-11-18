@@ -1,4 +1,5 @@
-﻿using log4net;
+﻿using AeroScenery.Common;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,6 +29,95 @@ namespace AeroScenery.UI
             this.updateImagePreview = true;
         }
 
+        // An entry of the TTH levels list.
+        private class TthLevelItem
+        {
+            public int Level;
+            public string Text;
+
+            public override string ToString()
+            {
+                return this.Text;
+            }
+        }
+
+        private void LoadElevationTab(Settings settings)
+        {
+            this.tthLevelsCheckedListBox.Items.Clear();
+            foreach (var item in new[]
+            {
+                new TthLevelItem { Level = 7, Text = "Level 7" },
+                new TthLevelItem { Level = 9, Text = "Level 9" },
+                new TthLevelItem { Level = 10, Text = "Level 10 (finest stock level)" },
+                new TthLevelItem { Level = 11, Text = "Level 11 (experimental)" },
+                new TthLevelItem { Level = 12, Text = "Level 12 (experimental)" },
+            })
+            {
+                this.tthLevelsCheckedListBox.Items.Add(item, settings.TthLevelsToGenerate.Contains(item.Level));
+            }
+
+            this.LoadElevationSources(settings.ElevationSource);
+        }
+
+        private void LoadElevationSources(string selectedName)
+        {
+            this.elevationSourcesPathLabel.Text = DirectoryHelper.ElevationSourcesPath;
+            this.elevationSourceComboBox.Items.Clear();
+            try
+            {
+                var sources = AFS4.ElevationSources.Load(DirectoryHelper.ElevationSourcesPath);
+                foreach (var source in sources)
+                {
+                    this.elevationSourceComboBox.Items.Add(source);
+                }
+
+                this.elevationSourceComboBox.DisplayMember = "Name";
+                var selected = sources.FirstOrDefault(s => s.Name == selectedName) ?? sources.FirstOrDefault();
+                this.elevationSourceComboBox.SelectedItem = selected;
+            }
+            catch (Exception ex)
+            {
+                this.elevationSourceNotesLabel.Text = "Could not read the elevation sources: " + ex.Message;
+            }
+        }
+
+        private void elevationSourceComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var source = this.elevationSourceComboBox.SelectedItem as AFS4.ElevationSource;
+            if (source == null)
+            {
+                return;
+            }
+
+            var text = source.Notes ?? "";
+            if (!String.IsNullOrEmpty(source.Fallback))
+            {
+                text += String.Format("\nWhere it has no data: {0}.", source.Fallback);
+            }
+
+            if (!String.IsNullOrEmpty(source.Attribution))
+            {
+                text += "\n" + source.Attribution;
+            }
+
+            this.elevationSourceNotesLabel.Text = text;
+        }
+
+        private void openElevationSourcesButton_Click(object sender, EventArgs e)
+        {
+            // Make sure the file exists (written with the defaults), then open it in the default editor for .json.
+            this.LoadElevationSources((this.elevationSourceComboBox.SelectedItem as AFS4.ElevationSource)?.Name);
+            if (File.Exists(DirectoryHelper.ElevationSourcesPath))
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("notepad.exe", "\"" + DirectoryHelper.ElevationSourcesPath + "\""));
+            }
+        }
+
+        private void reloadElevationSourcesButton_Click(object sender, EventArgs e)
+        {
+            this.LoadElevationSources((this.elevationSourceComboBox.SelectedItem as AFS4.ElevationSource)?.Name);
+        }
+
         private void closeButton_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -52,6 +142,16 @@ namespace AeroScenery.UI
 
 
             settings.UserAgent = this.userAgentTextBox.Text;
+
+            // Elevation
+            var elevationSource = this.elevationSourceComboBox.SelectedItem as AFS4.ElevationSource;
+            if (elevationSource != null)
+            {
+                settings.ElevationSource = elevationSource.Name;
+            }
+
+            var tthLevels = this.tthLevelsCheckedListBox.CheckedItems.Cast<TthLevelItem>().Select(l => l.Level).ToList();
+            settings.TthLevelsToGenerate = tthLevels.Count > 0 ? tthLevels : new List<int> { 10 };
 
             if (!String.IsNullOrEmpty(this.downloadWaitTextBox.Text))
             {
@@ -151,6 +251,8 @@ namespace AeroScenery.UI
             this.afsUserFolderTextBox.Text = settings.AFS2UserDirectory;
 
             this.userAgentTextBox.Text = settings.UserAgent;
+
+            this.LoadElevationTab(settings);
             this.downloadWaitTextBox.Text = settings.DownloadWaitMs.ToString();
             this.downloadWaitRandomTextBox.Text = settings.DownloadWaitRandomMs.ToString();
 

@@ -225,6 +225,8 @@ namespace AeroScenery
             {
                 int i = 0;
                 var installResults = new List<InstallResult>();
+                List<ElevationSource> elevationSources = null;
+                ElevationSource elevationSource = null;
                 foreach (AFS2GridSquare afs2GridSquare in this.mainForm.SelectedAFS2GridSquares.Values.Select(x => x.AFS2GridSquare))
                 {
                     var currentGrideSquareMessage = String.Format("Working on AFS Grid Square {0} of {1}", i + 1, this.mainForm.SelectedAFS2GridSquares.Count());
@@ -342,11 +344,35 @@ namespace AeroScenery
                         await WriteTtcFilesAsync(afs2GridSquare, tileDownloadDirectory, ttcDirectory);
                     }
 
-                    // Install the square's TTC files (from Write TTC Files) into the Aerofly user folder
+                    // Write TTH (elevation) files from the selected elevation source
+                    string tthDirectory = null;
+                    if ((this.Settings.WriteTthFiles.Value || this.Settings.InstallScenery.Value) && this.mainForm.ActionsRunning)
+                    {
+                        if (elevationSources == null)
+                        {
+                            elevationSources = LoadElevationSources();
+                            elevationSource = elevationSources == null ? null : SelectedElevationSource(elevationSources);
+                        }
+
+                        if (elevationSource != null)
+                        {
+                            tthDirectory = Path.Combine(afsGridSquareDirectory, "elevation", SafeFolderName(elevationSource.Name)) + @"\";
+                        }
+                    }
+
+                    if (this.Settings.WriteTthFiles.Value && this.mainForm.ActionsRunning && elevationSource != null)
+                    {
+                        this.mainForm.UpdateChildTaskLabel("Writing TTH Files");
+                        log.Info(String.Format("Writing TTH Files from {0}", elevationSource.Name));
+
+                        await WriteTthFilesAsync(afs2GridSquare, elevationSources, elevationSource, tthDirectory);
+                    }
+
+                    // Install the square's TTC and TTH files (from Write TTC/TTH Files) into the Aerofly user folder
                     if (this.Settings.InstallScenery.Value && this.mainForm.ActionsRunning)
                     {
-                        this.mainForm.UpdateChildTaskLabel("Installing TTC Files");
-                        var installResult = await InstallTtcFilesAsync(afs2GridSquare, ttcDirectory);
+                        this.mainForm.UpdateChildTaskLabel("Installing Scenery");
+                        var installResult = await InstallTilesAsync(afs2GridSquare, ttcDirectory, tthDirectory);
                         if (installResult == null)
                         {
                             break;
@@ -594,10 +620,11 @@ namespace AeroScenery
         }
 
         /// <summary>
-        /// Copies the TTC files Write TTC Files made for a grid square into the Aerofly user folder
-        /// (scenery\images\&lt;level-9 square&gt;\). Null if there is nowhere to install to (the user has been told).
+        /// Copies the TTC and TTH files Write TTC/TTH Files made for a grid square into the Aerofly user folder
+        /// (scenery\images\&lt;level-9 square&gt;\, scenery\elevation\). Null if there is nowhere to install to (the
+        /// user has been told).
         /// </summary>
-        private async Task<InstallResult> InstallTtcFilesAsync(AFS2GridSquare afs2GridSquare, string ttcDirectory)
+        private async Task<InstallResult> InstallTilesAsync(AFS2GridSquare afs2GridSquare, string ttcDirectory, string tthDirectory)
         {
             var imagesDirectory = DirectoryHelper.FindAFSSceneryInstallDirectory(this.settings);
             if (imagesDirectory == null)
@@ -606,23 +633,129 @@ namespace AeroScenery
                 return null;
             }
 
-            var ttcFiles = Directory.Exists(ttcDirectory)
-                ? Directory.GetFiles(ttcDirectory, "map_*.ttc").ToList()
-                : new List<string>();
-            if (ttcFiles.Count == 0)
+            var tiles = new List<string>();
+            if (Directory.Exists(ttcDirectory))
             {
-                log.Info(String.Format("No TTC files to install for {0} in {1}", afs2GridSquare.Name, ttcDirectory));
+                tiles.AddRange(Directory.GetFiles(ttcDirectory, "map_*.ttc"));
+            }
+
+            if (tthDirectory != null && Directory.Exists(tthDirectory))
+            {
+                tiles.AddRange(Directory.GetFiles(tthDirectory, "maph_*.tth"));
+            }
+
+            if (tiles.Count == 0)
+            {
+                log.Info(String.Format("No TTC or TTH files to install for {0}", afs2GridSquare.Name));
                 return new InstallResult { ImagesDirectory = imagesDirectory };
             }
 
-            var result = await Task.Run(() => SceneryInstaller.Install(imagesDirectory, ttcFiles));
-            log.Info(String.Format("Installed {0} TTC files for {1} into {2}", result.Installed.Count, afs2GridSquare.Name, imagesDirectory));
+            var result = await Task.Run(() => SceneryInstaller.Install(imagesDirectory, tiles));
+            log.Info(String.Format("Installed {0} TTC and {1} TTH files for {2} into {3}",
+                result.Installed.Count(p => p.EndsWith(".ttc", StringComparison.OrdinalIgnoreCase)),
+                result.Installed.Count(p => p.EndsWith(".tth", StringComparison.OrdinalIgnoreCase)),
+                afs2GridSquare.Name, Path.GetDirectoryName(imagesDirectory.TrimEnd('\\'))));
             foreach (var copy in result.OtherCopies)
             {
                 log.Warn(String.Format("Another copy of an installed tile, which Aerofly also loads: {0}", copy));
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// The elevation sources from ElevationSources.json (written with the defaults if missing); null, with a
+        /// message, if the file can't be read.
+        /// </summary>
+        private List<ElevationSource> LoadElevationSources()
+        {
+            try
+            {
+                return ElevationSources.Load(DirectoryHelper.ElevationSourcesPath);
+            }
+            catch (Exception ex)
+            {
+                log.Error("Error reading the elevation sources", ex);
+                var messageBox = new CustomMessageBox(String.Format("Could not read the elevation sources ({0}):\n{1}",
+                    DirectoryHelper.ElevationSourcesPath, ex.Message), "AeroScenery", MessageBoxIcon.Error);
+                messageBox.ShowDialog();
+                return null;
+            }
+        }
+
+        // The source chosen in Settings, or the first in the file.
+        private ElevationSource SelectedElevationSource(List<ElevationSource> sources)
+        {
+            return sources.FirstOrDefault(s => s.Name == this.settings.ElevationSource) ?? sources.FirstOrDefault();
+        }
+
+        private static string SafeFolderName(string name)
+        {
+            return String.Concat(name.Select(c => Path.GetInvalidFileNameChars().Contains(c) ? '_' : c));
+        }
+
+        /// <summary>
+        /// Writes the TTH (elevation) tiles of the selected TTH levels for a grid square (AFS4\TthRenderer.cs);
+        /// elevation data is downloaded into &lt;working folder&gt;\elevation-data\.
+        /// </summary>
+        private async Task WriteTthFilesAsync(AFS2GridSquare afs2GridSquare, List<ElevationSource> sources, ElevationSource source, string tthDirectory)
+        {
+            var square = AfsTile.Parse(afs2GridSquare.Name);
+            var levels = this.settings.TthLevelsToGenerate.ToList();
+            var dem = new DemSet(sources, source, Path.Combine(this.settings.WorkingDirectory, "elevation-data"), this.settings.UserAgent);
+            var renderer = new TthRenderer(dem, tthDirectory);
+            var progress = new Progress<TthRendererProgress>(p =>
+            {
+                if (this.mainForm.ActionsRunning)
+                {
+                    if (p.Message != null)
+                    {
+                        this.mainForm.UpdateChildTaskLabel(p.Message);
+                    }
+
+                    this.mainForm.CurrentActionProgressPercentage = p.TilesTotal == 0 ? 0 : 100 * p.TilesDone / p.TilesTotal;
+                }
+            });
+
+            var cancellation = new CancellationTokenSource();
+            this.ttcCancellation = cancellation;
+            try
+            {
+                var stopwatch = Stopwatch.StartNew();
+                var result = await renderer.RenderAsync(square, levels, progress, cancellation.Token);
+                log.Info(String.Format("Wrote {0} TTH files for {1} (levels {2}, {3}) to {4} in {5:F1} s",
+                    result.Written.Count, square, String.Join(",", levels), source.Name, tthDirectory, stopwatch.Elapsed.TotalSeconds));
+
+                if (result.Incomplete.Count > 0)
+                {
+                    log.Warn(String.Format("TTH files not written for lack of elevation data: {0}", String.Join(" ", result.Incomplete)));
+                    var messageBox = new CustomMessageBox(
+                        String.Format("{0} TTH files of grid square {1} were not written because {2} has no elevation data for part of them " +
+                            "(the log lists them). A source with a fallback, or one that covers the area, fills the gaps.",
+                            result.Incomplete.Count, square, source.Name),
+                        "AeroScenery",
+                        MessageBoxIcon.Warning);
+                    messageBox.ShowDialog();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                log.Info("Writing TTH files cancelled");
+            }
+            catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is IOException || ex is InvalidDataException)
+            {
+                log.Error("Writing TTH files failed", ex);
+                var messageBox = new CustomMessageBox(String.Format("Writing TTH files for {0} failed:\n{1}", square, ex.Message),
+                    "AeroScenery", MessageBoxIcon.Error);
+                messageBox.ShowDialog();
+            }
+            finally
+            {
+                if (this.ttcCancellation == cancellation)
+                {
+                    this.ttcCancellation = null;
+                }
+            }
         }
 
         private void ResetGridSquare(string gridSquareName)
