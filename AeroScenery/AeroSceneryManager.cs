@@ -33,8 +33,6 @@ namespace AeroScenery
 
         private DownloadManager downloadManager;
 
-        private DownloadFailedForm downloadFailedForm;
-
         private static AeroSceneryManager aeroSceneryManager;
 
         private ImageTileService imageTileService;

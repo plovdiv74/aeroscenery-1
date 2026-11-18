@@ -87,8 +87,6 @@ namespace AeroScenery.Data
     {
         private readonly ILog log = LogManager.GetLogger("AeroScenery");
 
-        private int settingsVersion = 8;
-
         /// <summary>
         /// Gets whether this installation has legacy registry settings
         /// </summary>
@@ -129,7 +127,6 @@ namespace AeroScenery.Data
             // If we have the key, and if looks like it's populated, proceed
             if (key != null && key.GetValue("DownloadImageTiles") != null)
             {
-                var cultivationEditorKey = key.OpenSubKey("SceneryEditor", false);
 
                 settings.DownloadImageTiles = key.GetValueAsBoolean("DownloadImageTiles", true);
                 settings.InstallScenery = key.GetValueAsBoolean("InstallScenery", false);

@@ -37,7 +37,6 @@ namespace AeroScenery
         public Dictionary<string, GridSquareViewModel> DownloadedAFS2GridSquares;
         public AFS2GridSquare SelectedAFS2GridSquare;
 
-        private bool mouseDownOnMap;
         private AFS2Grid afs2Grid;
         private List<DownloadThreadProgressControl> downloadThreadProgressControls;
         private AeroScenery.Common.Point mapMouseDownLocation;
@@ -1058,11 +1057,6 @@ namespace AeroScenery
             }
 
 
-        }
-
-        private void CultivationEditorForm_CultivationEditorFormClosed(object sender, EventArgs e)
-        {
-            this.mainMap.DisableFocusOnMouseEnter = false;
         }
 
         private void AutoSelectAFSLevelsButton_Click(object sender, EventArgs e)
