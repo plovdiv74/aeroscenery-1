@@ -156,10 +156,10 @@ namespace AeroScenery
             this.afsLevelsCheckBoxList.ValueMember = "Level";
             this.afsLevelsCheckBoxList.ClearSelected();
 
-            this.elevationAfsLevelCheckBoxList.DataSource = afsLevels;
+            this.elevationAfsLevelCheckBoxList.DataSource = elevationAfsLevels;
             this.elevationAfsLevelCheckBoxList.DisplayMember = "Name";
             this.elevationAfsLevelCheckBoxList.ValueMember = "Level";
-            this.afsLevelsCheckBoxList.ClearSelected();
+            this.elevationAfsLevelCheckBoxList.ClearSelected();
 
             this.UpdateUIFromSettings();
 
