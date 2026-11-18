@@ -8,8 +8,6 @@ using AeroScenery.FileManagement;
 using AeroScenery.FSCloudPort;
 using AeroScenery.OrthophotoSources;
 using AeroScenery.UI;
-using AeroScenery.USGS;
-using AeroScenery.USGS.Models;
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
@@ -63,7 +61,6 @@ namespace AeroScenery
         // We can therefore ignore control events until this is true
         private bool uiSetFromSettings;
 
-        private MainFormSideTab currentMainFormSideTab;
         private int afsGridSquareSelectionSize;
 
         // Whether the user should be shown a dialog about how changing the selection size
@@ -71,7 +68,6 @@ namespace AeroScenery
         private bool shownSelectionSizeChangeInfo;
 
         private List<AFSLevel> afsLevels;
-        private List<AFSLevel> elevationAfsLevels;
 
         private bool processCheckBoxListEvents;
 
@@ -117,8 +113,6 @@ namespace AeroScenery
 
             this.gridSquareLabel.Text = "";
 
-            this.currentMainFormSideTab = MainFormSideTab.Images;
-
             this.gMapControlManager.GMapControl = this.mainMap;
             this.fsCloudPortMarkerManager.GMapControl = this.mainMap;
 
@@ -142,25 +136,12 @@ namespace AeroScenery
             afsLevels.Add(new AFSLevel("Level 14", 14));
             afsLevels.Add(new AFSLevel("Level 15", 15));
 
-            elevationAfsLevels = new List<AFSLevel>();
-            elevationAfsLevels.Add(new AFSLevel("Level 9", 9));
-            elevationAfsLevels.Add(new AFSLevel("Level 10", 10));
-            elevationAfsLevels.Add(new AFSLevel("Level 11", 11));
-            elevationAfsLevels.Add(new AFSLevel("Level 12", 12));
-            elevationAfsLevels.Add(new AFSLevel("Level 13", 13));
-            elevationAfsLevels.Add(new AFSLevel("Level 14", 14));
-            elevationAfsLevels.Add(new AFSLevel("Level 15", 15));
-
             // Items, not DataSource: CheckedListBox doesn't support data binding, and setting DataSource throws a
             // NullReferenceException inside CheckedListBox.RefreshItems (it restores check states of items that
             // didn't exist yet). WinForms catches it, but the debugger breaks on it at every start.
             this.afsLevelsCheckBoxList.DisplayMember = "Name";
             this.afsLevelsCheckBoxList.Items.AddRange(afsLevels.ToArray());
             this.afsLevelsCheckBoxList.ClearSelected();
-
-            this.elevationAfsLevelCheckBoxList.DisplayMember = "Name";
-            this.elevationAfsLevelCheckBoxList.Items.AddRange(elevationAfsLevels.ToArray());
-            this.elevationAfsLevelCheckBoxList.ClearSelected();
 
             this.UpdateUIFromSettings();
 
@@ -218,7 +199,6 @@ namespace AeroScenery
             // Zoom Level
             this.zoomLevelTrackBar.Value = settings.ZoomLevel.Value;
             this.setZoomLevelLabelText();
-
 
             // AFS Levels To Generate
             for (int i = 0; i < afsLevelsCheckBoxList.Items.Count; i++)
@@ -279,20 +259,13 @@ namespace AeroScenery
 
         private void SetDefaultActions()
         {
-            // Download, write the AFS4 tiles directly and install them; the GeoConvert route (stitch, AID/TMC,
-            // GeoConvert) is under "Choose Actions To Run".
+            // Download, write the AFS4 tiles and install them.
             this.downloadImageTileCheckBox.Checked = true;
-            this.stitchImageTilesCheckBox.Checked = false;
-            this.generateAFSFilesCheckBox.Checked = false;
-            this.runGeoConvertCheckBox.Checked = false;
             this.writeTtcFilesCheckBox.Checked = true;
             this.writeTthFilesCheckBox.Checked = true;
             this.installSceneryIntoAFSCheckBox.Checked = true;
 
             this.downloadImageTileCheckBox.Enabled = false;
-            this.stitchImageTilesCheckBox.Enabled = false;
-            this.generateAFSFilesCheckBox.Enabled = false;
-            this.runGeoConvertCheckBox.Enabled = false;
             this.writeTtcFilesCheckBox.Enabled = false;
             this.writeTthFilesCheckBox.Enabled = false;
             this.installSceneryIntoAFSCheckBox.Enabled = false;
@@ -303,18 +276,11 @@ namespace AeroScenery
             var settings = AeroSceneryManager.Instance.Settings;
             // Actions
             this.downloadImageTileCheckBox.Checked = settings.DownloadImageTiles.Value;
-            this.stitchImageTilesCheckBox.Checked = settings.StitchImageTiles.Value;
-            this.generateAFSFilesCheckBox.Checked = settings.GenerateAIDAndTMCFiles.Value;
-            this.runGeoConvertCheckBox.Checked = settings.RunGeoConvert.Value;
             this.writeTtcFilesCheckBox.Checked = settings.WriteTtcFiles.Value;
             this.writeTthFilesCheckBox.Checked = settings.WriteTthFiles.Value;
-            this.deleteStitchedImagesCheckBox.Checked = settings.DeleteStitchedImageTiles.Value;
             this.installSceneryIntoAFSCheckBox.Checked = settings.InstallScenery.Value;
 
             this.downloadImageTileCheckBox.Enabled = true;
-            this.stitchImageTilesCheckBox.Enabled = true;
-            this.generateAFSFilesCheckBox.Enabled = true;
-            this.runGeoConvertCheckBox.Enabled = true;
             this.writeTtcFilesCheckBox.Enabled = true;
             this.writeTthFilesCheckBox.Enabled = true;
             this.installSceneryIntoAFSCheckBox.Enabled = true;
@@ -361,12 +327,8 @@ namespace AeroScenery
             this.shutdownCheckbox.Enabled = false;
 
             this.downloadImageTileCheckBox.Enabled = false;
-            this.stitchImageTilesCheckBox.Enabled = false;
-            this.generateAFSFilesCheckBox.Enabled = false;
-            this.runGeoConvertCheckBox.Enabled = false;
             this.writeTtcFilesCheckBox.Enabled = false;
             this.writeTthFilesCheckBox.Enabled = false;
-            this.deleteStitchedImagesCheckBox.Enabled = false;
             this.installSceneryIntoAFSCheckBox.Enabled = false;
         }
 
@@ -383,12 +345,8 @@ namespace AeroScenery
             if(AeroSceneryManager.Instance.Settings.ActionSet == ActionSet.Custom)
             {
                 this.downloadImageTileCheckBox.Enabled = true;
-                this.stitchImageTilesCheckBox.Enabled = true;
-                this.generateAFSFilesCheckBox.Enabled = true;
-                this.runGeoConvertCheckBox.Enabled = true;
                 this.writeTtcFilesCheckBox.Enabled = true;
                 this.writeTthFilesCheckBox.Enabled = true;
-                this.deleteStitchedImagesCheckBox.Enabled = true;
                 this.installSceneryIntoAFSCheckBox.Enabled = true;
             }
         }
@@ -531,18 +489,6 @@ namespace AeroScenery
             this.UpdateStatusStrip();
         }
 
-        private void ClearAllSelectedUSGSGridSquares()
-        {
-            // TODO
-        }
-
-        private void SelectUSGSGridSquare(int x, int y)
-        {
-        }
-        private void DeselectUSGSGridSquare(int x, int y)
-        {
-        }
-
 
         private void UpdateStatusStrip()
         {
@@ -683,15 +629,7 @@ namespace AeroScenery
                         {
                             if (!this.mainMap.IsMouseOverMarker)
                             {
-                                switch (this.currentMainFormSideTab)
-                                {
-                                    case MainFormSideTab.Images:
-                                        this.SelectAFSGridSquare(e.X, e.Y);
-                                        break;
-                                    case MainFormSideTab.Elevation:
-                                        this.SelectUSGSGridSquare(e.X, e.Y);
-                                        break;
-                                }
+                                this.SelectAFSGridSquare(e.X, e.Y);
                             }
                         }
                         else
@@ -721,15 +659,7 @@ namespace AeroScenery
 
             if (this.SelectedAFS2GridSquares.ContainsKey(gridSquare.Name))
             {
-                switch (this.currentMainFormSideTab)
-                {
-                    case MainFormSideTab.Images:
-                        this.DeselectAFSGridSquare(evt.X, evt.Y);
-                        break;
-                    case MainFormSideTab.Elevation:
-                        this.DeselectUSGSGridSquare(evt.X, evt.Y);
-                        break;
-                }
+                this.DeselectAFSGridSquare(evt.X, evt.Y);
             }
 
 
@@ -979,48 +909,6 @@ namespace AeroScenery
             AeroSceneryManager.Instance.SaveSettings();
         }
 
-        private void stitchImageTilesCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (stitchImageTilesCheckBox.Checked)
-            {
-                AeroSceneryManager.Instance.Settings.StitchImageTiles = true;
-            }
-            else
-            {
-                AeroSceneryManager.Instance.Settings.StitchImageTiles = false;
-            }
-
-            AeroSceneryManager.Instance.SaveSettings();
-        }
-
-        private void generateAFSFilesCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (generateAFSFilesCheckBox.Checked)
-            {
-                AeroSceneryManager.Instance.Settings.GenerateAIDAndTMCFiles = true;
-            }
-            else
-            {
-                AeroSceneryManager.Instance.Settings.GenerateAIDAndTMCFiles = false;
-            }
-
-            AeroSceneryManager.Instance.SaveSettings();
-        }
-
-        private void runGeoConvertCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (runGeoConvertCheckBox.Checked)
-            {
-                AeroSceneryManager.Instance.Settings.RunGeoConvert = true;
-            }
-            else
-            {
-                AeroSceneryManager.Instance.Settings.RunGeoConvert = false;
-            }
-
-            AeroSceneryManager.Instance.SaveSettings();
-        }
-
         private void writeTthFilesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             AeroSceneryManager.Instance.Settings.WriteTthFiles = writeTthFilesCheckBox.Checked;
@@ -1030,20 +918,6 @@ namespace AeroScenery
         private void writeTtcFilesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             AeroSceneryManager.Instance.Settings.WriteTtcFiles = writeTtcFilesCheckBox.Checked;
-            AeroSceneryManager.Instance.SaveSettings();
-        }
-
-        private void deleteStitchedImagesCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (deleteStitchedImagesCheckBox.Checked)
-            {
-                AeroSceneryManager.Instance.Settings.DeleteStitchedImageTiles = true;
-            }
-            else
-            {
-                AeroSceneryManager.Instance.Settings.DeleteStitchedImageTiles = false;
-            }
-
             AeroSceneryManager.Instance.SaveSettings();
         }
 
@@ -1254,74 +1128,6 @@ namespace AeroScenery
 
         }
 
-        private async void usgsTestButton_Click(object sender, EventArgs e)
-        {
-            USGSInventoryService service = new USGSInventoryService();
-
-            var loginRequest = new LoginRequest();
-            loginRequest.Username = AeroSceneryManager.Instance.Settings.USGSUsername;
-            loginRequest.Password = AeroSceneryManager.Instance.Settings.USGSPassword;
-            loginRequest.CatalogId = CatalogType.EarthExplorer;
-            loginRequest.AuthType = "EROS";
-            var login = await service.LoginAsync(loginRequest);
-
-            //var datasetSearchRequest = new DatasetSearchRequest();
-            //datasetSearchRequest.DatasetName = "ASTER";
-            //var datasets = await service.DatasetSearchAsync(datasetSearchRequest);
-
-            var searchRequest = new SceneSearchRequest();
-            //searchRequest.DatasetName = "ASTER_GLOBAL_DEM";
-            searchRequest.DatasetName = "ASTER_GLOBAL_DEM_DE";
-            //searchRequest.DatasetName = "LANDSAT_8";
-
-            var spatialFilter = new SpatialFilter();
-            spatialFilter.FilterType = "mbr";
-            spatialFilter.LowerLeft = new Coordinate(51.469400, -3.163811);
-            spatialFilter.UpperRight = new Coordinate(51.469400, -3.163811);
-            //spatialFilter.LowerLeft = new Coordinate(75, -135);
-            //spatialFilter.UpperRight = new Coordinate(90, -120);
-            searchRequest.SpatialFilter = spatialFilter;
-
-            var searchResult = await service.SceneSearch(searchRequest);
-
-
-            // This doesn't work without special permission
-            //var downloadOptionsRequest = new DownloadOptionsRequest();
-            //downloadOptionsRequest.DatasetName = "ASTER_GLOBAL_DEM_DE";
-            //downloadOptionsRequest.EntityIds = new string[] { "ASTGDEMV2_0N51W004" };
-
-            //var asdfdsf = await service.DownloadOptions(downloadOptionsRequest);
-
-            //int i = 0;
-
-            USGSScraper scraper = new USGSScraper();
-            await scraper.LoginAsync(AeroSceneryManager.Instance.Settings.USGSUsername, AeroSceneryManager.Instance.Settings.USGSPassword);
-
-            var downloadPageUrl = "https://earthexplorer.usgs.gov/download/external/options/ASTER_GLOBAL_DEM_DE/ASTGDEMV2_0N51W004/INVSVC/";
-
-            await scraper.DownloadAsync(downloadPageUrl, @"E:\Temp");
-        }
-
-        private async void button2_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void sideTabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (this.sideTabControl.SelectedIndex)
-            {
-                case 0:
-                    this.currentMainFormSideTab = MainFormSideTab.Images;
-                    this.ClearAllSelectedUSGSGridSquares();
-                    break;
-                case 1:
-                    this.currentMainFormSideTab = MainFormSideTab.Elevation;
-                    this.ClearAllSelectedAFSGridSquares();
-                    break;
-            }
-
-        }
-
         private void CultivationEditorForm_CultivationEditorFormClosed(object sender, EventArgs e)
         {
             this.mainMap.DisableFocusOnMouseEnter = false;
@@ -1357,7 +1163,6 @@ namespace AeroScenery
                     }
 
                     break;
-
 
                 case 10:
 
@@ -1593,13 +1398,21 @@ namespace AeroScenery
 
                     if (result == DialogResult.Yes)
                     {
-                        var ttcFiles = new List<string>();
+                        var tileFiles = new List<string>();
 
-                        var duplicateResult = this.sceneryInstaller.CheckForDuplicateTTCFiles(this.SelectedAFS2GridSquare, out ttcFiles);
+                        var duplicateResult = this.sceneryInstaller.CheckForDuplicateTiles(this.SelectedAFS2GridSquare, out tileFiles);
 
-                        if (duplicateResult == null || duplicateResult == DialogResult.OK)
+                        if (tileFiles.Count == 0)
                         {
-                            var installTask = this.sceneryInstaller.InstallSceneryAsync(ttcFiles);
+                            var noTilesMessageBox = new CustomMessageBox(String.Format("There are no TTC or TTH files for grid square {0} yet. Write them first (Write TTC Files, Write TTH Files).", this.SelectedAFS2GridSquare.Name),
+                                "AeroScenery",
+                                MessageBoxIcon.Information);
+
+                            noTilesMessageBox.ShowDialog();
+                        }
+                        else if (duplicateResult == null || duplicateResult == DialogResult.OK)
+                        {
+                            var installTask = this.sceneryInstaller.InstallSceneryAsync(tileFiles);
 
                             var fileOperationProgressForm = new FileOperationProgressForm();
                             fileOperationProgressForm.MessageText = "Installing Scenery";

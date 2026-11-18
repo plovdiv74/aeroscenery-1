@@ -2,8 +2,8 @@
 
 AeroScenery downloads aerial imagery (Bing or Google) and elevation data for the grid squares you pick on a map, and
 writes them as Aerofly FS 4 terrain tiles: `map_LL_XXXX_YYYY.ttc` (images) and `maph_LL_XXXX_YYYY.tth` (elevation).
-It writes the tiles itself, so the Aerofly SDK and GeoConvert aren't needed. The older route through GeoConvert
-(Aerofly FS 2 SDK) is still there under "Choose Actions To Run".
+It writes the tiles itself, so the Aerofly SDK and GeoConvert aren't needed. (Earlier versions stitched the image
+tiles and ran GeoConvert from the Aerofly FS 2 SDK; that route has been removed.)
 
 ### Quick start
 
@@ -26,10 +26,11 @@ them.
 | Action | What it does |
 | --- | --- |
 | Download Image Tiles | Downloads the 256-pixel image tiles covering the square into `<working folder>\<square>\<source>\<zoom>\`. |
-| Write TTC Files (AFS4, no GeoConvert) | Renders the selected image levels straight from the downloaded tiles into `<square>\<source>\<zoom>-ttc\`: the finest level at one tile pixel per source pixel, each coarser level averaged from the finer tiles; BC1 with mipmaps, zlib-compressed. Tiles with missing image tiles are skipped and listed. |
+| Write TTC Files (AFS4 Images) | Renders the selected image levels straight from the downloaded tiles into `<square>\<source>\<zoom>-ttc\`: the finest level at one tile pixel per source pixel, each coarser level averaged from the finer tiles; BC1 with mipmaps, zlib-compressed. Tiles with missing image tiles are skipped and listed. |
 | Write TTH Files (AFS4 Elevation) | Writes the selected elevation levels from the chosen elevation source into `<square>\elevation\<source>\`. A level coarser than the square gets the one tile containing it. |
 | Install TTC/TTH Files In Aerofly User Folder | Copies the square's TTC files into `scenery\images\<level-9 tile>\` and its TTH files into `scenery\elevation\` of the Aerofly user folder, overwriting tiles of the same name. Other copies of the same tiles elsewhere in those folders (which Aerofly would also load) are listed, not deleted. |
-| Stitch Image Tiles, Generate AID / TMC Files, Run GeoConvert | The GeoConvert route; needs the "AFS2 SDK Folder" in Settings. The toolbar's "Install Scenery" button installs GeoConvert's output once it has finished. |
+
+The toolbar's "Install Scenery" button installs the selected square's TTC and TTH files the same way, without a run.
 
 ### Elevation
 

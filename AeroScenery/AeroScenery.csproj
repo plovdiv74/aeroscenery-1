@@ -64,15 +64,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
-      <HintPath>packages\AForge.2.2.5\lib\AForge.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
-      <HintPath>packages\AForge.Imaging.2.2.5\lib\AForge.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Math, Version=2.2.5.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
-      <HintPath>packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
-    </Reference>
     <Reference Include="BitMiracle.LibTiff.NET, Version=2.4.660.0, Culture=neutral, PublicKeyToken=53879b3e20e7a7d6, processorArchitecture=MSIL">
       <HintPath>packages\BitMiracle.LibTiff.NET.2.4.660\lib\netstandard2.0\BitMiracle.LibTiff.NET.dll</HintPath>
     </Reference>
@@ -141,15 +132,8 @@
     <Compile Include="AeroSceneryManager.cs" />
     <Compile Include="AFS2\AFS2Grid.cs" />
     <Compile Include="AFS2\AFS2GridSquare.cs" />
-    <Compile Include="AFS2\AFSFileGenerator.cs" />
-    <Compile Include="AFS2\AFSFileGeneratorProgress.cs" />
     <Compile Include="AFS2\AFSLevel.cs" />
-    <Compile Include="AFS2\AIDFile.cs" />
-    <Compile Include="AFS2\GeoConvertManager.cs" />
     <Compile Include="AFS2\GridSquareNameFixer.cs" />
-    <Compile Include="AFS2\TMCFile.cs" />
-    <Compile Include="AFS2\TOCFile.cs" />
-    <Compile Include="AFS2\TSCFile.cs" />
     <Compile Include="AFS4\AfsGrid.cs" />
     <Compile Include="AFS4\Bc1Encoder.cs" />
     <Compile Include="AFS4\SourceTiles.cs" />
@@ -166,7 +150,6 @@
     </Compile>
     <Compile Include="Common\Direction.cs" />
     <Compile Include="Common\DirectoryHelper.cs" />
-    <Compile Include="Common\ElevationSettings.cs" />
     <Compile Include="Common\GeoArea.cs" />
     <Compile Include="Common\GeoCoordinate.cs" />
     <Compile Include="Common\GeoCoordinatesHelper.cs" />
@@ -175,7 +158,6 @@
     <Compile Include="Common\OrthophotoSourceSettings.cs" />
     <Compile Include="Common\Point.cs" />
     <Compile Include="Common\Settings.cs" />
-    <Compile Include="Common\StitchedImage.cs" />
     <Compile Include="Common\TextBoxAppender.cs" />
     <Compile Include="Controls\CustomExceptionMessageBox.cs">
       <SubType>Form</SubType>
@@ -220,10 +202,6 @@
     <Compile Include="FileManagement\SceneryInstaller.cs" />
     <Compile Include="FSCloudPort\FSCloudPortScraper.cs" />
     <Compile Include="FSCloudPort\FSCloudPortService.cs" />
-    <Compile Include="ImageProcessing\ImageProcessingFilters.cs" />
-    <Compile Include="ImageProcessing\ImageProcessingSettings.cs" />
-    <Compile Include="ImageProcessing\TileStitcher.cs" />
-    <Compile Include="ImageProcessing\TileStitcherProgress.cs" />
     <Compile Include="OrthophotoSources\BingHelper.cs" />
     <Compile Include="OrthophotoSources\GoogleHelper.cs" />
     <Compile Include="OrthophotoSources\GoogleOrthophotoSource.cs" />
@@ -269,12 +247,6 @@
     <Compile Include="UI\HelpForm.Designer.cs">
       <DependentUpon>HelpForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\ImageProcessingPreviewForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\ImageProcessingPreviewForm.Designer.cs">
-      <DependentUpon>ImageProcessingPreviewForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -285,31 +257,12 @@
     <Compile Include="OrthophotoSources\OrthophotoSource.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\MainFormSideTab.cs" />
     <Compile Include="UI\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="UI\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="USGS\Models\CatalogType.cs" />
-    <Compile Include="USGS\Models\Coordinate.cs" />
-    <Compile Include="USGS\Models\Dataset.cs" />
-    <Compile Include="USGS\Models\DatasetSearchRequest.cs" />
-    <Compile Include="USGS\Models\DatasetSearchResponse.cs" />
-    <Compile Include="USGS\Models\DownloadOptionsRequest.cs" />
-    <Compile Include="USGS\Models\DownloadOptionsResponse.cs" />
-    <Compile Include="USGS\Models\InventoryScene.cs" />
-    <Compile Include="USGS\Models\LoginRequest.cs" />
-    <Compile Include="USGS\Models\LoginResponse.cs" />
-    <Compile Include="USGS\Models\SceneSearchRequest.cs" />
-    <Compile Include="USGS\Models\SceneSearchResponse.cs" />
-    <Compile Include="USGS\Models\SearchResponse.cs" />
-    <Compile Include="USGS\Models\SpatialFilter.cs" />
-    <Compile Include="USGS\Models\USGSInventoryRequest.cs" />
-    <Compile Include="USGS\Models\USGSInventoryResponse.cs" />
-    <Compile Include="USGS\USGSInventoryService.cs" />
-    <Compile Include="USGS\USGSScraper.cs" />
     <EmbeddedResource Include="Controls\CustomExceptionMessageBox.resx">
       <DependentUpon>CustomExceptionMessageBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -330,9 +283,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\FSCloudPortAirportPopup.resx">
       <DependentUpon>FSCloudPortAirportPopup.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\ImageProcessingPreviewForm.resx">
-      <DependentUpon>ImageProcessingPreviewForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -373,27 +323,6 @@
     </Content>
     <Content Include="Resources\arrow_down_active.png" />
     <Content Include="Resources\picture_edit.png" />
-    <Content Include="Resources\SampleImages\rural_arid.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\SampleImages\rural_green.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\SampleImages\semi_rural_arid.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\SampleImages\semi_rural_green.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\SampleImages\urban1.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\SampleImages\urban2.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\SampleImages\urban3.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="roadmap.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

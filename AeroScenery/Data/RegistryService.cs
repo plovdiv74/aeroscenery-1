@@ -132,10 +132,6 @@ namespace AeroScenery.Data
                 var cultivationEditorKey = key.OpenSubKey("SceneryEditor", false);
 
                 settings.DownloadImageTiles = key.GetValueAsBoolean("DownloadImageTiles", true);
-                settings.StitchImageTiles = key.GetValueAsBoolean("StitchImageTiles", false);
-                settings.GenerateAIDAndTMCFiles = key.GetValueAsBoolean("GenerateAIDAndTMCFiles", false);
-                settings.RunGeoConvert = key.GetValueAsBoolean("RunGeoConvert", false);
-                settings.DeleteStitchedImageTiles = key.GetValueAsBoolean("DeleteStitchedImageTiles", false);
                 settings.InstallScenery = key.GetValueAsBoolean("InstallScenery", false);
                 settings.ActionSet = key.GetValueAsEnum<ActionSet>("ActionSet", ActionSet.Default);
 
@@ -153,7 +149,6 @@ namespace AeroScenery.Data
                 settings.SimultaneousDownloads = key.GetValueAsInteger("SimultaneousDownloads", 4);
                 settings.UserAgent = key.GetValueAsString("UserAgent");
 
-                settings.AFS2SDKDirectory = key.GetValueAsString("AFS2SDKDirectory");
                 settings.AFS2Directory = key.GetValueAsString("AFS2Directory");
                 settings.AeroSceneryDBDirectory = key.GetValueAsString("AeroSceneryDBDirectory");
                 settings.WorkingDirectory = key.GetValueAsString("WorkingDirectory");
@@ -172,35 +167,12 @@ namespace AeroScenery.Data
 
 
                 // Settings version 2           
-                settings.MaximumStitchedImageSize = key.GetValueAsInteger("MaximumStitchedImageSize", 32);
-                settings.GeoConvertWriteImagesWithMask = key.GetValueAsBoolean("GeoConvertWriteImagesWithMask", true);
-                settings.GeoConvertWriteRawFiles = key.GetValueAsBoolean("GeoConvertWriteRawFiles", true);
                 //--
 
                 // Settings verison 3
-                settings.GeoConvertDoMultipleSmallerRuns = key.GetValueAsBoolean("GeoConvertDoMultipleSmallerRuns", false);
                 // --
 
                 // Settings verison 4
-                settings.USGSUsername = key.GetValueAsString("USGSUsername");
-                settings.USGSPassword = key.GetValueAsString("USGSPassword");
-                settings.ElevationSettings.DownloadElevationData = key.GetValueAsBoolean("Elevation.DownloadElevationData", true);
-                settings.ElevationSettings.RunGeoConvert = key.GetValueAsBoolean("Elevation.RunGeoConvert", false);
-                settings.ElevationSettings.GenerateAIDAndTMCFiles = key.GetValueAsBoolean("Elevation.GenerateAIDAndTMCFiles", false);
-                //settings.ElevationSettings.ActionSet = (ActionSet)Enum.Parse(typeof(ActionSet), key.GetValueAsString("Elevation.ActionSet"));
-                settings.ElevationSettings.ActionSet = key.GetValueAsEnum<ActionSet>("Elevation.ActionSet", ActionSet.Default);
-                settings.ElevationSettings.InstallElevationData = key.GetValueAsBoolean("Elevation.InstallElevationData", false);
-
-                string afsElevationLevelsCsv = key.GetValueAsString("Elevation.AFSLevelsToGenerate");
-                if (string.IsNullOrEmpty(afsElevationLevelsCsv))
-                {
-                    settings.ElevationSettings.AFSLevelsToGenerate = new List<int>();
-                }
-                else
-                {
-                    List<int> afsElevationLevels = afsElevationLevelsCsv.Split(',').Select(int.Parse).ToList();
-                    settings.ElevationSettings.AFSLevelsToGenerate = afsElevationLevels;
-                }
 
                 // --
 
@@ -243,7 +215,6 @@ namespace AeroScenery.Data
 
 
                 // Settings verison 7
-                settings.ShrinkTMCGridSquareCoords = key.GetValueAsDouble("ShrinkTMCGridSquareCoords", 0.01);
                 // --
 
                 // Settings verison 8

@@ -176,3 +176,22 @@ a "Write TTC Files (AFS4, no GeoConvert)" action (setting `WriteTtcFiles`, off i
       defaults and read back (URLs as above); Install puts ttc in images\<level-9>\ and tth flat in scenery\elevation\.
 - Deviation from the plan: source and TTH levels are on a new Elevation tab in Settings (no room on the Images tab);
   the action checkbox is on the Images tab.
+
+# Remove the GeoConvert route (planned 2026-11-18)
+
+Karl keeps GeoConvert itself and runs it by hand for comparisons; AeroScenery no longer drives it.
+
+- [x] Remove the stitcher (ImageProcessing/TileStitcher*, Common/StitchedImage), AID/TMC generation
+      (AFS2/AFSFileGenerator*, AIDFile, TMCFile), GeoConvertManager, and the unused TOCFile and TSCFile.
+- [x] Remove the actions "Stitch Image Tiles", "Generate AID / TMC Files", "Run GeoConvert" and the hidden
+      "Delete Stitched Images"; close the gaps in the Actions box.
+- [x] Remove the settings: AFS2 SDK folder, GeoConvert tab (wrapper, raw files, mask, smaller runs), maximum stitched
+      image size, TMC shrink, delete stitched; and the old registry migration lines for them.
+- [x] Image Processing tab: remove the sliders, their filters and the preview form (AForge goes with them); keep the
+      tab with "Brighten Images Like GeoConvert".
+- [x] Remove the unfinished Elevation side tab (USGS EarthExplorer squares, ASTER scraper, USGS settings tab,
+      ElevationSettings). The "USGS (Coming Soon)" image source stub stays (imagery, not GeoConvert).
+- [x] Toolbar "Install Scenery": install the square's own <zoom>-ttc and tth output instead of every *.ttc in the
+      square's folder.
+- [ ] Verify: Debug and Release build, no new warnings; the app starts; settings.xml with the old elements still
+      loads; a default run on a square (download, TTC, TTH, install) still works (Karl).

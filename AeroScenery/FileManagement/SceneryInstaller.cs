@@ -102,32 +102,50 @@ namespace AeroScenery.FileManagement
             messageBox.ShowDialog();
         }
 
-        public DialogResult? CheckForDuplicateTTCFiles(AFS2GridSquare afs2GridSquare, out List<string> ttcFiles)
+        /// <summary>
+        /// The tiles Write TTC/TTH Files made for a grid square: map_*.ttc in its &lt;source&gt;\&lt;zoom&gt;-ttc folders
+        /// and maph_*.tth in its elevation\&lt;source&gt; folders (not GeoConvert's output from older versions). Asks
+        /// whether to go on if the same tile exists more than once (several image or elevation sources).
+        /// </summary>
+        public DialogResult? CheckForDuplicateTiles(AFS2GridSquare afs2GridSquare, out List<string> tileFiles)
         {
             // A null dialog result means that there are no duplicates
             DialogResult? result = null;
 
             var gridSquareDirectory = AeroSceneryManager.Instance.Settings.WorkingDirectory + afs2GridSquare.Name;
 
-            ttcFiles = EnumerateFilesRecursive(gridSquareDirectory, "*.ttc").ToList();
-
-            List<string> ttcFileNames = new List<string>();
-
-            foreach (var ttcFile in ttcFiles)
+            tileFiles = new List<string>();
+            foreach (var sourceDirectory in Directory.Exists(gridSquareDirectory) ? Directory.GetDirectories(gridSquareDirectory) : new string[0])
             {
-                var tccFileName = Path.GetFileName(ttcFile);
-                ttcFileNames.Add(tccFileName);
+                foreach (var ttcDirectory in Directory.GetDirectories(sourceDirectory, "*-ttc"))
+                {
+                    if (!Path.GetFileName(ttcDirectory).EndsWith("-geoconvert-ttc", StringComparison.OrdinalIgnoreCase))
+                    {
+                        tileFiles.AddRange(Directory.GetFiles(ttcDirectory, "map_*.ttc"));
+                    }
+                }
             }
 
-            // Check for duplicate ttc files
-            if (ttcFileNames.Count != ttcFileNames.Distinct().Count())
+            var elevationDirectory = Path.Combine(gridSquareDirectory, "elevation");
+            if (Directory.Exists(elevationDirectory))
+            {
+                foreach (var sourceDirectory in Directory.GetDirectories(elevationDirectory))
+                {
+                    tileFiles.AddRange(Directory.GetFiles(sourceDirectory, "maph_*.tth"));
+                }
+            }
+
+            var tileFileNames = tileFiles.Select(Path.GetFileName).ToList();
+
+            // Check for duplicate tiles
+            if (tileFileNames.Count != tileFileNames.Distinct(StringComparer.OrdinalIgnoreCase).Count())
             {
                 StringBuilder sbDuplicates = new StringBuilder();
 
-                sbDuplicates.AppendLine(String.Format("Duplicate ttc files were found in the folder for grid square ({0})", afs2GridSquare.Name));
-                sbDuplicates.AppendLine("This may be because you have downloaded this grid square with multiple map image providers,");
-                sbDuplicates.AppendLine("or written it both with GeoConvert and with Write TTC Files.");
-                sbDuplicates.AppendLine("If you continue with the install you may get a mismatched set of ttc files.");
+                sbDuplicates.AppendLine(String.Format("Duplicate tiles were found in the folder for grid square ({0})", afs2GridSquare.Name));
+                sbDuplicates.AppendLine("This may be because you have written this grid square from more than one image or elevation source,");
+                sbDuplicates.AppendLine("or at more than one zoom level.");
+                sbDuplicates.AppendLine("If you continue with the install you may get a mismatched set of tiles.");
 
                 var duplicatesMessageBox = new CustomMessageBox(sbDuplicates.ToString(),
                     "AeroScenery",

@@ -33,11 +33,8 @@
             this.afsUserFolderButton = new System.Windows.Forms.Button();
             this.afsUserFolderTextBox = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.sdkButton = new System.Windows.Forms.Button();
             this.aerosceneryDatabaseFolderButton = new System.Windows.Forms.Button();
             this.workingFolderButton = new System.Windows.Forms.Button();
-            this.afsSDKFolderTextBox = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.aeroSceneryDatabaseFolderTextBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.workingFolderTextBox = new System.Windows.Forms.TextBox();
@@ -56,30 +53,9 @@
             this.closeButton = new System.Windows.Forms.Button();
             this.okButton = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.maxTilesPerStitchedImageInfoLabel = new System.Windows.Forms.Label();
-            this.maxTilesPerStitchedImageTextBox = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.shrinkTMCGridSquaresTextBox = new System.Windows.Forms.TextBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.gcWriteImagesWithMaskCombo = new System.Windows.Forms.ComboBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.gcWriteRawFilesComboBox = new System.Windows.Forms.ComboBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.createUSGSAccountLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.usgsPasswordTextBox = new System.Windows.Forms.TextBox();
-            this.usgsUsernameTextBox = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.resetButton = new System.Windows.Forms.Button();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.elevationSourceLabel = new System.Windows.Forms.Label();
             this.elevationSourceComboBox = new System.Windows.Forms.ComboBox();
@@ -89,50 +65,13 @@
             this.openElevationSourcesButton = new System.Windows.Forms.Button();
             this.reloadElevationSourcesButton = new System.Windows.Forms.Button();
             this.elevationSourcesPathLabel = new System.Windows.Forms.Label();
-            this.imgProcBlueTextBox = new System.Windows.Forms.TextBox();
-            this.imgProcGreenTextBox = new System.Windows.Forms.TextBox();
-            this.imgProcRedTextBox = new System.Windows.Forms.TextBox();
-            this.imgProcSharpnessTextBox = new System.Windows.Forms.TextBox();
-            this.imgProcSaturationTextBox = new System.Windows.Forms.TextBox();
-            this.imgProcContrastTextBox = new System.Windows.Forms.TextBox();
-            this.imgProcBrightnessTextBox = new System.Windows.Forms.TextBox();
-            this.imageProcessingEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.ttcGeoConvertBrightnessCheckBox = new System.Windows.Forms.CheckBox();
-            this.label24 = new System.Windows.Forms.Label();
-            this.imgProcBlueSlider = new System.Windows.Forms.TrackBar();
-            this.label23 = new System.Windows.Forms.Label();
-            this.imgProcGreenSlider = new System.Windows.Forms.TrackBar();
-            this.label22 = new System.Windows.Forms.Label();
-            this.imgProcRedSlider = new System.Windows.Forms.TrackBar();
-            this.label21 = new System.Windows.Forms.Label();
-            this.imgProcSharpnessSlider = new System.Windows.Forms.TrackBar();
-            this.label20 = new System.Windows.Forms.Label();
-            this.imgProcSaturationSlider = new System.Windows.Forms.TrackBar();
-            this.label19 = new System.Windows.Forms.Label();
-            this.imgProcContrastSlider = new System.Windows.Forms.TrackBar();
-            this.label18 = new System.Windows.Forms.Label();
-            this.imgProcBrightnessSlider = new System.Windows.Forms.TrackBar();
-            this.showPreviewWindowButton = new System.Windows.Forms.Button();
-            this.label25 = new System.Windows.Forms.Label();
-            this.useGeoConvertWrapperCheckbox = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.groupBox5.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcBlueSlider)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcGreenSlider)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcRedSlider)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcSharpnessSlider)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcSaturationSlider)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcContrastSlider)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcBrightnessSlider)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -142,11 +81,8 @@
             this.groupBox1.Controls.Add(this.afsUserFolderButton);
             this.groupBox1.Controls.Add(this.afsUserFolderTextBox);
             this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.sdkButton);
             this.groupBox1.Controls.Add(this.aerosceneryDatabaseFolderButton);
             this.groupBox1.Controls.Add(this.workingFolderButton);
-            this.groupBox1.Controls.Add(this.afsSDKFolderTextBox);
-            this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.aeroSceneryDatabaseFolderTextBox);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.workingFolderTextBox);
@@ -154,14 +90,14 @@
             this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(14, 9);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(654, 167);
+            this.groupBox1.Size = new System.Drawing.Size(654, 135);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Folders";
             // 
             // afsUserFolderButton
             // 
-            this.afsUserFolderButton.Location = new System.Drawing.Point(603, 123);
+            this.afsUserFolderButton.Location = new System.Drawing.Point(603, 91);
             this.afsUserFolderButton.Name = "afsUserFolderButton";
             this.afsUserFolderButton.Size = new System.Drawing.Size(33, 25);
             this.afsUserFolderButton.TabIndex = 11;
@@ -171,7 +107,7 @@
             // 
             // afsUserFolderTextBox
             // 
-            this.afsUserFolderTextBox.Location = new System.Drawing.Point(216, 123);
+            this.afsUserFolderTextBox.Location = new System.Drawing.Point(216, 91);
             this.afsUserFolderTextBox.Name = "afsUserFolderTextBox";
             this.afsUserFolderTextBox.Size = new System.Drawing.Size(381, 25);
             this.afsUserFolderTextBox.TabIndex = 10;
@@ -180,21 +116,11 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(20, 126);
+            this.label9.Location = new System.Drawing.Point(20, 94);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(127, 17);
             this.label9.TabIndex = 9;
             this.label9.Text = "Aerofly User Folder";
-            // 
-            // sdkButton
-            // 
-            this.sdkButton.Location = new System.Drawing.Point(603, 91);
-            this.sdkButton.Name = "sdkButton";
-            this.sdkButton.Size = new System.Drawing.Size(33, 25);
-            this.sdkButton.TabIndex = 8;
-            this.sdkButton.Text = "...";
-            this.sdkButton.UseVisualStyleBackColor = true;
-            this.sdkButton.Click += new System.EventHandler(this.sdkButton_Click);
             // 
             // aerosceneryDatabaseFolderButton
             // 
@@ -215,23 +141,6 @@
             this.workingFolderButton.Text = "...";
             this.workingFolderButton.UseVisualStyleBackColor = true;
             this.workingFolderButton.Click += new System.EventHandler(this.workingFolderButton_Click);
-            // 
-            // afsSDKFolderTextBox
-            // 
-            this.afsSDKFolderTextBox.Location = new System.Drawing.Point(216, 91);
-            this.afsSDKFolderTextBox.Name = "afsSDKFolderTextBox";
-            this.afsSDKFolderTextBox.Size = new System.Drawing.Size(381, 25);
-            this.afsSDKFolderTextBox.TabIndex = 5;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(20, 94);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(105, 17);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "AFS2 SDK Folder";
             // 
             // aeroSceneryDatabaseFolderTextBox
             // 
@@ -282,7 +191,7 @@
             this.groupBox2.Controls.Add(this.userAgentTextBox);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(14, 186);
+            this.groupBox2.Location = new System.Drawing.Point(14, 154);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(654, 145);
             this.groupBox2.TabIndex = 9;
@@ -415,203 +324,9 @@
             // 
             this.folderBrowserDialog1.HelpRequest += new System.EventHandler(this.folderBrowserDialog1_HelpRequest);
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.maxTilesPerStitchedImageInfoLabel);
-            this.groupBox3.Controls.Add(this.maxTilesPerStitchedImageTextBox);
-            this.groupBox3.Controls.Add(this.label12);
-            this.groupBox3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(14, 346);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(654, 70);
-            this.groupBox3.TabIndex = 12;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Tile Stitching";
-            // 
-            // maxTilesPerStitchedImageInfoLabel
-            // 
-            this.maxTilesPerStitchedImageInfoLabel.AutoSize = true;
-            this.maxTilesPerStitchedImageInfoLabel.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.maxTilesPerStitchedImageInfoLabel.Location = new System.Drawing.Point(301, 29);
-            this.maxTilesPerStitchedImageInfoLabel.Name = "maxTilesPerStitchedImageInfoLabel";
-            this.maxTilesPerStitchedImageInfoLabel.Size = new System.Drawing.Size(199, 17);
-            this.maxTilesPerStitchedImageInfoLabel.TabIndex = 10;
-            this.maxTilesPerStitchedImageInfoLabel.Text = "tiles x 32 tiles. (8042px x 8042px)";
-            // 
-            // maxTilesPerStitchedImageTextBox
-            // 
-            this.maxTilesPerStitchedImageTextBox.Location = new System.Drawing.Point(216, 26);
-            this.maxTilesPerStitchedImageTextBox.Name = "maxTilesPerStitchedImageTextBox";
-            this.maxTilesPerStitchedImageTextBox.Size = new System.Drawing.Size(79, 25);
-            this.maxTilesPerStitchedImageTextBox.TabIndex = 9;
-            this.maxTilesPerStitchedImageTextBox.TextChanged += new System.EventHandler(this.maxTilesPerStitchedImageTextBox_TextChanged);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(20, 29);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(173, 17);
-            this.label12.TabIndex = 8;
-            this.label12.Text = "Max tiles per stitched image";
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.useGeoConvertWrapperCheckbox);
-            this.groupBox4.Controls.Add(this.label25);
-            this.groupBox4.Controls.Add(this.label11);
-            this.groupBox4.Controls.Add(this.shrinkTMCGridSquaresTextBox);
-            this.groupBox4.Controls.Add(this.label15);
-            this.groupBox4.Controls.Add(this.gcWriteImagesWithMaskCombo);
-            this.groupBox4.Controls.Add(this.label14);
-            this.groupBox4.Controls.Add(this.gcWriteRawFilesComboBox);
-            this.groupBox4.Controls.Add(this.label13);
-            this.groupBox4.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox4.Location = new System.Drawing.Point(14, 9);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(654, 249);
-            this.groupBox4.TabIndex = 13;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "GeoConvert";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(301, 104);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(56, 17);
-            this.label11.TabIndex = 10;
-            this.label11.Text = "degrees";
-            // 
-            // shrinkTMCGridSquaresTextBox
-            // 
-            this.shrinkTMCGridSquaresTextBox.Location = new System.Drawing.Point(216, 101);
-            this.shrinkTMCGridSquaresTextBox.Name = "shrinkTMCGridSquaresTextBox";
-            this.shrinkTMCGridSquaresTextBox.Size = new System.Drawing.Size(79, 25);
-            this.shrinkTMCGridSquaresTextBox.TabIndex = 9;
-            this.shrinkTMCGridSquaresTextBox.TextChanged += new System.EventHandler(this.ShrinkTMCGridSquaresTextBox_TextChanged);
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(20, 104);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(170, 17);
-            this.label15.TabIndex = 8;
-            this.label15.Text = "Shrink TMC grid squares by";
-            // 
-            // gcWriteImagesWithMaskCombo
-            // 
-            this.gcWriteImagesWithMaskCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gcWriteImagesWithMaskCombo.FormattingEnabled = true;
-            this.gcWriteImagesWithMaskCombo.Items.AddRange(new object[] {
-            "Yes",
-            "No"});
-            this.gcWriteImagesWithMaskCombo.Location = new System.Drawing.Point(216, 63);
-            this.gcWriteImagesWithMaskCombo.Name = "gcWriteImagesWithMaskCombo";
-            this.gcWriteImagesWithMaskCombo.Size = new System.Drawing.Size(417, 25);
-            this.gcWriteImagesWithMaskCombo.TabIndex = 7;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(20, 66);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(150, 17);
-            this.label14.TabIndex = 6;
-            this.label14.Text = "Write Images With Mask";
-            // 
-            // gcWriteRawFilesComboBox
-            // 
-            this.gcWriteRawFilesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.gcWriteRawFilesComboBox.FormattingEnabled = true;
-            this.gcWriteRawFilesComboBox.Items.AddRange(new object[] {
-            "Yes",
-            "No"});
-            this.gcWriteRawFilesComboBox.Location = new System.Drawing.Point(216, 29);
-            this.gcWriteRawFilesComboBox.Name = "gcWriteRawFilesComboBox";
-            this.gcWriteRawFilesComboBox.Size = new System.Drawing.Size(417, 25);
-            this.gcWriteRawFilesComboBox.TabIndex = 5;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(20, 32);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(96, 17);
-            this.label13.TabIndex = 3;
-            this.label13.Text = "Write Raw Files";
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add(this.createUSGSAccountLinkLabel);
-            this.groupBox5.Controls.Add(this.usgsPasswordTextBox);
-            this.groupBox5.Controls.Add(this.usgsUsernameTextBox);
-            this.groupBox5.Controls.Add(this.label16);
-            this.groupBox5.Controls.Add(this.label17);
-            this.groupBox5.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox5.Location = new System.Drawing.Point(14, 9);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(654, 143);
-            this.groupBox5.TabIndex = 14;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "USGS Account";
-            // 
-            // createUSGSAccountLinkLabel
-            // 
-            this.createUSGSAccountLinkLabel.AutoSize = true;
-            this.createUSGSAccountLinkLabel.Location = new System.Drawing.Point(490, 104);
-            this.createUSGSAccountLinkLabel.Name = "createUSGSAccountLinkLabel";
-            this.createUSGSAccountLinkLabel.Size = new System.Drawing.Size(143, 17);
-            this.createUSGSAccountLinkLabel.TabIndex = 15;
-            this.createUSGSAccountLinkLabel.TabStop = true;
-            this.createUSGSAccountLinkLabel.Text = "Create a USGS Account";
-            this.createUSGSAccountLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.createUSGSAccountLinkLabel_LinkClicked);
-            // 
-            // usgsPasswordTextBox
-            // 
-            this.usgsPasswordTextBox.Location = new System.Drawing.Point(216, 63);
-            this.usgsPasswordTextBox.Name = "usgsPasswordTextBox";
-            this.usgsPasswordTextBox.Size = new System.Drawing.Size(417, 25);
-            this.usgsPasswordTextBox.TabIndex = 8;
-            // 
-            // usgsUsernameTextBox
-            // 
-            this.usgsUsernameTextBox.Location = new System.Drawing.Point(216, 29);
-            this.usgsUsernameTextBox.Name = "usgsUsernameTextBox";
-            this.usgsUsernameTextBox.Size = new System.Drawing.Size(417, 25);
-            this.usgsUsernameTextBox.TabIndex = 7;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.Location = new System.Drawing.Point(20, 66);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(64, 17);
-            this.label16.TabIndex = 6;
-            this.label16.Text = "Password";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(20, 32);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(67, 17);
-            this.label17.TabIndex = 3;
-            this.label17.Text = "Username";
-            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -625,7 +340,6 @@
             // 
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.groupBox2);
-            this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -634,55 +348,9 @@
             this.tabPage1.Text = "AeroScenery";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.groupBox4);
-            this.tabPage2.Location = new System.Drawing.Point(4, 26);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(682, 434);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "GeoConvert";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.groupBox5);
-            this.tabPage3.Location = new System.Drawing.Point(4, 26);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(682, 434);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "USGS";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.resetButton);
-            this.tabPage4.Controls.Add(this.imgProcBlueTextBox);
-            this.tabPage4.Controls.Add(this.imgProcGreenTextBox);
-            this.tabPage4.Controls.Add(this.imgProcRedTextBox);
-            this.tabPage4.Controls.Add(this.imgProcSharpnessTextBox);
-            this.tabPage4.Controls.Add(this.imgProcSaturationTextBox);
-            this.tabPage4.Controls.Add(this.imgProcContrastTextBox);
-            this.tabPage4.Controls.Add(this.imgProcBrightnessTextBox);
-            this.tabPage4.Controls.Add(this.imageProcessingEnabledCheckBox);
             this.tabPage4.Controls.Add(this.ttcGeoConvertBrightnessCheckBox);
-            this.tabPage4.Controls.Add(this.label24);
-            this.tabPage4.Controls.Add(this.imgProcBlueSlider);
-            this.tabPage4.Controls.Add(this.label23);
-            this.tabPage4.Controls.Add(this.imgProcGreenSlider);
-            this.tabPage4.Controls.Add(this.label22);
-            this.tabPage4.Controls.Add(this.imgProcRedSlider);
-            this.tabPage4.Controls.Add(this.label21);
-            this.tabPage4.Controls.Add(this.imgProcSharpnessSlider);
-            this.tabPage4.Controls.Add(this.label20);
-            this.tabPage4.Controls.Add(this.imgProcSaturationSlider);
-            this.tabPage4.Controls.Add(this.label19);
-            this.tabPage4.Controls.Add(this.imgProcContrastSlider);
-            this.tabPage4.Controls.Add(this.label18);
-            this.tabPage4.Controls.Add(this.imgProcBrightnessSlider);
-            this.tabPage4.Controls.Add(this.showPreviewWindowButton);
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -780,296 +448,16 @@
             this.elevationSourcesPathLabel.Name = "elevationSourcesPathLabel";
             this.elevationSourcesPathLabel.Size = new System.Drawing.Size(0, 17);
             this.elevationSourcesPathLabel.TabIndex = 7;
-            // 
-            // resetButton
-            // 
-            this.resetButton.Location = new System.Drawing.Point(421, 15);
-            this.resetButton.Name = "resetButton";
-            this.resetButton.Size = new System.Drawing.Size(82, 29);
-            this.resetButton.TabIndex = 23;
-            this.resetButton.Text = "Reset";
-            this.resetButton.UseVisualStyleBackColor = true;
-            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
-            // 
-            // imgProcBlueTextBox
-            // 
-            this.imgProcBlueTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.imgProcBlueTextBox.Location = new System.Drawing.Point(104, 354);
-            this.imgProcBlueTextBox.Name = "imgProcBlueTextBox";
-            this.imgProcBlueTextBox.Size = new System.Drawing.Size(42, 25);
-            this.imgProcBlueTextBox.TabIndex = 22;
-            this.imgProcBlueTextBox.Text = "0";
-            this.imgProcBlueTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.imgProcBlueTextBox.TextChanged += new System.EventHandler(this.imgProcBlueTextBox_TextChanged);
-            this.imgProcBlueTextBox.Leave += new System.EventHandler(this.imgProcBlueTextBox_Leave);
-            // 
-            // imgProcGreenTextBox
-            // 
-            this.imgProcGreenTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.imgProcGreenTextBox.Location = new System.Drawing.Point(104, 313);
-            this.imgProcGreenTextBox.Name = "imgProcGreenTextBox";
-            this.imgProcGreenTextBox.Size = new System.Drawing.Size(42, 25);
-            this.imgProcGreenTextBox.TabIndex = 21;
-            this.imgProcGreenTextBox.Text = "0";
-            this.imgProcGreenTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.imgProcGreenTextBox.TextChanged += new System.EventHandler(this.imgProcGreenTextBox_TextChanged);
-            this.imgProcGreenTextBox.Leave += new System.EventHandler(this.imgProcGreenTextBox_Leave);
-            // 
-            // imgProcRedTextBox
-            // 
-            this.imgProcRedTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.imgProcRedTextBox.Location = new System.Drawing.Point(104, 274);
-            this.imgProcRedTextBox.Name = "imgProcRedTextBox";
-            this.imgProcRedTextBox.Size = new System.Drawing.Size(42, 25);
-            this.imgProcRedTextBox.TabIndex = 20;
-            this.imgProcRedTextBox.Text = "0";
-            this.imgProcRedTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.imgProcRedTextBox.TextChanged += new System.EventHandler(this.imgProcRedTextBox_TextChanged);
-            this.imgProcRedTextBox.Leave += new System.EventHandler(this.imgProcRedTextBox_Leave);
-            // 
-            // imgProcSharpnessTextBox
-            // 
-            this.imgProcSharpnessTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.imgProcSharpnessTextBox.Location = new System.Drawing.Point(104, 214);
-            this.imgProcSharpnessTextBox.Name = "imgProcSharpnessTextBox";
-            this.imgProcSharpnessTextBox.Size = new System.Drawing.Size(42, 25);
-            this.imgProcSharpnessTextBox.TabIndex = 19;
-            this.imgProcSharpnessTextBox.Text = "0";
-            this.imgProcSharpnessTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.imgProcSharpnessTextBox.TextChanged += new System.EventHandler(this.imgProcSharpessTextBox_TextChanged);
-            this.imgProcSharpnessTextBox.Leave += new System.EventHandler(this.imgProcSharpessTextBox_Leave);
-            // 
-            // imgProcSaturationTextBox
-            // 
-            this.imgProcSaturationTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.imgProcSaturationTextBox.Location = new System.Drawing.Point(104, 163);
-            this.imgProcSaturationTextBox.Name = "imgProcSaturationTextBox";
-            this.imgProcSaturationTextBox.Size = new System.Drawing.Size(42, 25);
-            this.imgProcSaturationTextBox.TabIndex = 18;
-            this.imgProcSaturationTextBox.Text = "0";
-            this.imgProcSaturationTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.imgProcSaturationTextBox.TextChanged += new System.EventHandler(this.imgProcSaturationTextBox_TextChanged);
-            this.imgProcSaturationTextBox.Leave += new System.EventHandler(this.imgProcSaturationTextBox_Leave);
-            // 
-            // imgProcContrastTextBox
-            // 
-            this.imgProcContrastTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.imgProcContrastTextBox.Location = new System.Drawing.Point(104, 112);
-            this.imgProcContrastTextBox.Name = "imgProcContrastTextBox";
-            this.imgProcContrastTextBox.Size = new System.Drawing.Size(42, 25);
-            this.imgProcContrastTextBox.TabIndex = 17;
-            this.imgProcContrastTextBox.Text = "0";
-            this.imgProcContrastTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.imgProcContrastTextBox.TextChanged += new System.EventHandler(this.imgProcContrastTextBox_TextChanged);
-            this.imgProcContrastTextBox.Leave += new System.EventHandler(this.imgProcContrastTextBox_Leave);
-            // 
-            // imgProcBrightnessTextBox
-            // 
-            this.imgProcBrightnessTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.imgProcBrightnessTextBox.Location = new System.Drawing.Point(104, 64);
-            this.imgProcBrightnessTextBox.Name = "imgProcBrightnessTextBox";
-            this.imgProcBrightnessTextBox.Size = new System.Drawing.Size(42, 25);
-            this.imgProcBrightnessTextBox.TabIndex = 16;
-            this.imgProcBrightnessTextBox.Text = "0";
-            this.imgProcBrightnessTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.imgProcBrightnessTextBox.TextChanged += new System.EventHandler(this.imgProcBrightnessTextBox_TextChanged);
-            this.imgProcBrightnessTextBox.Leave += new System.EventHandler(this.imgProcBrightnessTextBox_Leave);
-            // 
-            // imageProcessingEnabledCheckBox
-            // 
-            this.imageProcessingEnabledCheckBox.AutoSize = true;
-            this.imageProcessingEnabledCheckBox.Location = new System.Drawing.Point(13, 20);
-            this.imageProcessingEnabledCheckBox.Name = "imageProcessingEnabledCheckBox";
-            this.imageProcessingEnabledCheckBox.Size = new System.Drawing.Size(159, 21);
-            this.imageProcessingEnabledCheckBox.TabIndex = 15;
-            this.imageProcessingEnabledCheckBox.Text = "Adjust Stitched Images\r\n";
-            this.imageProcessingEnabledCheckBox.UseVisualStyleBackColor = true;
-            this.imageProcessingEnabledCheckBox.CheckedChanged += new System.EventHandler(this.imageProcessingEnabledCheckBox_CheckedChanged);
             //
             // ttcGeoConvertBrightnessCheckBox
             //
             this.ttcGeoConvertBrightnessCheckBox.AutoSize = true;
-            this.ttcGeoConvertBrightnessCheckBox.Location = new System.Drawing.Point(13, 405);
+            this.ttcGeoConvertBrightnessCheckBox.Location = new System.Drawing.Point(13, 20);
             this.ttcGeoConvertBrightnessCheckBox.Name = "ttcGeoConvertBrightnessCheckBox";
             this.ttcGeoConvertBrightnessCheckBox.Size = new System.Drawing.Size(330, 21);
             this.ttcGeoConvertBrightnessCheckBox.TabIndex = 24;
             this.ttcGeoConvertBrightnessCheckBox.Text = "Write TTC Files: Brighten Images Like GeoConvert";
             this.ttcGeoConvertBrightnessCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(10, 357);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(32, 17);
-            this.label24.TabIndex = 14;
-            this.label24.Text = "Blue";
-            // 
-            // imgProcBlueSlider
-            // 
-            this.imgProcBlueSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.imgProcBlueSlider.Location = new System.Drawing.Point(152, 357);
-            this.imgProcBlueSlider.Maximum = 100;
-            this.imgProcBlueSlider.Minimum = -100;
-            this.imgProcBlueSlider.Name = "imgProcBlueSlider";
-            this.imgProcBlueSlider.Size = new System.Drawing.Size(513, 45);
-            this.imgProcBlueSlider.TabIndex = 13;
-            this.imgProcBlueSlider.TickFrequency = 5;
-            this.imgProcBlueSlider.ValueChanged += new System.EventHandler(this.imgProcBlueSlider_ValueChanged);
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(10, 316);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(43, 17);
-            this.label23.TabIndex = 12;
-            this.label23.Text = "Green";
-            // 
-            // imgProcGreenSlider
-            // 
-            this.imgProcGreenSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.imgProcGreenSlider.Location = new System.Drawing.Point(152, 316);
-            this.imgProcGreenSlider.Maximum = 100;
-            this.imgProcGreenSlider.Minimum = -100;
-            this.imgProcGreenSlider.Name = "imgProcGreenSlider";
-            this.imgProcGreenSlider.Size = new System.Drawing.Size(513, 45);
-            this.imgProcGreenSlider.TabIndex = 11;
-            this.imgProcGreenSlider.TickFrequency = 5;
-            this.imgProcGreenSlider.ValueChanged += new System.EventHandler(this.imgProcGreenSlider_ValueChanged);
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(10, 277);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(31, 17);
-            this.label22.TabIndex = 10;
-            this.label22.Text = "Red";
-            // 
-            // imgProcRedSlider
-            // 
-            this.imgProcRedSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.imgProcRedSlider.Location = new System.Drawing.Point(152, 277);
-            this.imgProcRedSlider.Maximum = 100;
-            this.imgProcRedSlider.Minimum = -100;
-            this.imgProcRedSlider.Name = "imgProcRedSlider";
-            this.imgProcRedSlider.Size = new System.Drawing.Size(513, 45);
-            this.imgProcRedSlider.TabIndex = 9;
-            this.imgProcRedSlider.TickFrequency = 5;
-            this.imgProcRedSlider.ValueChanged += new System.EventHandler(this.imgProcRedSlider_ValueChanged);
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(10, 217);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(68, 17);
-            this.label21.TabIndex = 8;
-            this.label21.Text = "Sharpness";
-            // 
-            // imgProcSharpnessSlider
-            // 
-            this.imgProcSharpnessSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.imgProcSharpnessSlider.LargeChange = 1;
-            this.imgProcSharpnessSlider.Location = new System.Drawing.Point(152, 217);
-            this.imgProcSharpnessSlider.Name = "imgProcSharpnessSlider";
-            this.imgProcSharpnessSlider.Size = new System.Drawing.Size(513, 45);
-            this.imgProcSharpnessSlider.TabIndex = 7;
-            this.imgProcSharpnessSlider.ValueChanged += new System.EventHandler(this.imgProcSharpnessSlider_ValueChanged);
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(10, 166);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(67, 17);
-            this.label20.TabIndex = 6;
-            this.label20.Text = "Saturation";
-            // 
-            // imgProcSaturationSlider
-            // 
-            this.imgProcSaturationSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.imgProcSaturationSlider.Location = new System.Drawing.Point(152, 166);
-            this.imgProcSaturationSlider.Maximum = 100;
-            this.imgProcSaturationSlider.Minimum = -100;
-            this.imgProcSaturationSlider.Name = "imgProcSaturationSlider";
-            this.imgProcSaturationSlider.Size = new System.Drawing.Size(513, 45);
-            this.imgProcSaturationSlider.TabIndex = 5;
-            this.imgProcSaturationSlider.TickFrequency = 5;
-            this.imgProcSaturationSlider.ValueChanged += new System.EventHandler(this.imgProcSaturationSlider_ValueChanged);
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(10, 115);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(57, 17);
-            this.label19.TabIndex = 4;
-            this.label19.Text = "Contrast";
-            // 
-            // imgProcContrastSlider
-            // 
-            this.imgProcContrastSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.imgProcContrastSlider.Location = new System.Drawing.Point(152, 115);
-            this.imgProcContrastSlider.Maximum = 100;
-            this.imgProcContrastSlider.Minimum = -100;
-            this.imgProcContrastSlider.Name = "imgProcContrastSlider";
-            this.imgProcContrastSlider.Size = new System.Drawing.Size(513, 45);
-            this.imgProcContrastSlider.TabIndex = 3;
-            this.imgProcContrastSlider.TickFrequency = 5;
-            this.imgProcContrastSlider.ValueChanged += new System.EventHandler(this.imgProcContrastSlider_ValueChanged);
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(10, 64);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(68, 17);
-            this.label18.TabIndex = 2;
-            this.label18.Text = "Brightness";
-            // 
-            // imgProcBrightnessSlider
-            // 
-            this.imgProcBrightnessSlider.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.imgProcBrightnessSlider.Location = new System.Drawing.Point(152, 64);
-            this.imgProcBrightnessSlider.Maximum = 100;
-            this.imgProcBrightnessSlider.Minimum = -100;
-            this.imgProcBrightnessSlider.Name = "imgProcBrightnessSlider";
-            this.imgProcBrightnessSlider.Size = new System.Drawing.Size(513, 45);
-            this.imgProcBrightnessSlider.TabIndex = 1;
-            this.imgProcBrightnessSlider.TickFrequency = 5;
-            this.imgProcBrightnessSlider.ValueChanged += new System.EventHandler(this.imgProcBrightnessSlider_ValueChanged);
-            // 
-            // showPreviewWindowButton
-            // 
-            this.showPreviewWindowButton.Location = new System.Drawing.Point(509, 15);
-            this.showPreviewWindowButton.Name = "showPreviewWindowButton";
-            this.showPreviewWindowButton.Size = new System.Drawing.Size(156, 29);
-            this.showPreviewWindowButton.TabIndex = 0;
-            this.showPreviewWindowButton.Text = "Show Preview Winow";
-            this.showPreviewWindowButton.UseVisualStyleBackColor = true;
-            this.showPreviewWindowButton.Click += new System.EventHandler(this.showPreviewWindowButton_Click);
-            // 
-            // label25
-            // 
-            this.label25.AutoSize = true;
-            this.label25.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label25.Location = new System.Drawing.Point(20, 143);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(159, 17);
-            this.label25.TabIndex = 11;
-            this.label25.Text = "Use GeoConvert Wrapper";
-            // 
-            // useGeoConvertWrapperCheckbox
-            // 
-            this.useGeoConvertWrapperCheckbox.AutoSize = true;
-            this.useGeoConvertWrapperCheckbox.Location = new System.Drawing.Point(216, 142);
-            this.useGeoConvertWrapperCheckbox.Name = "useGeoConvertWrapperCheckbox";
-            this.useGeoConvertWrapperCheckbox.Size = new System.Drawing.Size(367, 21);
-            this.useGeoConvertWrapperCheckbox.TabIndex = 12;
-            this.useGeoConvertWrapperCheckbox.Text = "(Allows multiple squares to be GeoConverted sequentially)";
-            this.useGeoConvertWrapperCheckbox.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -1095,27 +483,12 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcBlueSlider)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcGreenSlider)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcRedSlider)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcSharpnessSlider)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcSaturationSlider)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcContrastSlider)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgProcBrightnessSlider)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1125,11 +498,8 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox workingFolderTextBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button sdkButton;
         private System.Windows.Forms.Button aerosceneryDatabaseFolderButton;
         private System.Windows.Forms.Button workingFolderButton;
-        private System.Windows.Forms.TextBox afsSDKFolderTextBox;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox aeroSceneryDatabaseFolderTextBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -1149,28 +519,8 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Label maxTilesPerStitchedImageInfoLabel;
-        private System.Windows.Forms.TextBox maxTilesPerStitchedImageTextBox;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.ComboBox gcWriteRawFilesComboBox;
-        private System.Windows.Forms.ComboBox gcWriteImagesWithMaskCombo;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.TextBox usgsPasswordTextBox;
-        private System.Windows.Forms.TextBox usgsUsernameTextBox;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label17;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.LinkLabel createUSGSAccountLinkLabel;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox shrinkTMCGridSquaresTextBox;
-        private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.Label elevationSourceLabel;
@@ -1181,32 +531,6 @@
         private System.Windows.Forms.Button openElevationSourcesButton;
         private System.Windows.Forms.Button reloadElevationSourcesButton;
         private System.Windows.Forms.Label elevationSourcesPathLabel;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.TrackBar imgProcBlueSlider;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.TrackBar imgProcGreenSlider;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.TrackBar imgProcRedSlider;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.TrackBar imgProcSharpnessSlider;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.TrackBar imgProcSaturationSlider;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.TrackBar imgProcContrastSlider;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.TrackBar imgProcBrightnessSlider;
-        private System.Windows.Forms.Button showPreviewWindowButton;
-        private System.Windows.Forms.CheckBox imageProcessingEnabledCheckBox;
         private System.Windows.Forms.CheckBox ttcGeoConvertBrightnessCheckBox;
-        private System.Windows.Forms.TextBox imgProcBlueTextBox;
-        private System.Windows.Forms.TextBox imgProcGreenTextBox;
-        private System.Windows.Forms.TextBox imgProcRedTextBox;
-        private System.Windows.Forms.TextBox imgProcSharpnessTextBox;
-        private System.Windows.Forms.TextBox imgProcSaturationTextBox;
-        private System.Windows.Forms.TextBox imgProcContrastTextBox;
-        private System.Windows.Forms.TextBox imgProcBrightnessTextBox;
-        private System.Windows.Forms.Button resetButton;
-        private System.Windows.Forms.CheckBox useGeoConvertWrapperCheckbox;
-        private System.Windows.Forms.Label label25;
     }
 }

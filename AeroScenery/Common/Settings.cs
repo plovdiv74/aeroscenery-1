@@ -17,11 +17,8 @@ namespace AeroScenery.Common
     {
         public Settings()
         {
-            this.ElevationSettings = new ElevationSettings();
             this.OrthophotoSourceSettings = new OrthophotoSourceSettings();
         }
-
-        public string AFS2SDKDirectory { get; set; }
 
         public string AFS2Directory { get; set; }
 
@@ -35,15 +32,7 @@ namespace AeroScenery.Common
 
         public bool? DownloadImageTiles { get; set; }
 
-        public bool? StitchImageTiles { get; set; }
-
-        public bool? GenerateAIDAndTMCFiles { get; set; }
-
-        public bool? RunGeoConvert { get; set; }
-
         public bool? WriteTtcFiles { get; set; }
-
-        public bool? DeleteStitchedImageTiles { get; set; }
 
         public bool? InstallScenery { get; set; }
 
@@ -60,29 +49,14 @@ namespace AeroScenery.Common
 
         public int? SimultaneousDownloads { get; set; }
 
-        public int? MaximumStitchedImageSize { get; set; }
-
-        public bool? GeoConvertWriteImagesWithMask { get; set; }
-
-        public bool? GeoConvertWriteRawFiles { get; set; }
-
-        public bool? GeoConvertDoMultipleSmallerRuns { get; set; }
-
-        public bool? GeoConvertUseWrapper { get; set; }
-
-        public string USGSUsername { get; set; }
-        public string USGSPassword { get; set; }
 
         public int? MapControlLastZoomLevel { get; set;}
         public double? MapControlLastX { get; set; }
         public double? MapControlLastY { get; set; }
         public string MapControlLastMapType { get; set; }
         public bool? ShowAirports { get; set; }
-        public double? ShrinkTMCGridSquareCoords { get; set; }
         public string AFS2UserDirectory { get; set; }
 
-        // Image procesing
-        public bool? EnableImageProcessing { get; set; }
         // Write TTC Files: apply GeoConvert's brightening (AFS4\ToneCurves.cs)
         public bool? TtcGeoConvertBrightness { get; set; }
 
@@ -91,18 +65,10 @@ namespace AeroScenery.Common
         public string ElevationSource { get; set; }
         public List<int> TthLevelsToGenerate { get; set; }
 
-        public int? BrightnessAdjustment { get; set; }
-        public int? ContrastAdjustment { get; set; }
-        public int? SaturationAdjustment { get; set; }
-        public int? SharpnessAdjustment { get; set; }
-        public int? RedAdjustment { get; set; }
-        public int? GreenAdjustment { get; set; }
-        public int? BlueAdjustment { get; set; }
 
         public bool? GridSquareNamesFixed { get; set; }
 
         public OrthophotoSourceSettings OrthophotoSourceSettings { get; set; }
 
-        public ElevationSettings ElevationSettings { get; set; }
     }
 }

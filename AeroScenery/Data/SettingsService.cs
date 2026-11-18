@@ -135,7 +135,6 @@ namespace AeroScenery.Data
                 afsLevelsCsv = String.Join(",", settings.AFSLevelsToGenerate.Select(x => x.ToString()).ToArray());
             }
 
-            log.Info(String.Format("AFS2SDKDirectory: {0}", settings.AFS2SDKDirectory));
             log.Info(String.Format("AFS2Directory: {0}", settings.AFS2Directory));
             log.Info(String.Format("AFS2UserDirectory: {0}", settings.AFS2UserDirectory));
             log.Info(String.Format("WorkingDirectory: {0}", settings.WorkingDirectory));
@@ -143,11 +142,7 @@ namespace AeroScenery.Data
             log.Info(String.Format("OrthophotoSource: {0}", settings.OrthophotoSource));
             log.Info(String.Format("ZoomLevel: {0}", settings.ZoomLevel));
             log.Info(String.Format("DownloadImageTiles: {0}", settings.DownloadImageTiles));
-            log.Info(String.Format("StitchImageTiles: {0}", settings.StitchImageTiles));
-            log.Info(String.Format("GenerateAIDAndTMCFiles: {0}", settings.GenerateAIDAndTMCFiles));
-            log.Info(String.Format("RunGeoConvert: {0}", settings.RunGeoConvert));
             log.Info(String.Format("WriteTtcFiles: {0}", settings.WriteTtcFiles));
-            log.Info(String.Format("DeleteStitchedImageTiles: {0}", settings.DeleteStitchedImageTiles));
             log.Info(String.Format("InstallScenery: {0}", settings.InstallScenery));
             log.Info(String.Format("ActionSet: {0}", settings.ActionSet));
             log.Info(String.Format("AFSLevelsToGenerate: {0}", afsLevelsCsv));
@@ -155,12 +150,6 @@ namespace AeroScenery.Data
             log.Info(String.Format("DownloadWaitMs: {0}", settings.DownloadWaitMs));
             log.Info(String.Format("DownloadWaitRandomMs: {0}", settings.DownloadWaitRandomMs));
             log.Info(String.Format("SimultaneousDownloads: {0}", settings.SimultaneousDownloads));
-            log.Info(String.Format("MaximumStitchedImageSize: {0}", settings.MaximumStitchedImageSize));
-            log.Info(String.Format("GeoConvertWriteImagesWithMask: {0}", settings.GeoConvertWriteImagesWithMask));
-            log.Info(String.Format("GeoConvertWriteRawFiles: {0}", settings.GeoConvertWriteRawFiles));
-            log.Info(String.Format("GeoConvertDoMultipleSmallerRuns: {0}", settings.GeoConvertDoMultipleSmallerRuns));
-            log.Info(String.Format("USGSUsername: {0}", settings.USGSUsername));
-            //log.Info(String.Format("USGSPassword: {0}", settings.USGSPassword);
             log.Info(String.Format("MapControlLastMapType: {0}", settings.MapControlLastMapType));
             log.Info(String.Format("ShowAirports: {0}", settings.ShowAirports));
 
@@ -168,20 +157,11 @@ namespace AeroScenery.Data
             log.Info(String.Format("MapControlLastX: {0}", settings.MapControlLastX));
             log.Info(String.Format("MapControlLastY: {0}", settings.MapControlLastY));
 
-            log.Info(String.Format("ShrinkTMCGridSquareCoords: {0}", settings.ShrinkTMCGridSquareCoords));
 
-            log.Info(String.Format("EnableImageProcessing: {0}", settings.EnableImageProcessing));
             log.Info(String.Format("TtcGeoConvertBrightness: {0}", settings.TtcGeoConvertBrightness));
             log.Info(String.Format("WriteTthFiles: {0}", settings.WriteTthFiles));
             log.Info(String.Format("ElevationSource: {0}", settings.ElevationSource));
             log.Info(String.Format("TthLevelsToGenerate: {0}", settings.TthLevelsToGenerate == null ? "" : String.Join(",", settings.TthLevelsToGenerate)));
-            log.Info(String.Format("BrightnessAdjustment: {0}", settings.BrightnessAdjustment));
-            log.Info(String.Format("ContrastAdjustment: {0}", settings.ContrastAdjustment));
-            log.Info(String.Format("SaturationAdjustment: {0}", settings.SaturationAdjustment));
-            log.Info(String.Format("SharpnessAdjustment: {0}", settings.SharpnessAdjustment));
-            log.Info(String.Format("RedAdjustment: {0}", settings.RedAdjustment));
-            log.Info(String.Format("GreenAdjustment: {0}", settings.GreenAdjustment));
-            log.Info(String.Format("BlueAdjustment: {0}", settings.BlueAdjustment));
 
         }
 
@@ -196,20 +176,8 @@ namespace AeroScenery.Data
                 settings.DownloadImageTiles = true;
 
 
-            if (settings.StitchImageTiles == null)
-                settings.StitchImageTiles = false;
-
-            if (settings.GenerateAIDAndTMCFiles == null)
-                settings.GenerateAIDAndTMCFiles = false;
-
-            if (settings.RunGeoConvert == null)
-                settings.RunGeoConvert = false;
-
             if (settings.WriteTtcFiles == null)
                 settings.WriteTtcFiles = false;
-
-            if (settings.DeleteStitchedImageTiles == null)
-                settings.DeleteStitchedImageTiles = false;
 
             if (settings.InstallScenery == null)
                 settings.InstallScenery = false;
@@ -241,9 +209,6 @@ namespace AeroScenery.Data
 
             if (settings.SimultaneousDownloads == null)
                 settings.SimultaneousDownloads = 4;
-
-            if (settings.AFS2SDKDirectory == null)
-                settings.AFS2SDKDirectory = "";
 
             if (settings.AFS2Directory == null)
                 settings.AFS2Directory = "";
@@ -277,52 +242,6 @@ namespace AeroScenery.Data
                 settings.WorkingDirectory = aeroSceneryWorkingDirectoryPath;
             }
 
-            if (settings.MaximumStitchedImageSize == null)
-                settings.MaximumStitchedImageSize = 32;
-
-            if (settings.GeoConvertWriteImagesWithMask == null)
-                settings.GeoConvertWriteImagesWithMask = true;
-
-            if (settings.GeoConvertWriteRawFiles == null)
-                settings.GeoConvertWriteRawFiles = true;
-
-            if (settings.GeoConvertDoMultipleSmallerRuns == null)
-                settings.GeoConvertDoMultipleSmallerRuns = false;
-
-            if (settings.GeoConvertUseWrapper == null)
-                settings.GeoConvertUseWrapper = false;
-
-            if (settings.USGSUsername == null)
-                settings.USGSUsername = "";
-
-            if (settings.USGSPassword == null)
-                settings.USGSPassword = "";
-
-            if (settings.ElevationSettings.DownloadElevationData == null)
-                settings.ElevationSettings.DownloadElevationData = true;
-
-            if (settings.ElevationSettings.RunGeoConvert == null)
-                settings.ElevationSettings.RunGeoConvert = false;
-
-            if (settings.ElevationSettings.GenerateAIDAndTMCFiles == null)
-                settings.ElevationSettings.GenerateAIDAndTMCFiles = false;
-
-            if (settings.ElevationSettings.ActionSet == null)
-                settings.ElevationSettings.ActionSet = ActionSet.Default;
-
-            if (settings.ElevationSettings.InstallElevationData == null)
-                settings.ElevationSettings.InstallElevationData = false;
-
-            if (settings.ElevationSettings.AFSLevelsToGenerate == null)
-            {
-                settings.ElevationSettings.AFSLevelsToGenerate = new List<int>();
-                settings.ElevationSettings.AFSLevelsToGenerate.Add(9);
-                settings.ElevationSettings.AFSLevelsToGenerate.Add(11);
-                settings.ElevationSettings.AFSLevelsToGenerate.Add(12);
-                settings.ElevationSettings.AFSLevelsToGenerate.Add(13);
-                settings.ElevationSettings.AFSLevelsToGenerate.Add(14);
-            }
-
             if (settings.MapControlLastZoomLevel == null)
                 settings.MapControlLastZoomLevel = 3;
 
@@ -339,14 +258,8 @@ namespace AeroScenery.Data
             if (settings.ShowAirports == null)
                 settings.ShowAirports = false;
 
-            if (settings.ShrinkTMCGridSquareCoords == null)
-                settings.ShrinkTMCGridSquareCoords = 0.01;
-
             if (settings.AFS2UserDirectory == null)
                 settings.AFS2UserDirectory = "";
-
-            if (settings.EnableImageProcessing == null)
-                settings.EnableImageProcessing = false;
 
             if (settings.TtcGeoConvertBrightness == null)
                 settings.TtcGeoConvertBrightness = false;
@@ -359,27 +272,6 @@ namespace AeroScenery.Data
 
             if (settings.TthLevelsToGenerate == null || settings.TthLevelsToGenerate.Count == 0)
                 settings.TthLevelsToGenerate = new List<int> { 10 };
-
-            if (settings.BrightnessAdjustment == null)
-                settings.BrightnessAdjustment = 0;
-
-            if (settings.ContrastAdjustment == null)
-                settings.ContrastAdjustment = 0;
-
-            if (settings.SaturationAdjustment == null)
-                settings.SaturationAdjustment = 0;
-
-            if (settings.SharpnessAdjustment == null)
-                settings.SharpnessAdjustment = 0;
-
-            if (settings.RedAdjustment == null)
-                settings.RedAdjustment = 0;
-
-            if (settings.GreenAdjustment == null)
-                settings.GreenAdjustment = 0;
-
-            if (settings.BlueAdjustment == null)
-                settings.BlueAdjustment = 0;
 
             if (settings.GridSquareNamesFixed == null)
                 settings.GridSquareNamesFixed = false;
@@ -426,18 +318,6 @@ namespace AeroScenery.Data
 
 
                     var messageBox = new CustomMessageBox("The configured AeroScenery working directory does not exist. It will be reset to " + aeroSceneryWorkingDirectoryPath + ".",
-                        "AeroScenery",
-                        MessageBoxIcon.Warning);
-
-                    messageBox.ShowDialog();
-                }
-
-                // If the SDK directory isn't blank but doesn't exist show a warning
-                if (!string.IsNullOrEmpty(settings.AFS2SDKDirectory) && !Directory.Exists(settings.AFS2SDKDirectory))
-                {
-                    settings.AFS2SDKDirectory = "";
-
-                    var messageBox = new CustomMessageBox("The configured Aerofly FS2 SDK directory does not exist. It will be reset as blank.",
                         "AeroScenery",
                         MessageBoxIcon.Warning);
 
