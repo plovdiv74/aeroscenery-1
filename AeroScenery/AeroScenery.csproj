@@ -152,6 +152,7 @@
     <Compile Include="AFS4\SourceTiles.cs" />
     <Compile Include="AFS4\TtcRenderer.cs" />
     <Compile Include="AFS4\TtcWriter.cs" />
+    <Compile Include="AFS4\ToneCurves.cs" />
     <Compile Include="AFS4\WebMercator.cs" />
     <Compile Include="Common\BetterWebClient.cs">
       <SubType>Component</SubType>

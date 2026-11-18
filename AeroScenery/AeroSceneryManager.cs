@@ -525,7 +525,9 @@ namespace AeroScenery
                 return;
             }
 
-            var source = new SourceTiles(tileDownloadDirectory, prefix, this.settings.ZoomLevel.Value);
+            var brighten = this.settings.TtcGeoConvertBrightness.Value;
+            var source = new SourceTiles(tileDownloadDirectory, prefix, this.settings.ZoomLevel.Value,
+                brighten ? ToneCurves.GeoConvert : null);
             var renderer = new TtcRenderer(source, ttcDirectory);
             var square = AfsTile.Parse(afs2GridSquare.Name);
             var levels = this.settings.AFSLevelsToGenerate.ToList();
@@ -543,8 +545,9 @@ namespace AeroScenery
             {
                 var stopwatch = Stopwatch.StartNew();
                 var result = await Task.Run(() => renderer.Render(square, levels, progress, cancellation.Token));
-                log.Info(String.Format("Wrote {0} TTC files for {1} to {2} in {3:F1} s (base level {4})",
-                    result.Written.Count, square, ttcDirectory, stopwatch.Elapsed.TotalSeconds, result.BaseLevel));
+                log.Info(String.Format("Wrote {0} TTC files for {1} to {2} in {3:F1} s (base level {4}{5})",
+                    result.Written.Count, square, ttcDirectory, stopwatch.Elapsed.TotalSeconds, result.BaseLevel,
+                    brighten ? ", brightened like GeoConvert" : ""));
 
                 if (result.SkippedLevels.Count > 0)
                 {

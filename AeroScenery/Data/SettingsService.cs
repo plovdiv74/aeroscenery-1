@@ -171,6 +171,7 @@ namespace AeroScenery.Data
             log.Info(String.Format("ShrinkTMCGridSquareCoords: {0}", settings.ShrinkTMCGridSquareCoords));
 
             log.Info(String.Format("EnableImageProcessing: {0}", settings.EnableImageProcessing));
+            log.Info(String.Format("TtcGeoConvertBrightness: {0}", settings.TtcGeoConvertBrightness));
             log.Info(String.Format("BrightnessAdjustment: {0}", settings.BrightnessAdjustment));
             log.Info(String.Format("ContrastAdjustment: {0}", settings.ContrastAdjustment));
             log.Info(String.Format("SaturationAdjustment: {0}", settings.SaturationAdjustment));
@@ -343,6 +344,9 @@ namespace AeroScenery.Data
 
             if (settings.EnableImageProcessing == null)
                 settings.EnableImageProcessing = false;
+
+            if (settings.TtcGeoConvertBrightness == null)
+                settings.TtcGeoConvertBrightness = false;
 
             if (settings.BrightnessAdjustment == null)
                 settings.BrightnessAdjustment = 0;

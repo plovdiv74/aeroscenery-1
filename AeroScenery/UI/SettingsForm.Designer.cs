@@ -88,6 +88,7 @@
             this.imgProcContrastTextBox = new System.Windows.Forms.TextBox();
             this.imgProcBrightnessTextBox = new System.Windows.Forms.TextBox();
             this.imageProcessingEnabledCheckBox = new System.Windows.Forms.CheckBox();
+            this.ttcGeoConvertBrightnessCheckBox = new System.Windows.Forms.CheckBox();
             this.label24 = new System.Windows.Forms.Label();
             this.imgProcBlueSlider = new System.Windows.Forms.TrackBar();
             this.label23 = new System.Windows.Forms.Label();
@@ -655,6 +656,7 @@
             this.tabPage4.Controls.Add(this.imgProcContrastTextBox);
             this.tabPage4.Controls.Add(this.imgProcBrightnessTextBox);
             this.tabPage4.Controls.Add(this.imageProcessingEnabledCheckBox);
+            this.tabPage4.Controls.Add(this.ttcGeoConvertBrightnessCheckBox);
             this.tabPage4.Controls.Add(this.label24);
             this.tabPage4.Controls.Add(this.imgProcBlueSlider);
             this.tabPage4.Controls.Add(this.label23);
@@ -782,6 +784,16 @@
             this.imageProcessingEnabledCheckBox.Text = "Adjust Stitched Images\r\n";
             this.imageProcessingEnabledCheckBox.UseVisualStyleBackColor = true;
             this.imageProcessingEnabledCheckBox.CheckedChanged += new System.EventHandler(this.imageProcessingEnabledCheckBox_CheckedChanged);
+            //
+            // ttcGeoConvertBrightnessCheckBox
+            //
+            this.ttcGeoConvertBrightnessCheckBox.AutoSize = true;
+            this.ttcGeoConvertBrightnessCheckBox.Location = new System.Drawing.Point(13, 405);
+            this.ttcGeoConvertBrightnessCheckBox.Name = "ttcGeoConvertBrightnessCheckBox";
+            this.ttcGeoConvertBrightnessCheckBox.Size = new System.Drawing.Size(330, 21);
+            this.ttcGeoConvertBrightnessCheckBox.TabIndex = 24;
+            this.ttcGeoConvertBrightnessCheckBox.Text = "Write TTC Files: Brighten Images Like GeoConvert";
+            this.ttcGeoConvertBrightnessCheckBox.UseVisualStyleBackColor = true;
             // 
             // label24
             // 
@@ -1073,6 +1085,7 @@
         private System.Windows.Forms.TrackBar imgProcBrightnessSlider;
         private System.Windows.Forms.Button showPreviewWindowButton;
         private System.Windows.Forms.CheckBox imageProcessingEnabledCheckBox;
+        private System.Windows.Forms.CheckBox ttcGeoConvertBrightnessCheckBox;
         private System.Windows.Forms.TextBox imgProcBlueTextBox;
         private System.Windows.Forms.TextBox imgProcGreenTextBox;
         private System.Windows.Forms.TextBox imgProcRedTextBox;

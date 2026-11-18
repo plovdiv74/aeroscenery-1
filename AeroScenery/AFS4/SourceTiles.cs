@@ -20,11 +20,22 @@ namespace AeroScenery.AFS4
         public string Prefix { get; private set; }
         public int Zoom { get; private set; }
 
-        public SourceTiles(string directory, string prefix, int zoom)
+        /// <summary>
+        /// A 256-entry table applied to every channel of the decoded tiles (ToneCurves), or null for none.
+        /// </summary>
+        public byte[] ToneCurve { get; private set; }
+
+        public SourceTiles(string directory, string prefix, int zoom, byte[] toneCurve = null)
         {
+            if (toneCurve != null && toneCurve.Length != 256)
+            {
+                throw new ArgumentException("a tone curve has 256 entries", nameof(toneCurve));
+            }
+
             this.Directory = directory;
             this.Prefix = prefix;
             this.Zoom = zoom;
+            this.ToneCurve = toneCurve;
         }
 
         public string PathOf(int tileX, int tileY)
@@ -51,7 +62,13 @@ namespace AeroScenery.AFS4
             {
                 int tileX = tileX0 + i % window.Columns, tileY = tileY0 + i / window.Columns;
                 var path = PathOf(tileX, tileY);
-                window.Pixels[i] = path == null ? null : Decode(path);
+                var pixels = path == null ? null : Decode(path);
+                if (pixels != null && this.ToneCurve != null)
+                {
+                    ToneCurves.Apply(this.ToneCurve, pixels);
+                }
+
+                window.Pixels[i] = pixels;
             });
 
             return window;

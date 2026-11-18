@@ -83,6 +83,8 @@ namespace AeroScenery.Common
 
         // Image procesing
         public bool? EnableImageProcessing { get; set; }
+        // Write TTC Files: apply GeoConvert's brightening (AFS4\ToneCurves.cs)
+        public bool? TtcGeoConvertBrightness { get; set; }
         public int? BrightnessAdjustment { get; set; }
         public int? ContrastAdjustment { get; set; }
         public int? SaturationAdjustment { get; set; }

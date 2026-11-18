@@ -127,6 +127,7 @@ namespace AeroScenery.UI
 
             // Image processing
             settings.EnableImageProcessing = this.imageProcessingEnabledCheckBox.Checked;
+            settings.TtcGeoConvertBrightness = this.ttcGeoConvertBrightnessCheckBox.Checked;
             settings.BrightnessAdjustment = this.imgProcBrightnessSlider.Value;
             settings.ContrastAdjustment = this.imgProcContrastSlider.Value;
             settings.SaturationAdjustment = this.imgProcSaturationSlider.Value;
@@ -204,6 +205,7 @@ namespace AeroScenery.UI
 
             // Image processing
             this.imageProcessingEnabledCheckBox.Checked = settings.EnableImageProcessing.Value;
+            this.ttcGeoConvertBrightnessCheckBox.Checked = settings.TtcGeoConvertBrightness.Value;
 
             this.imgProcBrightnessSlider.Value = settings.BrightnessAdjustment.Value;
             this.imgProcBrightnessTextBox.Text = settings.BrightnessAdjustment.Value.ToString();

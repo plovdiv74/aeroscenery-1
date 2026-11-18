@@ -81,3 +81,14 @@ a "Write TTC Files (AFS4, no GeoConvert)" action (setting `WriteTtcFiles`, off i
   - GeoConvert's tiles: x shift 0.00; GeoConvert sits 0.24..1.02 px further south, most in the middle of its stitched
     image (its linear-latitude error); it also brightens (40 -> 67, 100 -> 143, 200 -> 226), ours keeps Bing's colours.
 - Not yet: the sim, and a run through the UI (Karl).
+
+## GeoConvert brightness option (2026-11-18)
+- Open question answered: GeoConvert 1.5.17 applies a fixed per-channel lookup table. Grey ramps through GeoConvert
+  (raw output): identical with and without the PNG's sRGB/gAMA chunks (not libpng gamma); R, G, B ramps each follow
+  the grey table, independent of the other channels (not auto levels); the same values as on the Bing tiles.
+  No simple formula fits (power, 1-(1-x)^p: off by 17+), so AFS4/ToneCurves.cs keeps the measured 256 entries.
+- Option "Write TTC Files: Brighten Images Like GeoConvert" (Settings, Image Processing tab; setting
+  TtcGeoConvertBrightness, off by default) applies it to the source pixels as they are decoded.
+- Pontiac square with the option: mean brightness within 0.1..0.5 of GeoConvert's tiles on all 21 tiles, mid-tones
+  one to one (64 -> 63, 100 -> 100, 150 -> 150). Curve on the source pixels vs after sampling: 0.33 vs 0.47 from
+  GeoConvert's raw output, so on the source (cheaper, applied once per source pixel).
