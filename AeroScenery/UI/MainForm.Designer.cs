@@ -36,7 +36,6 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.settingsButton = new System.Windows.Forms.ToolStripButton();
             this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.getSDKToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.showAirportsToolstripButton = new System.Windows.Forms.ToolStripButton();
             this.mapTypeToolStripDropDown = new System.Windows.Forms.ToolStripDropDownButton();
@@ -191,7 +190,6 @@
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.settingsButton,
             this.helpToolStripButton,
-            this.getSDKToolStripButton,
             this.toolStripSeparator4,
             this.showAirportsToolstripButton,
             this.mapTypeToolStripDropDown,
@@ -226,16 +224,6 @@
             this.helpToolStripButton.Size = new System.Drawing.Size(55, 29);
             this.helpToolStripButton.Text = "Help";
             this.helpToolStripButton.Click += new System.EventHandler(this.helpToolStripButton_Click);
-            // 
-            // getSDKToolStripButton
-            // 
-            this.getSDKToolStripButton.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.getSDKToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("getSDKToolStripButton.Image")));
-            this.getSDKToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.getSDKToolStripButton.Name = "getSDKToolStripButton";
-            this.getSDKToolStripButton.Size = new System.Drawing.Size(147, 29);
-            this.getSDKToolStripButton.Text = "Get AeroFly FS2 SDK";
-            this.getSDKToolStripButton.Click += new System.EventHandler(this.getSDKToolStripButton_Click);
             // 
             // toolStripSeparator4
             // 
@@ -1181,7 +1169,6 @@
         private System.Windows.Forms.Button startStopButton;
         private System.Windows.Forms.CheckBox downloadImageTileCheckBox;
         private System.Windows.Forms.ToolStripButton helpToolStripButton;
-        private System.Windows.Forms.ToolStripButton getSDKToolStripButton;
         private System.Windows.Forms.ProgressBar currentActionProgressBar;
         private System.Windows.Forms.Label parentTaskLabel;
         private System.Windows.Forms.GroupBox groupBox1;

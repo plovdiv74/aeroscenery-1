@@ -260,12 +260,6 @@
       <DependentUpon>FSCloudPortAirportPopup.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\FSCloudPortMarkerManager.cs" />
-    <Compile Include="UI\GetAeroflySDKForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\GetAeroflySDKForm.Designer.cs">
-      <DependentUpon>GetAeroflySDKForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\GMapControlManager.cs" />
     <Compile Include="UI\GridSquareDisplayType.cs" />
     <Compile Include="UI\GridSquareViewModel.cs" />
