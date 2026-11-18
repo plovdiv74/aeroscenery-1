@@ -1,4 +1,5 @@
 ﻿using AeroScenery.AFS2;
+using AeroScenery.AFS4;
 using AeroScenery.Common;
 using AeroScenery.Controls;
 using AeroScenery.UI;
@@ -12,16 +13,19 @@ using System.Windows.Forms;
 
 namespace AeroScenery.FileManagement
 {
+    /// <summary>
+    /// The outcome of an install: where the tiles went, and copies of the same tiles elsewhere under scenery\images,
+    /// which the sim would also load.
+    /// </summary>
+    public class InstallResult
+    {
+        public string ImagesDirectory { get; set; }
+        public List<string> Installed { get; } = new List<string>();
+        public List<string> OtherCopies { get; } = new List<string>();
+    }
+
     public class SceneryInstaller
     {
-        private AFS2Grid afsGrid;
-
-
-        public SceneryInstaller()
-        {
-            this.afsGrid = new AFS2Grid();
-        }
-
         public DialogResult ConfirmSceneryInstallation(AFS2GridSquare afs2GridSquare)
         {
             var gridSquareDirectory = AeroSceneryManager.Instance.Settings.WorkingDirectory + afs2GridSquare.Name;
@@ -56,25 +60,46 @@ namespace AeroScenery.FileManagement
                 }
                 else
                 {
-                    // Can't find anywhere to install
-                    StringBuilder sb = new StringBuilder();
-
-                    sb.AppendLine("Could not find a location to install to.");
-                    sb.AppendLine("Either Aerofly FS2 is not installed or your 'My Documents\\Aerofly FS 2' folder has been removed.");
-
-                    var messageBox = new CustomMessageBox(sb.ToString(),
-                        "AeroScenery",
-                        MessageBoxIcon.Error);
-
-                    result = messageBox.ShowDialog();
+                    ShowNoInstallDirectoryMessage();
                 }
-            }
-            else
-            {
-
             }
 
             return result;
+        }
+
+        public static void ShowNoInstallDirectoryMessage()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("Could not find a location to install to.");
+            sb.AppendLine("Set the Aerofly user folder in Settings, or check that your 'My Documents\\Aerofly FS 4' folder exists.");
+
+            var messageBox = new CustomMessageBox(sb.ToString(),
+                "AeroScenery",
+                MessageBoxIcon.Error);
+
+            messageBox.ShowDialog();
+        }
+
+        public static void ShowOtherCopiesMessage(IEnumerable<InstallResult> results)
+        {
+            var otherCopies = results.SelectMany(r => r.OtherCopies).Distinct().ToList();
+            if (otherCopies.Count == 0)
+            {
+                return;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(String.Format("{0} of the installed tiles also exist in other folders under scenery\\images, " +
+                "and Aerofly will load those copies too. AeroScenery hasn't removed them:", otherCopies.Count));
+            sb.AppendLine("");
+            foreach (var folder in otherCopies.Select(Path.GetDirectoryName).Distinct().Take(10))
+            {
+                sb.AppendLine(String.Format("{0} ({1} files)", folder, otherCopies.Count(c => Path.GetDirectoryName(c) == folder)));
+            }
+
+            var messageBox = new CustomMessageBox(sb.ToString(), "AeroScenery", MessageBoxIcon.Warning);
+            messageBox.ShowDialog();
         }
 
         public DialogResult? CheckForDuplicateTTCFiles(AFS2GridSquare afs2GridSquare, out List<string> ttcFiles)
@@ -84,7 +109,7 @@ namespace AeroScenery.FileManagement
 
             var gridSquareDirectory = AeroSceneryManager.Instance.Settings.WorkingDirectory + afs2GridSquare.Name;
 
-            ttcFiles = this.EnumerateFilesRecursive(gridSquareDirectory, "*.ttc").ToList();
+            ttcFiles = EnumerateFilesRecursive(gridSquareDirectory, "*.ttc").ToList();
 
             List<string> ttcFileNames = new List<string>();
 
@@ -100,7 +125,8 @@ namespace AeroScenery.FileManagement
                 StringBuilder sbDuplicates = new StringBuilder();
 
                 sbDuplicates.AppendLine(String.Format("Duplicate ttc files were found in the folder for grid square ({0})", afs2GridSquare.Name));
-                sbDuplicates.AppendLine("This may be because you have downloaded this grid square with multiple map image providers.");
+                sbDuplicates.AppendLine("This may be because you have downloaded this grid square with multiple map image providers,");
+                sbDuplicates.AppendLine("or written it both with GeoConvert and with Write TTC Files.");
                 sbDuplicates.AppendLine("If you continue with the install you may get a mismatched set of ttc files.");
 
                 var duplicatesMessageBox = new CustomMessageBox(sbDuplicates.ToString(),
@@ -117,57 +143,66 @@ namespace AeroScenery.FileManagement
             return result;
         }
 
-        public async Task InstallSceneryAsync(AFS2GridSquare afs2GridSquare, List<string> ttcFiles)
+        public async Task<InstallResult> InstallSceneryAsync(List<string> ttcFiles)
         {
-            var task = Task.Run(() =>
+            var imagesDirectory = DirectoryHelper.FindAFSSceneryInstallDirectory(AeroSceneryManager.Instance.Settings);
+            if (imagesDirectory == null)
             {
-                var gridSquareDirectory = AeroSceneryManager.Instance.Settings.WorkingDirectory + afs2GridSquare.Name;
+                return null;
+            }
 
-                // Does this grid square exist
-                if (Directory.Exists(gridSquareDirectory))
+            return await Task.Run(() => Install(imagesDirectory, ttcFiles));
+        }
+
+        /// <summary>
+        /// The folder under scenery\images a tile goes in: that of the level-9 tile containing it (as Aerofly's own
+        /// scenery is laid out), or, for a tile coarser than level 9, one named after the tile.
+        /// </summary>
+        public static string InstallFolderName(string ttcPath)
+        {
+            var tile = AfsTile.Parse(ttcPath);
+            if (tile.Level < 9)
+            {
+                return tile.Name();
+            }
+
+            const int Level9Span = 0x10000 >> 9;
+            return new AfsTile(9, tile.X - tile.X % Level9Span, tile.Y - tile.Y % Level9Span).Name();
+        }
+
+        /// <summary>
+        /// Copies ttc files into imagesDirectory\&lt;level-9 folder&gt;\, overwriting tiles of the same name there,
+        /// and lists other copies of the same tiles elsewhere under imagesDirectory (they are not touched).
+        /// </summary>
+        public static InstallResult Install(string imagesDirectory, IEnumerable<string> ttcFiles)
+        {
+            var result = new InstallResult { ImagesDirectory = imagesDirectory };
+            var targets = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase); // file name -> destination
+
+            foreach (var ttcFile in ttcFiles)
+            {
+                var folder = Path.Combine(imagesDirectory, InstallFolderName(ttcFile));
+                Directory.CreateDirectory(folder);
+
+                var destination = Path.Combine(folder, Path.GetFileName(ttcFile));
+
+                // Overwrite, so that users can install updated files again
+                File.Copy(ttcFile, destination, true);
+                result.Installed.Add(destination);
+                targets[Path.GetFileName(ttcFile)] = destination;
+            }
+
+            foreach (var existing in EnumerateFilesRecursive(imagesDirectory, "*.ttc"))
+            {
+                string destination;
+                if (targets.TryGetValue(Path.GetFileName(existing), out destination) &&
+                    !String.Equals(Path.GetFullPath(existing), Path.GetFullPath(destination), StringComparison.OrdinalIgnoreCase))
                 {
-                    // Do we have an Aerofly folder to install into?
-                    string afsSceneryInstallDirectory = DirectoryHelper.FindAFSSceneryInstallDirectory(AeroSceneryManager.Instance.Settings);
-
-                    if (afsSceneryInstallDirectory != null)
-                    {
-                        // We install ttc files into a folder of the level 9 grid square containing the selected grid square
-                        var level9GridSquare = afs2GridSquare;
-
-                        if (afs2GridSquare.Level != 9)
-                        {
-                            level9GridSquare = this.afsGrid.GetGridSquareAtLatLon(afs2GridSquare.GetCenter().Lat, afs2GridSquare.GetCenter().Lng, 9);
-                        }
-
-                        // This is now the level9 grid square that contains the selected grid square
-                        var afsSceneryFinalInstallDirectory = String.Format(@"{0}\{1}", afsSceneryInstallDirectory, level9GridSquare.Name);
-
-                        if (!Directory.Exists(afsSceneryFinalInstallDirectory))
-                        {
-                            Directory.CreateDirectory(afsSceneryFinalInstallDirectory);
-                        }
-
-                        // Copy the files over
-                        foreach(var ttcFilePath in ttcFiles)
-                        {
-                            var filename = Path.GetFileName(ttcFilePath);
-                            var destinationPath = String.Format(@"{0}/{1}", afsSceneryFinalInstallDirectory, filename);
-
-                            // We want to overwrite files so that users can install updated files again
-                            if (File.Exists(destinationPath))
-                            {
-                                File.Delete(destinationPath);
-                            }
-                            File.Copy(ttcFilePath, destinationPath);
-                        }
-
-                    }
-
+                    result.OtherCopies.Add(existing);
                 }
+            }
 
-            });
-
-            await task;
+            return result;
         }
 
         /// <summary>
@@ -176,7 +211,7 @@ namespace AeroScenery.FileManagement
         /// <param name="root"></param>
         /// <param name="pattern"></param>
         /// <returns></returns>
-        private IEnumerable<string> EnumerateFilesRecursive(string root, string pattern = "*")
+        private static IEnumerable<string> EnumerateFilesRecursive(string root, string pattern = "*")
         {
             var todo = new Queue<string>();
             todo.Enqueue(root);

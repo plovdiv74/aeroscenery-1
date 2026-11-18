@@ -6,6 +6,7 @@ using AeroScenery.Data;
 using AeroScenery.Data.Mappers;
 using AeroScenery.Data.Models;
 using AeroScenery.Download;
+using AeroScenery.FileManagement;
 using AeroScenery.FSCloudPort;
 using AeroScenery.ImageProcessing;
 using AeroScenery.OrthophotoSources;
@@ -223,6 +224,7 @@ namespace AeroScenery
             try
             {
                 int i = 0;
+                var installResults = new List<InstallResult>();
                 foreach (AFS2GridSquare afs2GridSquare in this.mainForm.SelectedAFS2GridSquares.Values.Select(x => x.AFS2GridSquare))
                 {
                     var currentGrideSquareMessage = String.Format("Working on AFS Grid Square {0} of {1}", i + 1, this.mainForm.SelectedAFS2GridSquares.Count());
@@ -239,6 +241,7 @@ namespace AeroScenery
 
                     var tileDownloadDirectory = GetTileDownloadDirectory(afsGridSquareDirectory) + this.settings.ZoomLevel + @"\";
                     var stitchedTilesDirectory = GetTileDownloadDirectory(afsGridSquareDirectory) + this.settings.ZoomLevel + @"-stitched\";
+                    var ttcDirectory = GetTileDownloadDirectory(afsGridSquareDirectory) + this.settings.ZoomLevel + @"-ttc\";
 
                     // Do we have a directory for the afs grid square and this orthophoto source
                     if (!Directory.Exists(tileDownloadDirectory))
@@ -336,8 +339,20 @@ namespace AeroScenery
                         this.mainForm.UpdateChildTaskLabel("Writing TTC Files");
                         log.Info("Writing TTC Files");
 
-                        var ttcDirectory = GetTileDownloadDirectory(afsGridSquareDirectory) + this.settings.ZoomLevel + @"-ttc\";
                         await WriteTtcFilesAsync(afs2GridSquare, tileDownloadDirectory, ttcDirectory);
+                    }
+
+                    // Install the square's TTC files (from Write TTC Files) into the Aerofly user folder
+                    if (this.Settings.InstallScenery.Value && this.mainForm.ActionsRunning)
+                    {
+                        this.mainForm.UpdateChildTaskLabel("Installing TTC Files");
+                        var installResult = await InstallTtcFilesAsync(afs2GridSquare, ttcDirectory);
+                        if (installResult == null)
+                        {
+                            break;
+                        }
+
+                        installResults.Add(installResult);
                     }
 
                     i++;
@@ -364,12 +379,8 @@ namespace AeroScenery
                 //}
 
 
-                // Install Scenery
-                //if (this.Settings.InstallScenery)
-                //{
-                //    this.mainForm.UpdateChildTaskLabel("Prompting To Install Scenery");
-
-                //}
+                // Installed tiles that also exist elsewhere under scenery\images: the sim loads both
+                SceneryInstaller.ShowOtherCopiesMessage(installResults);
 
                 this.ActionsComplete();
 
@@ -580,6 +591,38 @@ namespace AeroScenery
                     this.ttcCancellation = null;
                 }
             }
+        }
+
+        /// <summary>
+        /// Copies the TTC files Write TTC Files made for a grid square into the Aerofly user folder
+        /// (scenery\images\&lt;level-9 square&gt;\). Null if there is nowhere to install to (the user has been told).
+        /// </summary>
+        private async Task<InstallResult> InstallTtcFilesAsync(AFS2GridSquare afs2GridSquare, string ttcDirectory)
+        {
+            var imagesDirectory = DirectoryHelper.FindAFSSceneryInstallDirectory(this.settings);
+            if (imagesDirectory == null)
+            {
+                SceneryInstaller.ShowNoInstallDirectoryMessage();
+                return null;
+            }
+
+            var ttcFiles = Directory.Exists(ttcDirectory)
+                ? Directory.GetFiles(ttcDirectory, "map_*.ttc").ToList()
+                : new List<string>();
+            if (ttcFiles.Count == 0)
+            {
+                log.Info(String.Format("No TTC files to install for {0} in {1}", afs2GridSquare.Name, ttcDirectory));
+                return new InstallResult { ImagesDirectory = imagesDirectory };
+            }
+
+            var result = await Task.Run(() => SceneryInstaller.Install(imagesDirectory, ttcFiles));
+            log.Info(String.Format("Installed {0} TTC files for {1} into {2}", result.Installed.Count, afs2GridSquare.Name, imagesDirectory));
+            foreach (var copy in result.OtherCopies)
+            {
+                log.Warn(String.Format("Another copy of an installed tile, which Aerofly also loads: {0}", copy));
+            }
+
+            return result;
         }
 
         private void ResetGridSquare(string gridSquareName)

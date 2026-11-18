@@ -284,14 +284,14 @@ namespace AeroScenery
             this.generateAFSFilesCheckBox.Checked = true;
             this.runGeoConvertCheckBox.Checked = true;
             this.writeTtcFilesCheckBox.Checked = false;
-            //this.installSceneryIntoAFSCheckBox.Checked = true;
+            this.installSceneryIntoAFSCheckBox.Checked = false;
 
             this.downloadImageTileCheckBox.Enabled = false;
             this.stitchImageTilesCheckBox.Enabled = false;
             this.generateAFSFilesCheckBox.Enabled = false;
             this.runGeoConvertCheckBox.Enabled = false;
             this.writeTtcFilesCheckBox.Enabled = false;
-            //this.installSceneryIntoAFSCheckBox.Enabled = false;
+            this.installSceneryIntoAFSCheckBox.Enabled = false;
         }
 
         private void SetCustomActions()
@@ -304,14 +304,14 @@ namespace AeroScenery
             this.runGeoConvertCheckBox.Checked = settings.RunGeoConvert.Value;
             this.writeTtcFilesCheckBox.Checked = settings.WriteTtcFiles.Value;
             this.deleteStitchedImagesCheckBox.Checked = settings.DeleteStitchedImageTiles.Value;
-            //this.installSceneryIntoAFSCheckBox.Checked = settings.InstallScenery;
+            this.installSceneryIntoAFSCheckBox.Checked = settings.InstallScenery.Value;
 
             this.downloadImageTileCheckBox.Enabled = true;
             this.stitchImageTilesCheckBox.Enabled = true;
             this.generateAFSFilesCheckBox.Enabled = true;
             this.runGeoConvertCheckBox.Enabled = true;
             this.writeTtcFilesCheckBox.Enabled = true;
-            //this.installSceneryIntoAFSCheckBox.Enabled = true;
+            this.installSceneryIntoAFSCheckBox.Enabled = true;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -1035,15 +1035,7 @@ namespace AeroScenery
 
         private void installSceneryIntoAFSCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (downloadImageTileCheckBox.Checked)
-            {
-                AeroSceneryManager.Instance.Settings.DownloadImageTiles = true;
-            }
-            else
-            {
-                AeroSceneryManager.Instance.Settings.DownloadImageTiles = false;
-            }
-
+            AeroSceneryManager.Instance.Settings.InstallScenery = installSceneryIntoAFSCheckBox.Checked;
             AeroSceneryManager.Instance.SaveSettings();
         }
 
@@ -1598,7 +1590,7 @@ namespace AeroScenery
 
                         if (duplicateResult == null || duplicateResult == DialogResult.OK)
                         {
-                            var installTask = this.sceneryInstaller.InstallSceneryAsync(this.SelectedAFS2GridSquare, ttcFiles);
+                            var installTask = this.sceneryInstaller.InstallSceneryAsync(ttcFiles);
 
                             var fileOperationProgressForm = new FileOperationProgressForm();
                             fileOperationProgressForm.MessageText = "Installing Scenery";
@@ -1607,6 +1599,11 @@ namespace AeroScenery
                             fileOperationProgressForm.FileOperationTask = installTask;
                             await fileOperationProgressForm.DoTaskAsync();
                             fileOperationProgressForm = null;
+
+                            if (installTask.Result != null)
+                            {
+                                SceneryInstaller.ShowOtherCopiesMessage(new[] { installTask.Result });
+                            }
                         }
                     }
 

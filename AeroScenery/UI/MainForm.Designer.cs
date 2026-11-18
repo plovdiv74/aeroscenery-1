@@ -739,7 +739,7 @@
             this.installSceneryIntoAFSCheckBox.Name = "installSceneryIntoAFSCheckBox";
             this.installSceneryIntoAFSCheckBox.Size = new System.Drawing.Size(269, 21);
             this.installSceneryIntoAFSCheckBox.TabIndex = 5;
-            this.installSceneryIntoAFSCheckBox.Text = "Install Scenery In AFS User Scenery Folder";
+            this.installSceneryIntoAFSCheckBox.Text = "Install TTC Files In Aerofly User Folder";
             this.installSceneryIntoAFSCheckBox.UseVisualStyleBackColor = true;
             this.installSceneryIntoAFSCheckBox.CheckedChanged += new System.EventHandler(this.installSceneryIntoAFSCheckBox_CheckedChanged);
             // 

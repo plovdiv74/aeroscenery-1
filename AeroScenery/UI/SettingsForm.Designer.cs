@@ -172,9 +172,9 @@
             this.label9.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(20, 126);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(108, 17);
+            this.label9.Size = new System.Drawing.Size(127, 17);
             this.label9.TabIndex = 9;
-            this.label9.Text = "AFS2 User Folder";
+            this.label9.Text = "Aerofly User Folder";
             // 
             // sdkButton
             // 

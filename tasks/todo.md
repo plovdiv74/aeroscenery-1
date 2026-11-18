@@ -92,3 +92,30 @@ a "Write TTC Files (AFS4, no GeoConvert)" action (setting `WriteTtcFiles`, off i
 - Pontiac square with the option: mean brightness within 0.1..0.5 of GeoConvert's tiles on all 21 tiles, mid-tones
   one to one (64 -> 63, 100 -> 100, 150 -> 150). Curve on the source pixels vs after sampling: 0.33 vs 0.47 from
   GeoConvert's raw output, so on the source (cheaper, applied once per source pixel).
+
+# Install action (planned 2026-11-18)
+
+## What exists
+- Toolbar "Install Scenery" (one selected square): copies every *.ttc under the square's working folder (GeoConvert's
+  and ours alike; a duplicate-name warning if both exist) into <user folder>scenery/images/<level-9 square>/, after a
+  confirmation. Destination: Settings "AFS2 User Folder" (Karl: D:/afs4_extra_user_folder/), else
+  Documents/Aerofly FS 2/scenery/images (AFS2, wrong for AFS4).
+- Actions: "Install Scenery In AFS User Scenery Folder" checkbox, hidden from the logic (commented out); its handler
+  sets DownloadImageTiles from the download checkbox (bug).
+
+## Plan
+- [x] Action "Install Scenery": after "Write TTC Files" for each square, copy the tiles that run wrote, no prompt
+      (ticking the action is the consent); log the destination and count. GeoConvert's output isn't ready at that
+      point (it runs in its own processes), so it stays with the toolbar button.
+- [x] Installer: one copy routine for both; the level-9 folder from the tile name (AfsTile, exact) instead of the
+      lat/lon lookup; files coarser than level 9 into a folder of their own name.
+- [x] Destination: the user folder as now; fallback Documents/Aerofly FS 4/scenery/images; label "Aerofly User
+      Folder" (setting name unchanged, so settings.xml keeps working).
+- [x] Stale copies: before copying, look for the same file names elsewhere under scenery/images (e.g. a hand-copied
+      map_12_44b0_a1d0 folder of GeoConvert tiles); the sim would see both. Warn and list them (not deleted).
+- [x] Fix the checkbox handler; enable the checkbox in custom actions.
+- [x] Verify: build (Debug, Release; no new warnings); SceneryInstaller.Install with the 21 Pontiac tiles into a
+      scratch user folder: all in map_09_4480_a180, an old tile there overwritten (byte-identical after), a stale copy
+      in a hand-made map_12_44b0_a1d0 folder reported and left alone. Decided with Karl: warn, don't delete; default
+      actions unchanged.
+- [ ] The UI (Karl).

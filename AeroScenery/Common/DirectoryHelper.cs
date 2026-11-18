@@ -48,7 +48,7 @@ namespace AeroScenery.Common
             else
             {
                 string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                string afsMyDocsSceneryPath = myDocumentsPath + @"\Aerofly FS 2\scenery\";
+                string afsMyDocsSceneryPath = myDocumentsPath + @"\Aerofly FS 4\scenery\";
 
                 // Does the My Documents AFS scenery directory exist? (It should)
                 if (Directory.Exists(afsMyDocsSceneryPath))
