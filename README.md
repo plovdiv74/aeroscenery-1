@@ -65,6 +65,18 @@ summit rose from 962.7 m with level 10 to 964.8 m with level 12 (published: 965 
 GeoConvert brightens images with a fixed curve; AeroScenery's TTC files keep the source's colours. To match
 GeoConvert's look, tick "Write TTC Files: Brighten Images Like GeoConvert" in Settings > Image Processing.
 
+### Building
+
+Open `AeroScenery\AeroScenery.sln` in Visual Studio 2026 (version 18) with the .NET Framework 4.8 targeting pack.
+The solution has two configurations, **Debug** and **Release**, both for the **Any CPU** platform; the output goes to
+`AeroScenery\bin\Debug\` or `bin\Release\`. "Prefer 32-bit" is off, so AeroScenery runs as a 64-bit process on 64-bit
+Windows (a USGS 1/3" elevation cell alone takes about 470 MB of memory). The NuGet packages (`packages.config`)
+are restored on build.
+
+The SQLite package (System.Data.SQLite 1.0.109) copies its native `SQLite.Interop.dll` for both architectures into
+`bin\...\x86\` and `bin\...\x64\` and picks the right one at run time, which is what lets the project stay Any CPU.
+Updating the packages, the low-level SQLite support in particular, will need an x64 platform target.
+
 ### Removed from earlier versions
 
 AeroScenery used to build Aerofly FS 2 scenery through the SDK's GeoConvert. With the tiles now written directly,
@@ -80,7 +92,8 @@ these are gone:
 - **Show Airports:** the airport markers came from fscloudport.com, which no longer exists.
 - **The Help and "Get AeroFly FS2 SDK" buttons:** they opened the original project's page and an SDK download page
   that no longer exists.
-- **The cultivation editor** remnants.
+- **The cultivation editor** remnants, and its DebugSceneryEditor build configuration.
+- **The x86 solution platform:** it only mapped onto the Any CPU build.
 
 Settings from earlier versions are kept where they still apply; the others are ignored.
 
