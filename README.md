@@ -1,13 +1,76 @@
-## AeroScenery - A scenery generation and editing app for Aerofly FS2
+## AeroScenery - aerial imagery and elevation scenery for Aerofly FS 4
 
-To give AeroScenery a try:
+AeroScenery downloads aerial imagery (Bing or Google) and elevation data for the grid squares you pick on a map, and
+writes them as Aerofly FS 4 terrain tiles: `map_LL_XXXX_YYYY.ttc` (images) and `maph_LL_XXXX_YYYY.tth` (elevation).
+It writes the tiles itself, so the Aerofly SDK and GeoConvert aren't needed. The older route through GeoConvert
+(Aerofly FS 2 SDK) is still there under "Choose Actions To Run".
 
-1. Download and install AeroScenery. Download the Aerofly SDK if you haven't already
-2. Start AeroScenery (you'll find it in the Windows Start menu once installed
-3. Click Settings in the top left and copy the directory of the Aerofly SDK, e.g. C:\aerofly_fs_2_sdk_tools_20171123\aerofly_fs_2_sdk_tools
-4. Click somewhere over land on the map to select a tile
-5. Select Google as the image source
-6. Select a zoom level depending on how long you're willing to wait. 16 or 17 are usually good choices
-7. Under "Generate AFS2 Levels" click "Choose For Me"
-8. Under "Actions" select "Run Default Actions"
-9. Click Start
+### Quick start
+
+1. Start AeroScenery and click **Settings**:
+   - **Working Folder**: where downloads and generated tiles go.
+   - **Aerofly User Folder**: the folder that holds (or will hold) `scenery\images` and `scenery\elevation`, e.g.
+     your extra user folder. Without one, AeroScenery installs into `Documents\Aerofly FS 4\scenery`.
+   - **Elevation** tab: pick an elevation source (see below).
+2. Click a grid square on the map (the "Grid Square Selection Size" in the toolbar sets its level).
+3. Pick the image source and zoom level. Zoom 17 (about 1.2 m per pixel) fills image tiles down to level 14.
+4. Under "Generate AFS Levels" tick the image levels, e.g. 12, 13 and 14 for a level-12 square. Aerofly draws the
+   finest level it has, so go down to the finest level of the stock scenery there (14 in much of the US).
+5. Under "Actions" choose **Run Default Actions** and click **Start**.
+
+The default actions download the image tiles, write the TTC and TTH files and install them. Restart Aerofly to see
+them.
+
+### Actions
+
+| Action | What it does |
+| --- | --- |
+| Download Image Tiles | Downloads the 256-pixel image tiles covering the square into `<working folder>\<square>\<source>\<zoom>\`. |
+| Write TTC Files (AFS4, no GeoConvert) | Renders the selected image levels straight from the downloaded tiles into `<square>\<source>\<zoom>-ttc\`: the finest level at one tile pixel per source pixel, each coarser level averaged from the finer tiles; BC1 with mipmaps, zlib-compressed. Tiles with missing image tiles are skipped and listed. |
+| Write TTH Files (AFS4 Elevation) | Writes the selected elevation levels from the chosen elevation source into `<square>\elevation\<source>\`. A level coarser than the square gets the one tile containing it. |
+| Install TTC/TTH Files In Aerofly User Folder | Copies the square's TTC files into `scenery\images\<level-9 tile>\` and its TTH files into `scenery\elevation\` of the Aerofly user folder, overwriting tiles of the same name. Other copies of the same tiles elsewhere in those folders (which Aerofly would also load) are listed, not deleted. |
+| Stitch Image Tiles, Generate AID / TMC Files, Run GeoConvert | The GeoConvert route; needs the "AFS2 SDK Folder" in Settings. The toolbar's "Install Scenery" button installs GeoConvert's output once it has finished. |
+
+### Elevation
+
+Elevation sources are listed in `Documents\AeroScenery\ElevationSources.json`, which AeroScenery writes with these
+defaults the first time it's needed. Settings > Elevation shows them, with "Edit Sources File" and "Reload".
+
+| Source | Coverage | Notes |
+| --- | --- | --- |
+| Copernicus GLO-30 | Worldwide, 1" (about 30 m) | About 45 MB per 1-degree cell. A surface model: heights include trees and buildings (4 to 11 m high in forest). Cells without land are sea level. |
+| USGS 3DEP 1 arc-second | USA, Canada, Mexico | About 55 MB per cell. Bare earth: the better choice where it exists. Copernicus where it has no data. |
+| USGS 3DEP 1/3 arc-second | USA, about 10 m | About 420 MB per cell. Worth it for TTH levels 11 and 12. Copernicus where it has no data. |
+| Local SRTM .hgt files | Your own files | `.hgt` files you downloaded yourself (Viewfinder Panoramas, SRTM, ...). Change the folder to yours. |
+
+Each entry has a `Name`, a `Location` (an http(s) URL or a local path, with the fields below filled in for each
+1-degree cell), a `Format` (`geotiff` or `hgt`), `MissingIsSea` (treat a missing cell and no-data samples as sea
+level), an optional `Fallback` (the name of another source to use where this one has no data), `Attribution` and
+`Notes`. Location fields, for the cell whose south-west corner is (lat, lon):
+
+- `{NS}` `{ns}`: N or S (n or s) of the south edge; `{lat}`: its absolute value, 2 digits
+- `{NSN}` `{nsN}`: N or S of the north edge; `{latN}`: its absolute value, 2 digits
+- `{EW}` `{ew}`: E or W (e or w) of the west edge; `{lon}`: its absolute value, 3 digits
+
+For example Copernicus' `N42_00_W084_00` is `{NS}{lat}_00_{EW}{lon}_00`, and USGS's `n43w084` is
+`{nsN}{latN}{ew}{lon}`. Downloads are cached in `<working folder>\elevation-data\`.
+
+TTH levels (Settings > Elevation): the stock scenery uses levels 7, 9 and 10; level 10 (samples about 30 m apart) is
+the default. Aerofly also uses levels 11 and 12, which are worth writing from 1/3" data: at Mount Monadnock (NH) the
+summit rose from 962.7 m with level 10 to 964.8 m with level 12 (published: 965 m).
+
+### Image brightness
+
+GeoConvert brightens images with a fixed curve; AeroScenery's TTC files keep the source's colours. To match
+GeoConvert's look, tick "Write TTC Files: Brighten Images Like GeoConvert" in Settings > Image Processing.
+
+### Data credits
+
+Respect the terms of the imagery and elevation services you use. The default elevation sources ask for these
+credits:
+
+- Copernicus DEM GLO-30: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018, provided under
+  COPERNICUS by the European Union and ESA.
+- USGS 3DEP: U.S. Geological Survey, 3D Elevation Program.
+
+AeroScenery reads GeoTIFF elevation data with [LibTiff.Net](https://github.com/BitMiracle/libtiff.net) (BSD license).
