@@ -278,13 +278,20 @@ namespace AeroScenery
 
                     }
 
-                    // Write TTC files from the downloaded image tiles
+                    // Write TTC files from the downloaded image tiles (with the sea transparent, if set)
+                    List<string> emptyTtcTiles = null;
                     if (this.Settings.WriteTtcFiles.Value && this.mainForm.ActionsRunning)
                     {
+                        Func<AfsTile, byte[]> seaPixels = null;
+                        if (this.Settings.TtcSeaTransparent.Value)
+                        {
+                            seaPixels = await PrepareSeaMaskAsync(afs2GridSquare);
+                        }
+
                         this.mainForm.UpdateChildTaskLabel("Writing TTC Files");
                         log.Info("Writing TTC Files");
 
-                        await WriteTtcFilesAsync(afs2GridSquare, tileDownloadDirectory, ttcDirectory);
+                        emptyTtcTiles = await WriteTtcFilesAsync(afs2GridSquare, tileDownloadDirectory, ttcDirectory, seaPixels);
                     }
 
                     // Write TTH (elevation) files from the selected elevation source
@@ -315,7 +322,7 @@ namespace AeroScenery
                     if (this.Settings.InstallScenery.Value && this.mainForm.ActionsRunning)
                     {
                         this.mainForm.UpdateChildTaskLabel("Installing Scenery");
-                        var installResult = await InstallTilesAsync(afs2GridSquare, ttcDirectory, tthDirectory);
+                        var installResult = await InstallTilesAsync(afs2GridSquare, ttcDirectory, tthDirectory, emptyTtcTiles);
                         if (installResult == null)
                         {
                             break;
@@ -348,10 +355,47 @@ namespace AeroScenery
         }
 
         /// <summary>
-        /// Renders the selected AFS levels of a grid square from its downloaded image tiles into AFS4 ttc files
-        /// (AFS4\TtcRenderer.cs).
+        /// The sea mask of a grid square from the OSM coastline (AFS4\Coastline.cs), downloaded on first use into
+        /// &lt;working folder&gt;\coastline\; null, with a warning in the log, if that fails (the TTC files are then
+        /// written without it).
         /// </summary>
-        private async Task WriteTtcFilesAsync(AFS2GridSquare afs2GridSquare, string tileDownloadDirectory, string ttcDirectory)
+        private async Task<Func<AfsTile, byte[]>> PrepareSeaMaskAsync(AFS2GridSquare afs2GridSquare)
+        {
+            var square = AfsTile.Parse(afs2GridSquare.Name);
+            var progress = new Progress<string>(message =>
+            {
+                if (this.mainForm.ActionsRunning)
+                {
+                    this.mainForm.UpdateChildTaskLabel(message);
+                }
+            });
+
+            try
+            {
+                var shapefile = await Coastline.EnsureDownloadedAsync(Path.Combine(this.settings.WorkingDirectory, "coastline"),
+                    this.settings.UserAgent, progress, CancellationToken.None);
+                this.mainForm.UpdateChildTaskLabel("Reading the OSM coastline");
+                double strip = this.settings.TtcWaterStripMetres.Value;
+                double margin = 0.01 + strip / 50000; // degrees: the strip sees coast this far outside the square
+                var coastline = await Task.Run(() => Coastline.Load(shapefile,
+                    square.WestLongitude - margin, square.SouthLatitude - margin, square.EastLongitude + margin, square.NorthLatitude + margin));
+                coastline.StripMetres = strip;
+                return coastline.Opacity;
+            }
+            catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is IOException || ex is InvalidDataException)
+            {
+                log.Warn(String.Format("No sea mask for {0}: the OSM coastline couldn't be loaded ({1}); the TTC files are written without it",
+                    square, ex.Message));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Renders the selected AFS levels of a grid square from its downloaded image tiles into AFS4 ttc files
+        /// (AFS4\TtcRenderer.cs). Returns the tiles with nothing to show (all sea, or no imagery), which aren't
+        /// written, or null if nothing was rendered.
+        /// </summary>
+        private async Task<List<string>> WriteTtcFilesAsync(AFS2GridSquare afs2GridSquare, string tileDownloadDirectory, string ttcDirectory, Func<AfsTile, byte[]> seaPixels)
         {
             var prefix = GetOrthophotoSourcePrefix();
             string problem = null;
@@ -368,13 +412,13 @@ namespace AeroScenery
             {
                 var messageBox = new CustomMessageBox(problem, "AeroScenery", MessageBoxIcon.Warning);
                 messageBox.ShowDialog();
-                return;
+                return null;
             }
 
             var brighten = this.settings.TtcGeoConvertBrightness.Value;
             var source = new SourceTiles(tileDownloadDirectory, prefix, this.settings.ZoomLevel.Value,
                 brighten ? ToneCurves.GeoConvert : null);
-            var renderer = new TtcRenderer(source, ttcDirectory);
+            var renderer = new TtcRenderer(source, ttcDirectory, seaPixels);
             var square = AfsTile.Parse(afs2GridSquare.Name);
             var levels = this.settings.AFSLevelsToGenerate.ToList();
             var progress = new Progress<TtcRendererProgress>(p =>
@@ -391,9 +435,17 @@ namespace AeroScenery
             {
                 var stopwatch = Stopwatch.StartNew();
                 var result = await Task.Run(() => renderer.Render(square, levels, progress, cancellation.Token));
-                log.Info(String.Format("Wrote {0} TTC files for {1} to {2} in {3:F1} s (base level {4}{5})",
+                log.Info(String.Format("Wrote {0} TTC files for {1} to {2} in {3:F1} s (base level {4}{5}{6})",
                     result.Written.Count, square, ttcDirectory, stopwatch.Elapsed.TotalSeconds, result.BaseLevel,
-                    brighten ? ", brightened like GeoConvert" : ""));
+                    brighten ? ", brightened like GeoConvert" : "", seaPixels == null ? "" : this.settings.TtcWaterStripMetres.Value > 0
+                        ? String.Format(", sea transparent (OSM coastline), {0} m dithered strip", this.settings.TtcWaterStripMetres.Value)
+                        : ", sea transparent (OSM coastline)"));
+
+                if (result.NoImagery.Count > 0)
+                {
+                    log.Info(String.Format("{0} TTC files not written: nothing to show in them (all sea, or no imagery): {1}",
+                        result.NoImagery.Count, String.Join(" ", result.NoImagery)));
+                }
 
                 if (result.SkippedLevels.Count > 0)
                 {
@@ -414,10 +466,13 @@ namespace AeroScenery
                         MessageBoxIcon.Warning);
                     messageBox.ShowDialog();
                 }
+
+                return result.NoImagery;
             }
             catch (OperationCanceledException)
             {
                 log.Info("Writing TTC files cancelled");
+                return null;
             }
             finally
             {
@@ -431,15 +486,24 @@ namespace AeroScenery
         /// <summary>
         /// Copies the TTC and TTH files Write TTC/TTH Files made for a grid square into the Aerofly user folder
         /// (scenery\images\&lt;level-9 square&gt;\, scenery\elevation\). Null if there is nowhere to install to (the
-        /// user has been told).
+        /// user has been told). Installed copies of emptyTtcTiles (found to have nothing to show by this run's Write TTC
+        /// Files, e.g. all sea) are removed, so imagery from an earlier run doesn't stay.
         /// </summary>
-        private async Task<InstallResult> InstallTilesAsync(AFS2GridSquare afs2GridSquare, string ttcDirectory, string tthDirectory)
+        private async Task<InstallResult> InstallTilesAsync(AFS2GridSquare afs2GridSquare, string ttcDirectory, string tthDirectory, List<string> emptyTtcTiles)
         {
             var imagesDirectory = DirectoryHelper.FindAFSSceneryInstallDirectory(this.settings);
             if (imagesDirectory == null)
             {
                 SceneryInstaller.ShowNoInstallDirectoryMessage();
                 return null;
+            }
+
+            if (emptyTtcTiles != null && emptyTtcTiles.Count > 0)
+            {
+                foreach (var removed in await Task.Run(() => SceneryInstaller.RemoveInstalled(imagesDirectory, emptyTtcTiles)))
+                {
+                    log.Info(String.Format("Removed an installed TTC file with nothing to show now (all sea, or no imagery): {0}", removed));
+                }
             }
 
             var tiles = new List<string>();

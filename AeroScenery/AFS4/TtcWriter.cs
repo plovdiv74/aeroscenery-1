@@ -41,22 +41,48 @@ namespace AeroScenery.AFS4
         /// </summary>
         public static byte[] Bc1Chain(byte[] rgb)
         {
+            return Bc1Chain(rgb, null);
+        }
+
+        /// <summary>
+        /// The BC1 mip chain of a 2048x2048 RGB image with its coverage (one byte per pixel: 255 opaque, 0 transparent
+        /// and without imagery, between: imagery shown with that probability; null if all opaque). Each level's
+        /// coverage is dithered into BC1's one-bit alpha (Dither); transparent pixels use BC1's transparent index
+        /// (blocks in 3-colour mode), which Aerofly shows its own imagery through. Mips average the coverage, and the
+        /// colour of the pixels with imagery (AverageCovered).
+        /// </summary>
+        public static byte[] Bc1Chain(byte[] rgb, byte[] coverage)
+        {
             if (rgb.Length != Side * Side * 3)
             {
                 throw new ArgumentException(String.Format("a ttc takes a {0}x{0} RGB image, not {1} bytes", Side, rgb.Length));
             }
 
+            if (coverage != null && coverage.Length != Side * Side)
+            {
+                throw new ArgumentException(String.Format("a ttc's coverage has {0}x{0} bytes, not {1}", Side, coverage.Length));
+            }
+
             var chain = new byte[ChainSize];
             int offset = 0;
             var image = rgb;
+            var mask = coverage;
             int side = Side;
             for (int level = 0; level < Levels; level++)
             {
-                Bc1Encoder.Encode(image, side, side, chain, offset);
+                Bc1Encoder.Encode(image, mask == null ? null : Dither(mask, side), side, side, chain, offset);
                 offset += Bc1Encoder.EncodedSize(side, side);
                 if (level + 1 < Levels)
                 {
-                    image = HalveBox(image, side);
+                    if (mask == null)
+                    {
+                        image = HalveBox(image, side);
+                    }
+                    else
+                    {
+                        HalveBox(image, mask, side, out image, out mask);
+                    }
+
                     side /= 2;
                 }
             }
@@ -70,6 +96,45 @@ namespace AeroScenery.AFS4
         public static void Write(string path, byte[] rgb)
         {
             WriteChain(path, Bc1Chain(rgb));
+        }
+
+        /// <summary>
+        /// Writes a ttc from the 2048x2048 RGB image and its coverage (null if all opaque; see Bc1Chain).
+        /// </summary>
+        public static void Write(string path, byte[] rgb, byte[] coverage)
+        {
+            WriteChain(path, Bc1Chain(rgb, coverage));
+        }
+
+        /// <summary>
+        /// One-bit alpha (0 or 255) from coverage: a pixel is opaque if its coverage exceeds a threshold between 1 and
+        /// 253 from the R2 low-discrepancy sequence (frac(0.7549 x + 0.5698 y), a blue-noise-like pattern without
+        /// the grid look of a Bayer matrix). 255 is always opaque, 0 always transparent, and a share of c / 255 of an
+        /// area of coverage c is opaque.
+        /// </summary>
+        public static byte[] Dither(byte[] coverage, int side)
+        {
+            var alpha = new byte[side * side];
+            for (int y = 0; y < side; y++)
+            {
+                int row = y * side;
+                for (int x = 0; x < side; x++)
+                {
+                    int c = coverage[row + x];
+                    if (c == 255)
+                    {
+                        alpha[row + x] = 255;
+                    }
+                    else if (c != 0)
+                    {
+                        double t = x * 0.75487766624669276 + y * 0.56984029099805327;
+                        int threshold = 1 + (int)(253 * (t - Math.Floor(t)));
+                        alpha[row + x] = c > threshold ? (byte)255 : (byte)0;
+                    }
+                }
+            }
+
+            return alpha;
         }
 
         public static void WriteChain(string path, byte[] bc1Chain)
@@ -167,6 +232,71 @@ namespace AeroScenery.AFS4
             }
 
             return output;
+        }
+
+        /// <summary>
+        /// The 2x2 box average of a square RGB image with its coverage (AverageCovered per output pixel).
+        /// </summary>
+        public static void HalveBox(byte[] rgb, byte[] coverage, int side, out byte[] rgbOut, out byte[] coverageOut)
+        {
+            int half = side / 2;
+            var outRgb = new byte[half * half * 3];
+            var outCoverage = new byte[half * half];
+            for (int y = 0; y < half; y++)
+            {
+                int row0 = 2 * y * side, row1 = row0 + side;
+                for (int x = 0; x < half; x++)
+                {
+                    int s0 = row0 + 2 * x, s1 = row1 + 2 * x;
+                    AverageCovered(rgb, coverage, s0, s0 + 1, s1, s1 + 1, outRgb, outCoverage, y * half + x);
+                }
+            }
+
+            rgbOut = outRgb;
+            coverageOut = outCoverage;
+        }
+
+        /// <summary>
+        /// Sets pixel p of dst from four source pixels (pixel indices; coverage null = all 255): its coverage is their
+        /// rounded mean, its colour the rounded mean of those with imagery (coverage above 0). With four fully covered
+        /// pixels this is the plain box average.
+        /// </summary>
+        public static void AverageCovered(byte[] rgb, byte[] coverage, int i0, int i1, int i2, int i3, byte[] dstRgb, byte[] dstCoverage, int p)
+        {
+            int n = 0, r = 0, g = 0, b = 0, c = 0;
+            AddCovered(rgb, coverage, i0, ref n, ref r, ref g, ref b, ref c);
+            AddCovered(rgb, coverage, i1, ref n, ref r, ref g, ref b, ref c);
+            AddCovered(rgb, coverage, i2, ref n, ref r, ref g, ref b, ref c);
+            AddCovered(rgb, coverage, i3, ref n, ref r, ref g, ref b, ref c);
+
+            int o = 3 * p;
+            if (dstCoverage != null)
+            {
+                dstCoverage[p] = (byte)((c + 2) >> 2);
+            }
+
+            if (n == 0)
+            {
+                dstRgb[o] = dstRgb[o + 1] = dstRgb[o + 2] = 0;
+                return;
+            }
+
+            dstRgb[o] = (byte)((r + n / 2) / n);
+            dstRgb[o + 1] = (byte)((g + n / 2) / n);
+            dstRgb[o + 2] = (byte)((b + n / 2) / n);
+        }
+
+        private static void AddCovered(byte[] rgb, byte[] coverage, int i, ref int n, ref int r, ref int g, ref int b, ref int c)
+        {
+            int ci = coverage == null ? 255 : coverage[i];
+            if (ci != 0)
+            {
+                n++;
+                c += ci;
+                r += rgb[3 * i];
+                g += rgb[3 * i + 1];
+                b += rgb[3 * i + 2];
+            }
         }
 
         private static void PutUInt32LittleEndian(byte[] buffer, int at, uint value)

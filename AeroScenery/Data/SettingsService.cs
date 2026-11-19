@@ -158,6 +158,8 @@ namespace AeroScenery.Data
 
 
             log.Info(String.Format("TtcGeoConvertBrightness: {0}", settings.TtcGeoConvertBrightness));
+            log.Info(String.Format("TtcSeaTransparent: {0}", settings.TtcSeaTransparent));
+            log.Info(String.Format("TtcWaterStripMetres: {0}", settings.TtcWaterStripMetres));
             log.Info(String.Format("WriteTthFiles: {0}", settings.WriteTthFiles));
             log.Info(String.Format("ElevationSource: {0}", settings.ElevationSource));
             log.Info(String.Format("TthLevelsToGenerate: {0}", settings.TthLevelsToGenerate == null ? "" : String.Join(",", settings.TthLevelsToGenerate)));
@@ -259,6 +261,12 @@ namespace AeroScenery.Data
 
             if (settings.TtcGeoConvertBrightness == null)
                 settings.TtcGeoConvertBrightness = false;
+
+            if (settings.TtcSeaTransparent == null)
+                settings.TtcSeaTransparent = true;
+
+            if (settings.TtcWaterStripMetres == null)
+                settings.TtcWaterStripMetres = 10;
 
             if (settings.WriteTthFiles == null)
                 settings.WriteTthFiles = false;

@@ -16,6 +16,12 @@ namespace AeroScenery.AFS4
     {
         private static readonly string[] Extensions = { ".jpg", ".jpeg", ".png" };
 
+        /// <summary>
+        /// The extension of the marker the downloader writes, instead of an image, for a tile the server has no imagery
+        /// for (Bing's "no-tile", typically open water): &lt;prefix&gt;_&lt;zoom&gt;_&lt;tileX&gt;_&lt;tileY&gt;.notile.
+        /// </summary>
+        public const string NoImageryExtension = ".notile";
+
         public string Directory { get; private set; }
         public string Prefix { get; private set; }
         public int Zoom { get; private set; }
@@ -53,7 +59,8 @@ namespace AeroScenery.AFS4
         }
 
         /// <summary>
-        /// Loads the tiles tileX0..tileX1, tileY0..tileY1 (inclusive) in parallel; a missing or unreadable tile is null (and counts as missing).
+        /// Loads the tiles tileX0..tileX1, tileY0..tileY1 (inclusive) in parallel. A tile with a no-imagery marker is
+        /// null and flagged in NoImagery; a missing or unreadable tile is null (and counts as missing).
         /// </summary>
         public Window Load(int tileX0, int tileY0, int tileX1, int tileY1)
         {
@@ -69,6 +76,8 @@ namespace AeroScenery.AFS4
                 }
 
                 window.Pixels[i] = pixels;
+                window.NoImagery[i] = path == null && File.Exists(Path.Combine(this.Directory,
+                    String.Format("{0}_{1}_{2}_{3}{4}", this.Prefix, this.Zoom, tileX, tileY, NoImageryExtension)));
             });
 
             return window;
@@ -149,6 +158,7 @@ namespace AeroScenery.AFS4
         {
             public readonly int TileX0, TileY0, Columns, Rows;
             public readonly byte[][] Pixels; // per tile, row-major from (TileX0, TileY0); null where missing
+            public readonly bool[] NoImagery; // per tile: the server has no imagery there (a .notile marker)
 
             public Window(int tileX0, int tileY0, int columns, int rows)
             {
@@ -157,6 +167,16 @@ namespace AeroScenery.AFS4
                 this.Columns = columns;
                 this.Rows = rows;
                 this.Pixels = new byte[columns * rows][];
+                this.NoImagery = new bool[columns * rows];
+            }
+
+            /// <summary>
+            /// Whether global pixel (x, y) lies in a tile the server has no imagery for.
+            /// </summary>
+            public bool IsNoImagery(long x, long y)
+            {
+                long column = (x >> 8) - this.TileX0, row = (y >> 8) - this.TileY0;
+                return column >= 0 && row >= 0 && column < this.Columns && row < this.Rows && this.NoImagery[row * this.Columns + column];
             }
 
             /// <summary>
@@ -177,7 +197,7 @@ namespace AeroScenery.AFS4
             {
                 for (int i = 0; i < this.Pixels.Length; i++)
                 {
-                    if (this.Pixels[i] == null)
+                    if (this.Pixels[i] == null && !this.NoImagery[i])
                     {
                         yield return String.Format("{0}_{1}_{2}_{3}", tiles.Prefix, tiles.Zoom, this.TileX0 + i % this.Columns, this.TileY0 + i / this.Columns);
                     }

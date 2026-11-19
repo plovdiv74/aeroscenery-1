@@ -66,6 +66,9 @@
             this.reloadElevationSourcesButton = new System.Windows.Forms.Button();
             this.elevationSourcesPathLabel = new System.Windows.Forms.Label();
             this.ttcGeoConvertBrightnessCheckBox = new System.Windows.Forms.CheckBox();
+            this.ttcSeaTransparentCheckBox = new System.Windows.Forms.CheckBox();
+            this.ttcWaterStripLabel = new System.Windows.Forms.Label();
+            this.ttcWaterStripTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -351,6 +354,9 @@
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.ttcGeoConvertBrightnessCheckBox);
+            this.tabPage4.Controls.Add(this.ttcSeaTransparentCheckBox);
+            this.tabPage4.Controls.Add(this.ttcWaterStripLabel);
+            this.tabPage4.Controls.Add(this.ttcWaterStripTextBox);
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -459,6 +465,33 @@
             this.ttcGeoConvertBrightnessCheckBox.Text = "Write TTC Files: Brighten Images Like GeoConvert";
             this.ttcGeoConvertBrightnessCheckBox.UseVisualStyleBackColor = true;
             // 
+            // ttcSeaTransparentCheckBox
+            // 
+            this.ttcSeaTransparentCheckBox.AutoSize = true;
+            this.ttcSeaTransparentCheckBox.Location = new System.Drawing.Point(13, 47);
+            this.ttcSeaTransparentCheckBox.Name = "ttcSeaTransparentCheckBox";
+            this.ttcSeaTransparentCheckBox.Size = new System.Drawing.Size(560, 21);
+            this.ttcSeaTransparentCheckBox.TabIndex = 25;
+            this.ttcSeaTransparentCheckBox.Text = "Write TTC Files: Make the Sea Transparent (OSM Coastline; Aerofly's Own Water Shows)";
+            this.ttcSeaTransparentCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // ttcWaterStripLabel
+            // 
+            this.ttcWaterStripLabel.AutoSize = true;
+            this.ttcWaterStripLabel.Location = new System.Drawing.Point(31, 77);
+            this.ttcWaterStripLabel.Name = "ttcWaterStripLabel";
+            this.ttcWaterStripLabel.Size = new System.Drawing.Size(330, 17);
+            this.ttcWaterStripLabel.TabIndex = 26;
+            this.ttcWaterStripLabel.Text = "Fade Out the Imagery Offshore Over (m; 0 = Sharp Cut):";
+            // 
+            // ttcWaterStripTextBox
+            // 
+            this.ttcWaterStripTextBox.Location = new System.Drawing.Point(400, 74);
+            this.ttcWaterStripTextBox.Name = "ttcWaterStripTextBox";
+            this.ttcWaterStripTextBox.Size = new System.Drawing.Size(60, 22);
+            this.ttcWaterStripTextBox.TabIndex = 27;
+            this.ttcWaterStripTextBox.TextChanged += new System.EventHandler(this.ttcWaterStripTextBox_TextChanged);
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.okButton;
@@ -532,5 +565,8 @@
         private System.Windows.Forms.Button reloadElevationSourcesButton;
         private System.Windows.Forms.Label elevationSourcesPathLabel;
         private System.Windows.Forms.CheckBox ttcGeoConvertBrightnessCheckBox;
+        private System.Windows.Forms.CheckBox ttcSeaTransparentCheckBox;
+        private System.Windows.Forms.Label ttcWaterStripLabel;
+        private System.Windows.Forms.TextBox ttcWaterStripTextBox;
     }
 }

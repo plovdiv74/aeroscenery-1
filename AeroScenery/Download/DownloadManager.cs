@@ -208,6 +208,8 @@ namespace AeroScenery.Download
                         if (orthophotoSource == OrthophotoSource.Bing && response.Headers.Contains("X-VE-Tile-Info") &&
                             response.Headers.GetValues("X-VE-Tile-Info").FirstOrDefault() == "no-tile")
                         {
+                            // Remembered, so the tile isn't asked for again, and the TTC writer makes it transparent
+                            File.WriteAllText(path + imageTile.FileName + AFS4.SourceTiles.NoImageryExtension, imageTile.URL);
                             return;
                         }
 
@@ -252,13 +254,14 @@ namespace AeroScenery.Download
         }
 
         /// <summary>
-        /// Whether a tile has to be downloaded: it has no image file yet (existingFiles: the names in the download
-        /// folder). A file on disk is kept: downloads are checked to be images before they're saved, and the TTC
-        /// writer reads the gzip-wrapped files earlier versions saved.
+        /// Whether a tile has to be downloaded: it has neither an image file nor a no-imagery marker yet (existingFiles:
+        /// the names in the download folder). A file on disk is kept: downloads are checked to be images before they're
+        /// saved, and the TTC writer reads the gzip-wrapped files earlier versions saved.
         /// </summary>
         private static bool NeedsDownload(ImageTile imageTile, HashSet<string> existingFiles)
         {
-            return !existingFiles.Contains(imageTile.FileName + "." + imageTile.ImageExtension);
+            return !existingFiles.Contains(imageTile.FileName + "." + imageTile.ImageExtension) &&
+                   !existingFiles.Contains(imageTile.FileName + AFS4.SourceTiles.NoImageryExtension);
         }
 
         // JPEG (FF D8 FF) or PNG (89 50 4E 47) by the file's first bytes.

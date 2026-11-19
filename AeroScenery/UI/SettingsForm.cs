@@ -164,6 +164,8 @@ namespace AeroScenery.UI
 
             // Image processing
             settings.TtcGeoConvertBrightness = this.ttcGeoConvertBrightnessCheckBox.Checked;
+            settings.TtcSeaTransparent = this.ttcSeaTransparentCheckBox.Checked;
+            settings.TtcWaterStripMetres = String.IsNullOrEmpty(this.ttcWaterStripTextBox.Text) ? 0 : int.Parse(this.ttcWaterStripTextBox.Text);
 
             AeroSceneryManager.Instance.SaveSettings();
             this.Hide();
@@ -199,6 +201,8 @@ namespace AeroScenery.UI
 
             // Image processing
             this.ttcGeoConvertBrightnessCheckBox.Checked = settings.TtcGeoConvertBrightness.Value;
+            this.ttcSeaTransparentCheckBox.Checked = settings.TtcSeaTransparent.Value;
+            this.ttcWaterStripTextBox.Text = settings.TtcWaterStripMetres.Value.ToString();
         }
 
         private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
@@ -287,6 +291,15 @@ namespace AeroScenery.UI
         private string GetInteger(string input)
         {
             return new string(input.Where(c => char.IsDigit(c)).ToArray());
+        }
+
+        private void ttcWaterStripTextBox_TextChanged(object sender, EventArgs e)
+        {
+            var numbersOnly = this.GetInteger(this.ttcWaterStripTextBox.Text);
+            if (this.ttcWaterStripTextBox.Text != numbersOnly)
+            {
+                this.ttcWaterStripTextBox.Text = numbersOnly;
+            }
         }
 
         private void downloadWaitTextBox_TextChanged(object sender, EventArgs e)

@@ -197,6 +197,27 @@ namespace AeroScenery.FileManagement
         }
 
         /// <summary>
+        /// Removes installed ttc tiles that a later run found to have nothing to show (all sea, or no imagery), so the
+        /// old imagery doesn't stay: only the file at each tile's own install location (imagesDirectory\&lt;level-9
+        /// folder&gt;\&lt;name&gt;.ttc). Returns the removed paths.
+        /// </summary>
+        public static List<string> RemoveInstalled(string imagesDirectory, IEnumerable<string> tileNames)
+        {
+            var removed = new List<string>();
+            foreach (var name in tileNames)
+            {
+                var path = Path.Combine(imagesDirectory, InstallFolderName(name + ".ttc"), name + ".ttc");
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                    removed.Add(path);
+                }
+            }
+
+            return removed;
+        }
+
+        /// <summary>
         /// Copies tiles into the user's scenery folder, overwriting tiles of the same name there: ttc files into
         /// imagesDirectory\&lt;level-9 folder&gt;\, tth files flat into scenery\elevation\ (as Aerofly's own). Lists
         /// other copies of the same tiles elsewhere under scenery\images or scenery\elevation (they are not touched).
