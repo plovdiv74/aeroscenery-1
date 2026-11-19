@@ -26,7 +26,7 @@ them.
 | Action | What it does |
 | --- | --- |
 | Download Image Tiles | Downloads the 256-pixel image tiles covering the square into `<working folder>\<square>\<source>\<zoom>\`. |
-| Write TTC Files (AFS4 Images) | Renders the selected image levels straight from the downloaded tiles into `<square>\<source>\<zoom>-ttc\`: the finest level at one tile pixel per source pixel, each coarser level averaged from the finer tiles; BC1 with mipmaps, zlib-compressed. Tiles with missing image tiles are skipped and listed. |
+| Write TTC Files (AFS4 Images) | Renders the selected image levels straight from the downloaded tiles into `<square>\<source>\<zoom>-ttc\`: the finest level at one tile pixel per source pixel, each coarser level averaged from the finer tiles; BC1 with mipmaps, zlib-compressed. The sea, and areas where the image source has no imagery, are transparent (see "Sea and coastlines"); tiles with nothing else in them aren't written. Tiles with missing image tiles (failed downloads) are skipped and listed. |
 | Write TTH Files (AFS4 Elevation) | Writes the selected elevation levels from the chosen elevation source into `<square>\elevation\<source>\`. A level coarser than the square gets the one tile containing it. |
 | Install TTC/TTH Files In Aerofly User Folder | Copies the square's TTC files into `scenery\images\<level-9 tile>\` and its TTH files into `scenery\elevation\` of the Aerofly user folder, overwriting tiles of the same name. Other copies of the same tiles elsewhere in those folders (which Aerofly would also load) are listed, not deleted. |
 
@@ -65,6 +65,28 @@ summit rose from 962.7 m with level 10 to 964.8 m with level 12 (published: 965 
 GeoConvert brightens images with a fixed curve; AeroScenery's TTC files keep the source's colours. To match
 GeoConvert's look, tick "Write TTC Files: Brighten Images Like GeoConvert" in Settings > Image Processing.
 
+### Sea and coastlines
+
+Bing's and Google's water is much lighter than Aerofly's own (at Provincetown about RGB 42,60,76 against 8,24,48), so
+imagery that ends out at sea shows as a band. AeroScenery therefore makes the sea transparent in its TTC files, and
+Aerofly shows its own imagery and water there. Aerofly's TTC files use BC1 compression, whose transparency is all or
+nothing per pixel.
+
+- **Sea:** cut out along the OpenStreetMap coastline, using the land polygons from
+  [osmdata.openstreetmap.de](https://osmdata.openstreetmap.de/data/land-polygons.html). They're about 930 MB, and are
+  downloaded once into `<working folder>\coastline\`. Lakes and rivers keep their imagery. Setting: "Write TTC Files:
+  Make the Sea Transparent" (on by default).
+- **Fade:** the imagery fades out over a strip of sea along the coast instead of ending at the coastline. The fade is
+  dithered, as a thinning pattern of pixels. Setting: "Fade Out the Imagery Offshore Over (m)" (default 10 m; 0 for a
+  sharp cut).
+- **No imagery:** where the image source has none (Bing answers "no-tile" over open water), the tiles are transparent
+  too. The downloader remembers these as `.notile` files and doesn't ask again.
+- **Tiles with nothing left to show** aren't written. Copies from earlier runs are removed from the output folder, and
+  by Install from the Aerofly user folder.
+
+The coastline is the high-water line, and in the US it was largely traced from aerial imagery, so it usually meets
+Bing's shore within a few metres.
+
 ### Tested in Aerofly FS 4
 
 **Provincetown (KPVC), Massachusetts.** Three level-12 squares (`map_12_4e00_a140`, `map_12_4e10_a140`,
@@ -73,9 +95,14 @@ USGS 3DEP 1/3" with the Copernicus fallback. In the sim the imagery looks right,
 show the beach at sea level against the higher ground inland. Offshore, where USGS has no data and Copernicus has no
 cells, the elevation is sea level.
 
-Over open water Bing has no imagery for part of each square: it answers "no-tile" (132 of the 1,089 image tiles of
-`map_12_4e10_a130`). A TTC tile that contains such a gap isn't written (7 of the 21 in each of these squares, the
-level-12 tile among them), so Aerofly shows its own imagery there.
+Without a sea mask, the edges of Bing's imagery out at sea showed as straight bands. With the OSM coastline the change
+from Bing to Aerofly's water is at the shore. Of the 21 TTC tiles of `map_12_4e10_a130`, 12 are all sea and aren't
+written, and over 90% of the level-12 tile is transparent. Of the fade widths tried (150, 100, 50 and 10 m), 10 m looked best;
+a sharp cut looked abrupt.
+
+Two approaches that didn't work: cutting the sea where the elevation data is at or below sea level gave a blocky
+coastline (30 m steps with Copernicus) and holes in salt marshes. BC3 (DXT5), which has smooth alpha, isn't an option:
+Aerofly reads a TTC's mip chain as BC1 only.
 
 ### Building
 
@@ -119,5 +146,8 @@ credits:
 - Copernicus DEM GLO-30: (c) DLR e.V. 2010-2014 and (c) Airbus Defence and Space GmbH 2014-2018, provided under
   COPERNICUS by the European Union and ESA.
 - USGS 3DEP: U.S. Geological Survey, 3D Elevation Program.
+
+The coastline comes from OpenStreetMap: (c) OpenStreetMap contributors, available under the Open Database License
+(ODbL).
 
 AeroScenery reads GeoTIFF elevation data with [LibTiff.Net](https://github.com/BitMiracle/libtiff.net) (BSD license).
