@@ -67,8 +67,12 @@
             this.elevationSourcesPathLabel = new System.Windows.Forms.Label();
             this.ttcGeoConvertBrightnessCheckBox = new System.Windows.Forms.CheckBox();
             this.ttcSeaTransparentCheckBox = new System.Windows.Forms.CheckBox();
-            this.ttcWaterStripLabel = new System.Windows.Forms.Label();
-            this.ttcWaterStripTextBox = new System.Windows.Forms.TextBox();
+            this.ttcSeaKeepLabel = new System.Windows.Forms.Label();
+            this.ttcSeaKeepTextBox = new System.Windows.Forms.TextBox();
+            this.ttcSeaFadeLabel = new System.Windows.Forms.Label();
+            this.ttcSeaFadeTextBox = new System.Windows.Forms.TextBox();
+            this.ttcSeaColourLabel = new System.Windows.Forms.Label();
+            this.ttcSeaColourTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -355,8 +359,12 @@
             // 
             this.tabPage4.Controls.Add(this.ttcGeoConvertBrightnessCheckBox);
             this.tabPage4.Controls.Add(this.ttcSeaTransparentCheckBox);
-            this.tabPage4.Controls.Add(this.ttcWaterStripLabel);
-            this.tabPage4.Controls.Add(this.ttcWaterStripTextBox);
+            this.tabPage4.Controls.Add(this.ttcSeaKeepLabel);
+            this.tabPage4.Controls.Add(this.ttcSeaKeepTextBox);
+            this.tabPage4.Controls.Add(this.ttcSeaFadeLabel);
+            this.tabPage4.Controls.Add(this.ttcSeaFadeTextBox);
+            this.tabPage4.Controls.Add(this.ttcSeaColourLabel);
+            this.tabPage4.Controls.Add(this.ttcSeaColourTextBox);
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -475,22 +483,55 @@
             this.ttcSeaTransparentCheckBox.Text = "Write TTC Files: Make the Sea Transparent (OSM Coastline; Aerofly's Own Water Shows)";
             this.ttcSeaTransparentCheckBox.UseVisualStyleBackColor = true;
             // 
-            // ttcWaterStripLabel
+            // ttcSeaKeepLabel
             // 
-            this.ttcWaterStripLabel.AutoSize = true;
-            this.ttcWaterStripLabel.Location = new System.Drawing.Point(31, 77);
-            this.ttcWaterStripLabel.Name = "ttcWaterStripLabel";
-            this.ttcWaterStripLabel.Size = new System.Drawing.Size(330, 17);
-            this.ttcWaterStripLabel.TabIndex = 26;
-            this.ttcWaterStripLabel.Text = "Blend Into the Stock Water Over (m; Needs afsd -ts):";
+            this.ttcSeaKeepLabel.AutoSize = true;
+            this.ttcSeaKeepLabel.Location = new System.Drawing.Point(31, 77);
+            this.ttcSeaKeepLabel.Name = "ttcSeaKeepLabel";
+            this.ttcSeaKeepLabel.Size = new System.Drawing.Size(330, 17);
+            this.ttcSeaKeepLabel.TabIndex = 26;
+            this.ttcSeaKeepLabel.Text = "Keep the Imagery Offshore For (m):";
             // 
-            // ttcWaterStripTextBox
+            // ttcSeaKeepTextBox
             // 
-            this.ttcWaterStripTextBox.Location = new System.Drawing.Point(400, 74);
-            this.ttcWaterStripTextBox.Name = "ttcWaterStripTextBox";
-            this.ttcWaterStripTextBox.Size = new System.Drawing.Size(60, 22);
-            this.ttcWaterStripTextBox.TabIndex = 27;
-            this.ttcWaterStripTextBox.TextChanged += new System.EventHandler(this.ttcWaterStripTextBox_TextChanged);
+            this.ttcSeaKeepTextBox.Location = new System.Drawing.Point(400, 74);
+            this.ttcSeaKeepTextBox.Name = "ttcSeaKeepTextBox";
+            this.ttcSeaKeepTextBox.Size = new System.Drawing.Size(60, 22);
+            this.ttcSeaKeepTextBox.TabIndex = 27;
+            this.ttcSeaKeepTextBox.TextChanged += new System.EventHandler(this.ttcSeaMetresTextBox_TextChanged);
+            // 
+            // ttcSeaFadeLabel
+            // 
+            this.ttcSeaFadeLabel.AutoSize = true;
+            this.ttcSeaFadeLabel.Location = new System.Drawing.Point(31, 105);
+            this.ttcSeaFadeLabel.Name = "ttcSeaFadeLabel";
+            this.ttcSeaFadeLabel.Size = new System.Drawing.Size(330, 17);
+            this.ttcSeaFadeLabel.TabIndex = 28;
+            this.ttcSeaFadeLabel.Text = "Then Fade It Into the Sea Colour Over (m):";
+            // 
+            // ttcSeaFadeTextBox
+            // 
+            this.ttcSeaFadeTextBox.Location = new System.Drawing.Point(400, 102);
+            this.ttcSeaFadeTextBox.Name = "ttcSeaFadeTextBox";
+            this.ttcSeaFadeTextBox.Size = new System.Drawing.Size(60, 22);
+            this.ttcSeaFadeTextBox.TabIndex = 29;
+            this.ttcSeaFadeTextBox.TextChanged += new System.EventHandler(this.ttcSeaMetresTextBox_TextChanged);
+            // 
+            // ttcSeaColourLabel
+            // 
+            this.ttcSeaColourLabel.AutoSize = true;
+            this.ttcSeaColourLabel.Location = new System.Drawing.Point(31, 133);
+            this.ttcSeaColourLabel.Name = "ttcSeaColourLabel";
+            this.ttcSeaColourLabel.Size = new System.Drawing.Size(330, 17);
+            this.ttcSeaColourLabel.TabIndex = 30;
+            this.ttcSeaColourLabel.Text = "Sea Colour (R,G,B; Aerofly's Is 8,23,47):";
+            // 
+            // ttcSeaColourTextBox
+            // 
+            this.ttcSeaColourTextBox.Location = new System.Drawing.Point(400, 130);
+            this.ttcSeaColourTextBox.Name = "ttcSeaColourTextBox";
+            this.ttcSeaColourTextBox.Size = new System.Drawing.Size(90, 22);
+            this.ttcSeaColourTextBox.TabIndex = 31;
             // 
             // SettingsForm
             // 
@@ -566,7 +607,11 @@
         private System.Windows.Forms.Label elevationSourcesPathLabel;
         private System.Windows.Forms.CheckBox ttcGeoConvertBrightnessCheckBox;
         private System.Windows.Forms.CheckBox ttcSeaTransparentCheckBox;
-        private System.Windows.Forms.Label ttcWaterStripLabel;
-        private System.Windows.Forms.TextBox ttcWaterStripTextBox;
+        private System.Windows.Forms.Label ttcSeaKeepLabel;
+        private System.Windows.Forms.TextBox ttcSeaKeepTextBox;
+        private System.Windows.Forms.Label ttcSeaFadeLabel;
+        private System.Windows.Forms.TextBox ttcSeaFadeTextBox;
+        private System.Windows.Forms.Label ttcSeaColourLabel;
+        private System.Windows.Forms.TextBox ttcSeaColourTextBox;
     }
 }

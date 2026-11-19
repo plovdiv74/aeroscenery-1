@@ -17,9 +17,10 @@ namespace AeroScenery.AFS4
     /// than thresholding elevation: a DEM is too coarse at the shore and puts low land (salt marsh) below sea level.
     ///
     /// A pixel is sea if its centre is outside every land polygon (even-odd rule per polygon, so holes work). BC1
-    /// alpha is one bit, so the cut is sharp; a strip offshore (StripMetres) gets a falling opacity, which the renderer
-    /// turns into a colour fade toward Aerofly's stock imagery (TtcRenderer), where Ortho4XP blurs its masks for
-    /// X-Plane's 8-bit alpha.
+    /// alpha is one bit, so instead of a transparent sea there's a colour fade: the imagery stays as it is for
+    /// KeepMetres from land, then its colour fades into a solid sea colour over FadeMetres, as in IPACS's own tiles
+    /// (photo, fade, solid 8,23,47 at Provincetown), and tiles of open sea only are left to the stock tiles' own sea.
+    /// Ortho4XP instead blurs its masks for X-Plane's 8-bit alpha.
     /// </summary>
     public class Coastline
     {
@@ -142,26 +143,34 @@ namespace AeroScenery.AFS4
         }
 
         /// <summary>
-        /// Width in metres of the strip of sea along the coastline where the imagery blends into Aerofly's stock
-        /// imagery instead of ending at the coastline: its opacity falls from 255 at the coast to 0 at this distance
-        /// (smoothstep), and the renderer blends the colour by it (TtcRenderer). 0: a sharp cut at the coastline.
+        /// Metres of sea next to land where the imagery stays as it is (marsh, tidal inlets and flats, near-shore
+        /// shallows: OSM's coastline often runs through them).
         /// </summary>
-        public double StripMetres { get; set; }
+        public double KeepMetres { get; set; }
 
         /// <summary>
-        /// The opacity of a tile's pixels (Side x Side, rows from the south, as the tile's image): 255 on land (a pixel
-        /// centre inside a land polygon), falling across the strip (StripMetres) to 0 at sea; null if all land.
+        /// Metres of sea beyond KeepMetres over which the imagery's colour blends into the sea colour (smoothstep);
+        /// beyond that the sea is the solid sea colour. As IPACS's own tiles do: their photo fades into a solid sea colour.
+        /// </summary>
+        public double FadeMetres { get; set; }
+
+        /// <summary>
+        /// How much of the sea colour each pixel of a tile gets (Side x Side, rows from the south, as the tile's image):
+        /// 0 for land (a pixel centre inside a land polygon) and sea within KeepMetres of it, 1..254 across the fade
+        /// (blend weight / 254), 255 for open sea beyond (the solid sea colour); null if all 0.
         /// Lines of constant longitude and latitude are straight on the AFS grid, and coastline edges are short, so the
         /// polygon edges are drawn as straight lines between their vertices on the grid.
         /// </summary>
-        public byte[] Opacity(AfsTile tile)
+        public byte[] SeaFade(AfsTile tile)
         {
             double pixelSpan = tile.Span / (double)Side;
             double metresPerPixel = MetresPerPixel(tile);
-            double stripPixels = this.StripMetres / metresPerPixel;
+            double keepPixels = Math.Max(0, this.KeepMetres) / metresPerPixel;
+            double fadePixels = Math.Max(0, this.FadeMetres) / metresPerPixel;
+            double bandPixels = keepPixels + fadePixels;
 
-            // The land mask with a margin as wide as the strip, so the distance to land sees across the tile's edges.
-            int margin = stripPixels > 0 ? (int)Math.Ceiling(stripPixels) + 1 : 0;
+            // The land mask with a margin as wide as the band, so the distance to land sees across the tile's edges.
+            int margin = bandPixels > 0 ? (int)Math.Ceiling(bandPixels) + 1 : 0;
             int size = Side + 2 * margin;
             double originX = tile.X - margin * pixelSpan, originY = tile.Y - margin * pixelSpan;
             var land = new bool[size * size];
@@ -177,22 +186,28 @@ namespace AeroScenery.AFS4
                 anyLand |= Fill(polygon, originX, originY, 1 / pixelSpan, size, land);
             }
 
-            var opacity = new byte[Side * Side];
+            var fade = new byte[Side * Side];
             if (!anyLand)
             {
-                return opacity; // all sea, with no coast within the strip
-            }
-
-            bool anySea = false;
-            if (margin == 0)
-            {
-                for (int p = 0; p < opacity.Length; p++)
+                // open sea, with no land within the band
+                for (int p = 0; p < fade.Length; p++)
                 {
-                    opacity[p] = land[p] ? (byte)255 : (byte)0;
-                    anySea |= !land[p];
+                    fade[p] = 255;
                 }
 
-                return anySea ? opacity : null;
+                return fade;
+            }
+
+            bool any = false;
+            if (margin == 0)
+            {
+                for (int p = 0; p < fade.Length; p++)
+                {
+                    fade[p] = land[p] ? (byte)0 : (byte)255;
+                    any |= !land[p];
+                }
+
+                return any ? fade : null;
             }
 
             var distance = DistanceToLand(land, size);
@@ -202,23 +217,25 @@ namespace AeroScenery.AFS4
                 for (int i = 0; i < Side; i++)
                 {
                     double d = distance[row + i];
-                    if (d <= 0)
+                    if (d <= keepPixels)
                     {
-                        opacity[j * Side + i] = 255;
+                        continue; // land, or sea near it: the imagery as it is
+                    }
+
+                    any = true;
+                    if (d >= bandPixels)
+                    {
+                        fade[j * Side + i] = 255;
                         continue;
                     }
 
-                    anySea = true;
-                    double t = d / stripPixels;
-                    if (t < 1)
-                    {
-                        double fade = 1 - t * t * (3 - 2 * t);
-                        opacity[j * Side + i] = (byte)Math.Round(255 * fade);
-                    }
+                    double t = (d - keepPixels) / fadePixels;
+                    double s = t * t * (3 - 2 * t);
+                    fade[j * Side + i] = (byte)Math.Max(1, Math.Min(254, Math.Round(254 * s)));
                 }
             }
 
-            return anySea ? opacity : null;
+            return any ? fade : null;
         }
 
         // Ground metres per pixel of a tile (east-west, at its centre; the AFS grid isn't conformal, but near enough).

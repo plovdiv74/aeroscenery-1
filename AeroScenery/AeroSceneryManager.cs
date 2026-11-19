@@ -375,12 +375,13 @@ namespace AeroScenery
                 var shapefile = await Coastline.EnsureDownloadedAsync(Path.Combine(this.settings.WorkingDirectory, "coastline"),
                     this.settings.UserAgent, progress, CancellationToken.None);
                 this.mainForm.UpdateChildTaskLabel("Reading the OSM coastline");
-                double strip = this.settings.TtcWaterStripMetres.Value;
-                double margin = 0.01 + strip / 50000; // degrees: the strip sees coast this far outside the square
+                double band = this.settings.TtcSeaKeepMetres.Value + this.settings.TtcSeaFadeMetres.Value;
+                double margin = 0.01 + band / 50000; // degrees: the band sees coast this far outside the square
                 var coastline = await Task.Run(() => Coastline.Load(shapefile,
                     square.WestLongitude - margin, square.SouthLatitude - margin, square.EastLongitude + margin, square.NorthLatitude + margin));
-                coastline.StripMetres = strip;
-                return coastline.Opacity;
+                coastline.KeepMetres = this.settings.TtcSeaKeepMetres.Value;
+                coastline.FadeMetres = this.settings.TtcSeaFadeMetres.Value;
+                return coastline.SeaFade;
             }
             catch (Exception ex) when (ex is System.Net.Http.HttpRequestException || ex is IOException || ex is InvalidDataException)
             {
@@ -388,6 +389,22 @@ namespace AeroScenery
                     square, ex.Message));
                 return null;
             }
+        }
+
+        /// <summary>
+        /// "R,G,B" as three bytes; Aerofly's sea colour at Provincetown (8,23,47) if it isn't that.
+        /// </summary>
+        public static byte[] ParseColour(string text)
+        {
+            var parts = (text ?? "").Split(',');
+            var colour = new byte[3];
+            if (parts.Length == 3 && Byte.TryParse(parts[0].Trim(), out colour[0]) && Byte.TryParse(parts[1].Trim(), out colour[1])
+                && Byte.TryParse(parts[2].Trim(), out colour[2]))
+            {
+                return colour;
+            }
+
+            return new byte[] { 8, 23, 47 };
         }
 
         /// <summary>
@@ -420,23 +437,8 @@ namespace AeroScenery
                 brighten ? ToneCurves.GeoConvert : null);
             var square = AfsTile.Parse(afs2GridSquare.Name);
 
-            // Aerofly's stock imagery under the square (from "afsd -ts"), for the offshore strip to blend into
-            StockImagery stock = null;
-            if (seaPixels != null && this.settings.TtcWaterStripMetres.Value > 0)
-            {
-                var stockPath = StockImagery.PathFor(Path.Combine(this.settings.WorkingDirectory, afs2GridSquare.Name), square);
-                if (File.Exists(stockPath))
-                {
-                    stock = await Task.Run(() => StockImagery.Load(stockPath, square, 30));
-                }
-                else
-                {
-                    log.Info(String.Format("No stock imagery for {0} ({1}): the imagery ends at the coastline, without the offshore blend. "
-                        + "\"afsd -ts {0} <folder>\" writes it.", square, stockPath));
-                }
-            }
-
-            var renderer = new TtcRenderer(source, ttcDirectory, seaPixels, stock);
+            var seaColour = ParseColour(this.settings.TtcSeaColour);
+            var renderer = new TtcRenderer(source, ttcDirectory, seaPixels, seaColour);
             var levels = this.settings.AFSLevelsToGenerate.ToList();
             var progress = new Progress<TtcRendererProgress>(p =>
             {
@@ -454,10 +456,9 @@ namespace AeroScenery
                 var result = await Task.Run(() => renderer.Render(square, levels, progress, cancellation.Token));
                 log.Info(String.Format("Wrote {0} TTC files for {1} to {2} in {3:F1} s (base level {4}{5}{6})",
                     result.Written.Count, square, ttcDirectory, stopwatch.Elapsed.TotalSeconds, result.BaseLevel,
-                    brighten ? ", brightened like GeoConvert" : "", seaPixels == null ? "" : this.settings.TtcWaterStripMetres.Value > 0
-                        ? String.Format(", sea transparent (OSM coastline), {0} m strip{1}", this.settings.TtcWaterStripMetres.Value,
-                            stock != null ? " blended into the stock imagery" : " cut off (no stock imagery)")
-                        : ", sea transparent (OSM coastline)"));
+                    brighten ? ", brightened like GeoConvert" : "", seaPixels == null ? "" : String.Format(
+                        ", OSM coastline: imagery kept {0} m offshore, faded into {1},{2},{3} over {4} m, open sea transparent",
+                        this.settings.TtcSeaKeepMetres.Value, seaColour[0], seaColour[1], seaColour[2], this.settings.TtcSeaFadeMetres.Value)));
 
                 if (result.NoImagery.Count > 0)
                 {

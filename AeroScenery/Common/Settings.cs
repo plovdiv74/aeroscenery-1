@@ -60,9 +60,11 @@ namespace AeroScenery.Common
         public bool? TtcGeoConvertBrightness { get; set; }
         // Write TTC Files: make the sea transparent (Aerofly's own water), from the OSM coastline (AFS4\Coastline.cs)
         public bool? TtcSeaTransparent { get; set; }
-        // Write TTC Files: width of the offshore strip where the imagery blends into the stock imagery (from afsd -ts),
-        // metres; 0 = a sharp cut
-        public int? TtcWaterStripMetres { get; set; }
+        // Write TTC Files, with the sea transparent: metres of sea next to land where the imagery stays as it is, then
+        // metres over which it fades into the sea colour ("R,G,B"); the open sea beyond is transparent (AFS4\Coastline.cs)
+        public int? TtcSeaKeepMetres { get; set; }
+        public int? TtcSeaFadeMetres { get; set; }
+        public string TtcSeaColour { get; set; }
 
         // Write TTH Files: elevation tiles from a source in ElevationSources.json (AFS4\ElevationSources.cs)
         public bool? WriteTthFiles { get; set; }

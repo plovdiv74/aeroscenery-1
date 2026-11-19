@@ -159,7 +159,9 @@ namespace AeroScenery.Data
 
             log.Info(String.Format("TtcGeoConvertBrightness: {0}", settings.TtcGeoConvertBrightness));
             log.Info(String.Format("TtcSeaTransparent: {0}", settings.TtcSeaTransparent));
-            log.Info(String.Format("TtcWaterStripMetres: {0}", settings.TtcWaterStripMetres));
+            log.Info(String.Format("TtcSeaKeepMetres: {0}", settings.TtcSeaKeepMetres));
+            log.Info(String.Format("TtcSeaFadeMetres: {0}", settings.TtcSeaFadeMetres));
+            log.Info(String.Format("TtcSeaColour: {0}", settings.TtcSeaColour));
             log.Info(String.Format("WriteTthFiles: {0}", settings.WriteTthFiles));
             log.Info(String.Format("ElevationSource: {0}", settings.ElevationSource));
             log.Info(String.Format("TthLevelsToGenerate: {0}", settings.TthLevelsToGenerate == null ? "" : String.Join(",", settings.TthLevelsToGenerate)));
@@ -265,8 +267,14 @@ namespace AeroScenery.Data
             if (settings.TtcSeaTransparent == null)
                 settings.TtcSeaTransparent = true;
 
-            if (settings.TtcWaterStripMetres == null)
-                settings.TtcWaterStripMetres = 10;
+            if (settings.TtcSeaKeepMetres == null)
+                settings.TtcSeaKeepMetres = 200;
+
+            if (settings.TtcSeaFadeMetres == null)
+                settings.TtcSeaFadeMetres = 800;
+
+            if (String.IsNullOrWhiteSpace(settings.TtcSeaColour))
+                settings.TtcSeaColour = "8,23,47";
 
             if (settings.WriteTthFiles == null)
                 settings.WriteTthFiles = false;

@@ -165,7 +165,10 @@ namespace AeroScenery.UI
             // Image processing
             settings.TtcGeoConvertBrightness = this.ttcGeoConvertBrightnessCheckBox.Checked;
             settings.TtcSeaTransparent = this.ttcSeaTransparentCheckBox.Checked;
-            settings.TtcWaterStripMetres = String.IsNullOrEmpty(this.ttcWaterStripTextBox.Text) ? 0 : int.Parse(this.ttcWaterStripTextBox.Text);
+            settings.TtcSeaKeepMetres = String.IsNullOrEmpty(this.ttcSeaKeepTextBox.Text) ? 0 : int.Parse(this.ttcSeaKeepTextBox.Text);
+            settings.TtcSeaFadeMetres = String.IsNullOrEmpty(this.ttcSeaFadeTextBox.Text) ? 0 : int.Parse(this.ttcSeaFadeTextBox.Text);
+            var seaColour = AeroSceneryManager.ParseColour(this.ttcSeaColourTextBox.Text);
+            settings.TtcSeaColour = String.Format("{0},{1},{2}", seaColour[0], seaColour[1], seaColour[2]);
 
             AeroSceneryManager.Instance.SaveSettings();
             this.Hide();
@@ -202,7 +205,9 @@ namespace AeroScenery.UI
             // Image processing
             this.ttcGeoConvertBrightnessCheckBox.Checked = settings.TtcGeoConvertBrightness.Value;
             this.ttcSeaTransparentCheckBox.Checked = settings.TtcSeaTransparent.Value;
-            this.ttcWaterStripTextBox.Text = settings.TtcWaterStripMetres.Value.ToString();
+            this.ttcSeaKeepTextBox.Text = settings.TtcSeaKeepMetres.Value.ToString();
+            this.ttcSeaFadeTextBox.Text = settings.TtcSeaFadeMetres.Value.ToString();
+            this.ttcSeaColourTextBox.Text = settings.TtcSeaColour;
         }
 
         private void folderBrowserDialog1_HelpRequest(object sender, EventArgs e)
@@ -293,12 +298,13 @@ namespace AeroScenery.UI
             return new string(input.Where(c => char.IsDigit(c)).ToArray());
         }
 
-        private void ttcWaterStripTextBox_TextChanged(object sender, EventArgs e)
+        private void ttcSeaMetresTextBox_TextChanged(object sender, EventArgs e)
         {
-            var numbersOnly = this.GetInteger(this.ttcWaterStripTextBox.Text);
-            if (this.ttcWaterStripTextBox.Text != numbersOnly)
+            var textBox = (TextBox)sender;
+            var numbersOnly = this.GetInteger(textBox.Text);
+            if (textBox.Text != numbersOnly)
             {
-                this.ttcWaterStripTextBox.Text = numbersOnly;
+                textBox.Text = numbersOnly;
             }
         }
 
