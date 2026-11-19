@@ -482,7 +482,7 @@
             this.ttcWaterStripLabel.Name = "ttcWaterStripLabel";
             this.ttcWaterStripLabel.Size = new System.Drawing.Size(330, 17);
             this.ttcWaterStripLabel.TabIndex = 26;
-            this.ttcWaterStripLabel.Text = "Fade Out the Imagery Offshore Over (m; 0 = Sharp Cut):";
+            this.ttcWaterStripLabel.Text = "Blend Into the Stock Water Over (m; Needs afsd -ts):";
             // 
             // ttcWaterStripTextBox
             // 

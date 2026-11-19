@@ -87,6 +87,7 @@
     <Compile Include="AFS4\Coastline.cs" />
     <Compile Include="AFS4\DemCells.cs" />
     <Compile Include="AFS4\ElevationSources.cs" />
+    <Compile Include="AFS4\StockImagery.cs" />
     <Compile Include="AFS4\TthRenderer.cs" />
     <Compile Include="AFS4\TthWriter.cs" />
     <Compile Include="AFS4\WebMercator.cs" />

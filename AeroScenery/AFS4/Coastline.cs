@@ -17,8 +17,9 @@ namespace AeroScenery.AFS4
     /// than thresholding elevation: a DEM is too coarse at the shore and puts low land (salt marsh) below sea level.
     ///
     /// A pixel is sea if its centre is outside every land polygon (even-odd rule per polygon, so holes work). BC1
-    /// alpha is one bit, so the cut is sharp, unless a strip (StripMetres) fades the imagery out offshore: its
-    /// opacity is dithered into the alpha (TtcWriter.Dither), as Ortho4XP blurs its masks for X-Plane's 8-bit alpha.
+    /// alpha is one bit, so the cut is sharp; a strip offshore (StripMetres) gets a falling opacity, which the renderer
+    /// turns into a colour fade toward Aerofly's stock imagery (TtcRenderer), where Ortho4XP blurs its masks for
+    /// X-Plane's 8-bit alpha.
     /// </summary>
     public class Coastline
     {
@@ -141,9 +142,9 @@ namespace AeroScenery.AFS4
         }
 
         /// <summary>
-        /// Width in metres of the strip of sea along the coastline where the imagery fades out instead of ending at the
-        /// coastline: its opacity falls from 255 at the coast to 0 at this distance (smoothstep), and the renderer
-        /// dithers that into BC1's one-bit alpha. 0: a sharp cut at the coastline.
+        /// Width in metres of the strip of sea along the coastline where the imagery blends into Aerofly's stock
+        /// imagery instead of ending at the coastline: its opacity falls from 255 at the coast to 0 at this distance
+        /// (smoothstep), and the renderer blends the colour by it (TtcRenderer). 0: a sharp cut at the coastline.
         /// </summary>
         public double StripMetres { get; set; }
 

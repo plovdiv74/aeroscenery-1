@@ -70,7 +70,8 @@ namespace AeroScenery.AFS4
     /// With a sea mask (opacity, from the OSM coastline: Coastline.Opacity) the sea is transparent too, imagery or
     /// not: Bing's water is much lighter than Aerofly's (RGB about 42,60,76 against 8,24,48 at Provincetown), so a hard
     /// edge out at sea shows as a band; with the sea transparent the change of colour is at the coastline. In an
-    /// optional strip offshore the imagery fades out (its coverage falls, and is dithered when written).
+    /// optional strip offshore the imagery stays opaque and its colour blends into the stock imagery's (StockImagery);
+    /// without the stock imagery the strip is cut off too.
     /// </summary>
     public class TtcRenderer
     {
@@ -80,15 +81,20 @@ namespace AeroScenery.AFS4
         private readonly SourceTiles source;
         private readonly string outputDirectory;
         private readonly Func<AfsTile, byte[]> opacity;
+        private readonly StockImagery stock;
 
         /// <param name="opacity">Optional: a base-level tile's opacity per pixel (rows from the south; 0 at sea, so
         /// Aerofly's own water shows), or null if all opaque (Coastline.Opacity). Null: only areas without imagery are
         /// transparent.</param>
-        public TtcRenderer(SourceTiles source, string outputDirectory, Func<AfsTile, byte[]> opacity = null)
+        /// <param name="stock">Optional: Aerofly's stock imagery under the square. Where the opacity is between 0 and
+        /// 255 (the offshore strip) the pixels stay opaque and their colour is blended toward it, by 1 - opacity / 255.
+        /// Null: the strip is transparent, a sharp cut at the coastline.</param>
+        public TtcRenderer(SourceTiles source, string outputDirectory, Func<AfsTile, byte[]> opacity = null, StockImagery stock = null)
         {
             this.source = source;
             this.outputDirectory = outputDirectory;
             this.opacity = opacity;
+            this.stock = stock;
         }
 
         public static int FinestLevel(int zoom)
@@ -350,6 +356,13 @@ namespace AeroScenery.AFS4
                 return null;
             }
 
+            if (sea != null)
+            {
+                // The offshore strip (coverage between 0 and 255): with the stock imagery, opaque, its colour blended
+                // toward the stock's; without it, cut off (transparent), so the imagery ends at the coastline.
+                transparent += FinishStrip(tile, image, alpha);
+            }
+
             if (transparent == Side * Side)
             {
                 return TileImage.Empty;
@@ -367,8 +380,55 @@ namespace AeroScenery.AFS4
                 }
             }
 
-            // alpha is the coverage: 255 opaque, 0 transparent, between: the offshore strip
+            // alpha is the coverage: 255 opaque, 0 transparent
             return new TileImage(image, transparent > 0 || partial ? alpha : null);
+        }
+
+        // The pixels of the offshore strip (coverage between 0 and 255). With the stock imagery they become opaque, their
+        // colour blended toward the stock's by 1 - coverage / 255: Bing's at the coast, the stock's at the far edge of
+        // the strip, where the stock imagery itself takes over. A colour fade instead of a dithered alpha fade, which
+        // showed as a stipple. Without the stock imagery they become transparent. Returns how many became transparent.
+        private int FinishStrip(AfsTile tile, byte[] image, byte[] coverage)
+        {
+            double pixelSpan = (double)tile.Span / Side;
+            int cut = 0;
+            Parallel.For(0, Side, j =>
+            {
+                double y = tile.Y + (j + 0.5) * pixelSpan;
+                int rowCut = 0;
+                for (int i = 0; i < Side; i++)
+                {
+                    int p = j * Side + i;
+                    int c = coverage[p];
+                    if (c == 0 || c == 255)
+                    {
+                        continue;
+                    }
+
+                    if (this.stock == null)
+                    {
+                        coverage[p] = 0;
+                        rowCut++;
+                        continue;
+                    }
+
+                    // w: how far out in the strip (0 at the coast, 1 at its far edge); the target goes from the
+                    // blurred stock colour to the sharp stock image, so the strip's last pixels are what the sim draws
+                    // next to them
+                    double w = 1 - c / 255.0;
+                    double r, g, b;
+                    this.stock.Sample(tile.X + (i + 0.5) * pixelSpan, y, w * w, out r, out g, out b);
+                    int o = 3 * p;
+                    image[o] = (byte)Math.Round(image[o] + (r - image[o]) * w);
+                    image[o + 1] = (byte)Math.Round(image[o + 1] + (g - image[o + 1]) * w);
+                    image[o + 2] = (byte)Math.Round(image[o + 2] + (b - image[o + 2]) * w);
+                    coverage[p] = 255;
+                }
+
+                Interlocked.Add(ref cut, rowCut);
+            });
+
+            return cut;
         }
 
         // The byte offset of global pixel (x, y) within its source tile.

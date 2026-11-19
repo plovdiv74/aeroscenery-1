@@ -418,8 +418,25 @@ namespace AeroScenery
             var brighten = this.settings.TtcGeoConvertBrightness.Value;
             var source = new SourceTiles(tileDownloadDirectory, prefix, this.settings.ZoomLevel.Value,
                 brighten ? ToneCurves.GeoConvert : null);
-            var renderer = new TtcRenderer(source, ttcDirectory, seaPixels);
             var square = AfsTile.Parse(afs2GridSquare.Name);
+
+            // Aerofly's stock imagery under the square (from "afsd -ts"), for the offshore strip to blend into
+            StockImagery stock = null;
+            if (seaPixels != null && this.settings.TtcWaterStripMetres.Value > 0)
+            {
+                var stockPath = StockImagery.PathFor(Path.Combine(this.settings.WorkingDirectory, afs2GridSquare.Name), square);
+                if (File.Exists(stockPath))
+                {
+                    stock = await Task.Run(() => StockImagery.Load(stockPath, square, 30));
+                }
+                else
+                {
+                    log.Info(String.Format("No stock imagery for {0} ({1}): the imagery ends at the coastline, without the offshore blend. "
+                        + "\"afsd -ts {0} <folder>\" writes it.", square, stockPath));
+                }
+            }
+
+            var renderer = new TtcRenderer(source, ttcDirectory, seaPixels, stock);
             var levels = this.settings.AFSLevelsToGenerate.ToList();
             var progress = new Progress<TtcRendererProgress>(p =>
             {
@@ -438,7 +455,8 @@ namespace AeroScenery
                 log.Info(String.Format("Wrote {0} TTC files for {1} to {2} in {3:F1} s (base level {4}{5}{6})",
                     result.Written.Count, square, ttcDirectory, stopwatch.Elapsed.TotalSeconds, result.BaseLevel,
                     brighten ? ", brightened like GeoConvert" : "", seaPixels == null ? "" : this.settings.TtcWaterStripMetres.Value > 0
-                        ? String.Format(", sea transparent (OSM coastline), {0} m dithered strip", this.settings.TtcWaterStripMetres.Value)
+                        ? String.Format(", sea transparent (OSM coastline), {0} m strip{1}", this.settings.TtcWaterStripMetres.Value,
+                            stock != null ? " blended into the stock imagery" : " cut off (no stock imagery)")
                         : ", sea transparent (OSM coastline)"));
 
                 if (result.NoImagery.Count > 0)
